@@ -368,7 +368,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 </span>
               </div>
               <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-                ChatGPT-Style Free Quotas, Copilot Memory &amp; Premium Perks
+                AI Copilot Free Quotas, Persistent Memory &amp; Premium Perks
               </div>
             </div>
           </div>

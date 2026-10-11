@@ -192,6 +192,7 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
   const [statusNotice, setStatusNotice] = useState<string | null>(null);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
+  const [hasExported, setHasExported] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -335,12 +336,12 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
     if (targetDomain) {
       return {
         role: 'assistant',
-        content: `👋 **CyberGuard AI Copilot Active (ChatGPT SOC Mode)**\n\nI have loaded live forensic intelligence for **\`${targetDomain}\`**:\n- **Verdict:** \`${verdict || 'ANALYZED'}\`\n- **Risk Score:** \`${riskScore !== undefined ? `${riskScore}/100` : 'Evaluated'}\`\n- **Security Grade:** \`${grade || 'Active'}\`\n\n${scannedCount > 0 ? `🧠 *Persistent Memory: I remember all ${scannedCount} domains you have audited till now! Ask "which domain I scanned till now" at any time.*\n\n` : ''}Ask me anything: Is it easily hackable? How do I harden Nginx headers? What vulnerabilities does it expose? Or type **\`open sandbox\`** to inspect it in a live headless viewport.`
+        content: `👋 **CyberGuard AI Copilot Active**\n\nI have loaded live forensic intelligence for **\`${targetDomain}\`**:\n- **Verdict:** \`${verdict || 'ANALYZED'}\`\n- **Risk Score:** \`${riskScore !== undefined ? `${riskScore}/100` : 'Evaluated'}\`\n- **Security Grade:** \`${grade || 'Active'}\`\n\n${scannedCount > 0 ? `🧠 *Persistent Memory: I remember all ${scannedCount} domains you have audited till now! Ask "which domain I scanned till now" at any time.*\n\n` : ''}Ask me anything: Is it easily hackable? How do I harden Nginx headers? What vulnerabilities does it expose? Or type **\`open sandbox\`** to inspect it in a live headless viewport.`
       };
     }
     return {
       role: 'assistant',
-      content: `👋 **CyberGuard AI Copilot Online (ChatGPT SOC Mode)**\n\nI am your autonomous defensive cybersecurity analyst and technical AI assistant with live internet telemetry and cross-session scan memory.\n\n${scannedCount > 0 ? `🧠 **Audit Memory Active:** I remember all **${scannedCount}** domains you have scanned till now! Ask **\`which domain I scanned till now\`** to see your complete scan history.\n\n` : ''}Type **\`analyze amazon.in\`** (or any domain) for an instant live audit, ask me to **\`open sandbox\`** to preview any link, or ask any question on web security, DevSecOps, and secure coding!`
+      content: `👋 **CyberGuard AI Copilot Online**\n\nI am your autonomous defensive cybersecurity analyst and technical AI assistant with live internet telemetry and cross-session scan memory.\n\n${scannedCount > 0 ? `🧠 **Audit Memory Active:** I remember all **${scannedCount}** domains you have scanned till now! Ask **\`which domain I scanned till now\`** to see your complete scan history.\n\n` : ''}Type **\`analyze amazon.in\`** (or any domain) for an instant live audit, ask me to **\`open sandbox\`** to preview any link, or ask any question on web security, DevSecOps, and secure coding!`
     };
   }
 
@@ -526,9 +527,9 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
   // Export chat history as Markdown
   const handleExportChat = () => {
     const session = sessions.find(s => s.id === activeSessionId);
-    const title = session?.title || 'cyberguard_chat_transcript';
+    const title = session?.title || 'Security Audit Transcript';
     const lines = [
-      `# CyberGuard AI Copilot — Security Audit Transcript`,
+      `# CyberGuard AI Copilot — Security Audit & Chat Transcript`,
       `**Session:** ${title}`,
       `**Date:** ${new Date().toLocaleString()}`,
       `**Target Host:** ${domain || 'General Mode'}`,
@@ -543,13 +544,24 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
       lines.push('');
     });
 
-    const blob = new Blob([lines.join('\n')], { type: 'text/markdown' });
+    const blob = new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${title.toLowerCase().replace(/[^a-z0-9]/g, '_')}_transcript.md`;
+    
+    // Clean, readable filename (e.g. cyberguard_copilot_audit_2026-10-12.md)
+    const sanitizedTitle = (domain || title || 'security_audit')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '')
+      .slice(0, 30);
+    const dateStr = new Date().toISOString().slice(0, 10);
+    a.download = `cyberguard_copilot_${sanitizedTitle}_${dateStr}.md`;
+
     a.click();
     URL.revokeObjectURL(url);
+    setHasExported(true);
+    setTimeout(() => setHasExported(false), 2500);
   };
 
   const handleSendMessage = async (textToSend?: string) => {
@@ -1674,7 +1686,7 @@ Plan Tier | Quota Allocation
           </div>
           <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span style={{ color: 'var(--accent-cyan)' }}>●</span>
-            <span>{domain ? `Auditing: ${domain}` : 'ChatGPT Cyber AI'}</span>
+            <span>{domain ? `Auditing: ${domain}` : 'CyberGuard AI Copilot'}</span>
           </div>
         </div>
       </motion.button>
@@ -2052,16 +2064,23 @@ Plan Tier | Quota Allocation
           <button
             onClick={handleExportChat}
             style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--text-secondary)',
+              background: hasExported ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+              border: hasExported ? '1px solid #10b981' : '1px solid var(--border-color)',
+              color: hasExported ? '#10b981' : 'var(--text-secondary)',
               cursor: 'pointer',
-              padding: '5px',
-              borderRadius: '6px'
+              padding: '4px 8px',
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              fontSize: '0.74rem',
+              fontWeight: 700,
+              transition: 'all 0.2s'
             }}
-            title="Export Chat as Markdown"
+            title="Download Copilot chat history as a Markdown (.md) document"
           >
-            <Download size={14} />
+            {hasExported ? <Check size={13} color="#10b981" /> : <Download size={13} />}
+            <span>{hasExported ? 'Exported (.md)' : 'Export'}</span>
           </button>
 
           {/* Plan & Credits Pill */}
