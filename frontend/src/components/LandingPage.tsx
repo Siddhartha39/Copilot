@@ -539,24 +539,33 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </motion.button>
         </motion.div>
 
-        {/* Interactive Quick-Audit Search Bar (Styled with sleek pill shape) */}
+        {/* Interactive Quick-Audit Search Bar (Styled with sleek standalone pill) */}
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.45, delay: 0.4 }}
           style={{
-            maxWidth: '720px',
-            margin: '0 auto 24px auto',
-            background: isLight ? '#ffffff' : 'var(--bg-card)',
-            border: isLight ? '1.5px solid #cbd5e1' : '1px solid rgba(56, 189, 248, 0.4)',
-            borderRadius: '9999px',
-            padding: '7px 8px 7px 18px',
-            boxShadow: isLight ? '0 10px 30px -5px rgba(15, 23, 42, 0.08)' : '0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.12)'
+            maxWidth: '760px',
+            margin: '0 auto 28px auto'
           }}
         >
-          <form onSubmit={handleQuickSubmit} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <form
+            onSubmit={handleQuickSubmit}
+            style={{
+              background: isLight ? '#ffffff' : 'var(--bg-card)',
+              border: isLight ? '1.5px solid #cbd5e1' : '1px solid rgba(56, 189, 248, 0.4)',
+              borderRadius: '9999px',
+              padding: '7px 8px 7px 20px',
+              boxShadow: isLight
+                ? '0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04)'
+                : '0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.12)',
+              display: 'flex',
+              gap: '10px',
+              alignItems: 'center'
+            }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', color: 'var(--accent-cyan)' }}>
-              <Search size={18} />
+              <Search size={19} />
             </div>
             <input
               type="text"
@@ -590,7 +599,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)'
+                boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)',
+                flexShrink: 0
               }}
             >
               <Radar size={16} />
@@ -599,8 +609,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </form>
 
           {/* Quick-test Sample Chips */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px', padding: '0 6px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>QUICK SAMPLES:</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '14px', padding: '0 6px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <span className="mono" style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 600 }}>QUICK SAMPLES:</span>
             {sampleTargets.map((s) => (
               <motion.button
                 key={s.url}
@@ -631,9 +641,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           {/* Scan Protocol Notice */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '12px', paddingTop: '8px', borderTop: '1px solid var(--border-color)' }}>
-            <Zap size={12} color="var(--accent-cyan)" />
-            <span className="mono" style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '12px' }}>
+            <Zap size={13} color="var(--accent-cyan)" />
+            <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
               100% Free &amp; Open Access • Full Headless Sandbox, Brand pHash Vision &amp; CyberAI <span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>Unlocked (No Paywalls)</span>
             </span>
           </div>
