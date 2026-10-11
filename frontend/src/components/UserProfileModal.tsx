@@ -36,6 +36,28 @@ interface UserProfileModalProps {
   theme?: 'dark' | 'light';
 }
 
+const loadRazorpayScript = (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if (typeof window !== 'undefined' && (window as any).Razorpay) {
+      resolve(true);
+      return;
+    }
+    const existing = document.querySelector('script[src*="checkout.razorpay.com"]');
+    if (existing) {
+      existing.addEventListener('load', () => resolve(true));
+      existing.addEventListener('error', () => resolve(false));
+      setTimeout(() => resolve(!!(window as any).Razorpay), 2500);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   isOpen,
   onClose,
@@ -69,13 +91,18 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     const creditsToAdd = planType === 'pro' ? 5000 : 500;
 
     try {
-      // 1. Backend: Create Order
-      const order = await createRazorpayOrder(amountPaise, planName, creditsToAdd);
-
-      // 2. Ensure Razorpay script is loaded
-      if (typeof window === 'undefined' || !(window as any).Razorpay) {
-        throw new Error('Razorpay Checkout SDK is still loading. Please check internet connection and retry.');
+      // 1. Ensure Razorpay script is loaded
+      let isLoaded = typeof window !== 'undefined' && !!(window as any).Razorpay;
+      if (!isLoaded) {
+        setStatusMsg({ type: 'info', text: 'Initializing Razorpay Checkout engine...' });
+        isLoaded = await loadRazorpayScript();
       }
+      if (!isLoaded || !(window as any).Razorpay) {
+        throw new Error('Razorpay Checkout SDK could not be loaded. Please disable ad-blockers or check internet.');
+      }
+
+      // 2. Backend: Create Order
+      const order = await createRazorpayOrder(amountPaise, planName, creditsToAdd);
 
       const keyId = order.key_id || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_TmTfojTcJlfmux';
 
