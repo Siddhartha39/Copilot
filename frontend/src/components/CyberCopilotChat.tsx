@@ -43,7 +43,8 @@ import {
   Pin,
   BookOpen,
   Cloud,
-  Crown
+  Crown,
+  HardDrive
 } from 'lucide-react';
 import type { RiskScoreReport, FreeScanResult, ChatMessage } from '../types';
 import {
@@ -109,6 +110,16 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
   const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState('');
+
+  // Account Plan & Quota Calculations
+  const isPro = currentUser?.plan === 'premium';
+  const currentCredits = currentUser?.credits ?? (isPro ? 5000 : 50);
+  const maxCredits = currentUser?.max_credits ?? (isPro ? 5000 : 50);
+  const creditPct = Math.min(100, Math.max(0, Math.round((currentCredits / maxCredits) * 100)));
+
+  const memoryUsedKb = currentUser?.memory_used_kb ?? 48.0;
+  const memoryMaxKb = currentUser?.memory_max_kb ?? (isPro ? 8192.0 : 256.0);
+  const memoryPct = currentUser?.memory_used_pct ?? Math.min(100, Math.round((memoryUsedKb / memoryMaxKb) * 100));
 
   // Gemini API Key config
   const [geminiApiKey, setGeminiApiKey] = useState(() => {
@@ -501,6 +512,72 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
       updatedTitle = cleanSnippet.length > 32 ? `${cleanSnippet.substring(0, 32)}...` : cleanSnippet;
     }
 
+    // Check if query is an account / quota / subscription inquiry
+    const lowerQuery = query.toLowerCase();
+    const isAccountQuery = 
+      /^(what('?s| is)? (my )?account|give account|show account|my profile|account detail|my credits|my plan|my subscription|who am i)/i.test(query.trim()) ||
+      lowerQuery.includes('account detail') || 
+      lowerQuery.includes('my credits') || 
+      lowerQuery.includes('my plan') ||
+      lowerQuery.includes('show my account') ||
+      lowerQuery.includes('quota details');
+
+    if (isAccountQuery) {
+      const username = currentUser?.username || 'Guest Cyber Operator';
+      const email = currentUser?.email || 'Anonymous Guest Session';
+      const planName = isPro ? 'PREMIUM PRO 👑' : 'FREE TIER (Standard Access)';
+      const creditsDisplay = `${currentCredits.toLocaleString()} / ${maxCredits.toLocaleString()} Credits`;
+      const memoryDisplay = `${memoryPct}% Fill-Up (${memoryUsedKb} KB / ${memoryMaxKb} KB)`;
+
+      const accountReply = `### 👤 CyberGuard Operator Account Dossier
+
+• * Operator Handle: **${username}**
+• * Registered Email: ${email}
+• * Active Subscription: **${planName}**
+• * AI Credits Remaining: **${creditsDisplay}**
+• * Copilot Context Memory: **${memoryDisplay}**
+• * Threat Intelligence Feeds: Active & Connected (14 Global Threat Sources)
+• * Cloud Sync Status: ${currentUser ? 'Active & Synced across devices' : 'Local Browser Cache'}
+
+---
+
+### 📊 Capabilities & Quotas
+
+Plan Tier | Quota Allocation
+**Security Scanners** | All 8 Tools 100% Free
+**Daily AI Analyses** | ${isPro ? 'Priority Deep Triage & Unlimited Sandbox' : '50 Daily Credits'}
+**Copilot Memory Window** | ${isPro ? '8 MB Extended Context' : '256 KB Session Memory'}
+**Razorpay Billing** | ${isPro ? 'Active Pro Membership' : 'Upgrades available via [Profile & Plans]'}
+
+---
+
+💡 **Account Action:** You can manage credits, view full memory fill-up, or upgrade your plan anytime using the account tile in the left sidebar or the **Profile & Plans** button.`;
+
+      const finalMessages = [
+        ...newMessages,
+        { role: 'assistant' as const, content: accountReply }
+      ];
+      setMessages(finalMessages);
+      setIsLoading(false);
+
+      setSessions(prev =>
+        prev.map(s => {
+          if (s.id === activeSessionId) {
+            return {
+              ...s,
+              title: updatedTitle || s.title,
+              updatedAt: Date.now(),
+              messages: finalMessages,
+              domain: domain || s.domain,
+              securityMode
+            };
+          }
+          return s;
+        })
+      );
+      return;
+    }
+
     let currentContextReport = activeReport;
 
     // Check if query is asking to audit a domain or contains any domain
@@ -543,6 +620,7 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
       }
 
       const response = await sendChatMessage(processedQuery, currentContextReport, chatHistory, geminiApiKey);
+      deductUserCredit().catch(() => {});
 
       const finalMessages = [
         ...newMessages,
@@ -662,6 +740,7 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
 
   // Quick prompt chips
   const quickPrompts = hasScannedSite && domain ? [
+    { label: 'Show my account & quota details', icon: <User size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
     { label: `Is ${domain} easily hackable?`, icon: <Shield size={12} color="#ef4444" />, colorClass: 'copilot-chip-rose' },
     { label: `Give steps to fix ${domain}`, icon: <Terminal size={12} color="#10b981" />, colorClass: 'copilot-chip-emerald' },
     { label: `Hardening headers for ${domain}`, icon: <Terminal size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
@@ -669,6 +748,7 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
     { label: 'How to prevent code injection & SQLi?', icon: <Lock size={12} color="#a855f7" />, colorClass: 'copilot-chip-purple' },
     { label: 'Launch live Chromium sandbox', icon: <Sparkles size={12} color="#38bdf8" />, colorClass: 'copilot-chip-sky' }
   ] : [
+    { label: 'Show my account & quota details', icon: <User size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
     { label: 'How do I audit my website?', icon: <Shield size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
     { label: 'What vulnerabilities does CyberGuard test for?', icon: <Zap size={12} color="#f59e0b" />, colorClass: 'copilot-chip-amber' },
     { label: 'Show general Nginx hardening config', icon: <Terminal size={12} color="#10b981" />, colorClass: 'copilot-chip-emerald' },
@@ -2238,71 +2318,163 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
                 )}
               </div>
 
-              {/* Sidebar Footer */}
+              {/* Sidebar Footer: ChatGPT-Style Account & Subscription Card */}
               <div
                 style={{
-                  padding: '10px',
+                  padding: '10px 12px',
                   borderTop: '1px solid var(--border-color)',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '6px'
+                  gap: '8px',
+                  background: 'var(--bg-card)'
                 }}
               >
-                {/* Cloud Sync Status / Sign-In Button */}
-                {currentUser ? (
+                {/* User Account Tile */}
+                <div
+                  onClick={onOpenProfileModal || onOpenAuthModal}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '9px',
+                    padding: '8px 10px',
+                    borderRadius: '10px',
+                    background: isPro ? 'rgba(234, 179, 8, 0.08)' : 'var(--code-box-bg)',
+                    border: isPro ? '1px solid rgba(234, 179, 8, 0.4)' : '1px solid var(--border-color)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: isPro ? '0 0 12px rgba(234, 179, 8, 0.18)' : 'none'
+                  }}
+                  title="Click to view full Account Details, Credits & Subscription"
+                >
+                  {/* Avatar */}
                   <div
                     style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      background: isPro ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : 'linear-gradient(135deg, #00f0ff 0%, #6366f1 100%)',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'space-between',
-                      background: 'rgba(16, 185, 129, 0.08)',
-                      border: '1px solid rgba(16, 185, 129, 0.25)',
-                      borderRadius: '6px',
-                      padding: '4px 8px'
+                      justifyContent: 'center',
+                      color: '#070a10',
+                      fontWeight: 900,
+                      fontSize: '0.85rem',
+                      flexShrink: 0,
+                      border: isPro ? '1.5px solid #facc15' : '1.5px solid var(--accent-cyan)'
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px', overflow: 'hidden' }}>
-                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block', flexShrink: 0 }} />
-                      <span style={{ fontSize: '0.68rem', color: '#10b981', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        Cloud Synced: {currentUser.username}
+                    {currentUser?.username ? currentUser.username.substring(0, 1).toUpperCase() : 'G'}
+                  </div>
+
+                  {/* Name and Plan */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span
+                        style={{
+                          fontSize: '0.76rem',
+                          fontWeight: 800,
+                          color: 'var(--text-primary)',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {currentUser?.username || 'Guest Operator'}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: '0.62rem',
+                          padding: '1px 5px',
+                          borderRadius: '6px',
+                          background: isPro ? 'rgba(234, 179, 8, 0.25)' : 'rgba(0, 240, 255, 0.15)',
+                          color: isPro ? '#facc15' : 'var(--accent-cyan)',
+                          fontWeight: 900
+                        }}
+                      >
+                        {isPro ? '👑 PRO' : 'FREE'}
                       </span>
                     </div>
+
+                    <div style={{ fontSize: '0.66rem', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {currentUser?.email || 'Click to Sign In / Manage'}
+                    </div>
                   </div>
-                ) : (
+                </div>
+
+                {/* Quota & Memory Quick Meters */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '4px',
+                    padding: '6px 8px',
+                    borderRadius: '8px',
+                    background: 'rgba(255, 255, 255, 0.02)',
+                    border: '1px solid var(--border-color)',
+                    fontSize: '0.66rem'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)' }}>
+                      <Zap size={11} color="var(--accent-cyan)" />
+                      <span>Credits:</span>
+                    </span>
+                    <span className="mono" style={{ fontWeight: 800, color: 'var(--accent-cyan)' }}>
+                      {currentCredits.toLocaleString()} / {maxCredits.toLocaleString()}
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)' }}>
+                      <HardDrive size={11} color="#a855f7" />
+                      <span>Memory:</span>
+                    </span>
+                    <span className="mono" style={{ fontWeight: 800, color: '#a855f7' }}>
+                      {memoryPct}% ({memoryUsedKb} KB)
+                    </span>
+                  </div>
+                </div>
+
+                {/* Upgrade Button if Free */}
+                {!isPro && (
                   <button
-                    onClick={onOpenAuthModal}
+                    onClick={onOpenProfileModal}
                     style={{
                       width: '100%',
+                      padding: '6px 10px',
+                      borderRadius: '8px',
+                      background: 'linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(245, 158, 11, 0.25) 100%)',
+                      border: '1px solid rgba(234, 179, 8, 0.45)',
+                      color: '#facc15',
+                      fontSize: '0.72rem',
+                      fontWeight: 800,
+                      cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '5px',
-                      background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%)',
-                      border: '1px dashed rgba(0, 240, 255, 0.4)',
-                      borderRadius: '6px',
-                      padding: '5px 8px',
-                      color: 'var(--accent-cyan)',
-                      fontSize: '0.68rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
+                      boxShadow: '0 2px 10px rgba(234, 179, 8, 0.15)'
                     }}
-                    title="Sign in to sync your chats across all devices"
                   >
-                    <span>☁️ Sign In to Sync Chats</span>
+                    <Crown size={12} color="#facc15" />
+                    <span>Upgrade to Premium Pro</span>
                   </button>
                 )}
 
+                {/* Bottom Status & Clear History */}
                 <div
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
+                    paddingTop: '2px'
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <ShieldCheck size={13} color="#10b981" />
-                    <span style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600 }}>SOC Core Online</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+                    <span style={{ fontSize: '0.66rem', color: '#10b981', fontWeight: 700 }}>
+                      {currentUser ? 'Cloud Synced' : 'SOC Core Active'}
+                    </span>
                   </div>
 
                   <button
@@ -2312,7 +2484,7 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
                       border: 'none',
                       color: 'var(--text-secondary)',
                       cursor: 'pointer',
-                      fontSize: '0.68rem',
+                      fontSize: '0.66rem',
                       textDecoration: 'underline'
                     }}
                     title="Clear all saved conversations"
