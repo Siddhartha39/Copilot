@@ -24,6 +24,7 @@ import {
 import {
   createRazorpayOrder,
   verifyRazorpayPayment,
+  clearStoredAuth,
   type UserProfile
 } from '../services/api';
 
@@ -69,6 +70,15 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   const [selectedPlan, setSelectedPlan] = useState<'pro' | 'booster'>('pro');
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
+
+  const handleSignOut = () => {
+    import('../services/firebase').then(({ firebaseSignOut }) => {
+      firebaseSignOut().catch(() => {});
+    });
+    clearStoredAuth();
+    onUpdateUser(null);
+    setStatusMsg({ type: 'info', text: 'Signed out of account.' });
+  };
 
   if (!isOpen) return null;
 
@@ -122,9 +132,9 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
           : 'CyberGuard AI Credit Booster (500 Credits)',
         image: 'https://cyberguard-ai-one.vercel.app/logo.png',
         prefill: {
-          name: currentUser?.username || 'Cyber Operator',
-          email: currentUser?.email || 'operator@cyberguard.ai',
-          contact: '9999999999'
+          name: (currentUser?.username && currentUser.username !== 'Guest Operator') ? currentUser.username : '',
+          email: (currentUser?.email && currentUser.email !== 'operator@cyberguard.ai') ? currentUser.email : '',
+          contact: ''
         },
         theme: {
           color: '#00f0ff'
@@ -154,25 +164,24 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               }
             }
 
-            if (verification.success) {
-              const updated: UserProfile = verification.user || {
-                id: currentUser?.id || 'guest_op',
-                username: currentUser?.username || 'Operator',
-                email: currentUser?.email || 'operator@cyberguard.ai',
-                created_at: currentUser?.created_at || new Date().toISOString(),
-                plan: planName as any,
-                credits: (currentUser?.credits || 0) + creditsToAdd,
-                max_credits: planName === 'premium' ? 5000 : (currentUser?.max_credits || 50),
-                memory_max_kb: planName === 'premium' ? 8192.0 : 256.0,
-                memory_used_kb: memoryUsedKb,
-                memory_used_pct: Math.min(100, Math.round((memoryUsedKb / (planName === 'premium' ? 8192.0 : 256.0)) * 100))
-              };
-              onUpdateUser(updated);
-              setStatusMsg({
-                type: 'success',
-                text: `Payment Confirmed! Order: ${order.order_id}. Upgraded with ${creditsToAdd.toLocaleString()} AI Credits!`
-              });
-            }
+            const isGuest = !currentUser?.email || currentUser.email === 'operator@cyberguard.ai';
+            const updated: UserProfile = verification?.user || {
+              id: currentUser?.id || 'op_' + Date.now().toString(36),
+              username: isGuest ? 'Guest Operator' : currentUser.username,
+              email: isGuest ? '' : currentUser.email,
+              photoURL: currentUser?.photoURL,
+              created_at: currentUser?.created_at || new Date().toISOString(),
+              plan: planName as any,
+              credits: (currentUser?.credits || 0) + creditsToAdd,
+              max_credits: planName === 'premium' ? 5000 : (currentUser?.max_credits || 50),
+              memory_max_kb: planName === 'premium' ? 8192.0 : 256.0,
+              memory_used_kb: memoryUsedKb,
+            };
+            onUpdateUser(updated);
+            setStatusMsg({
+              type: 'success',
+              text: `Payment Confirmed! Upgraded with ${creditsToAdd.toLocaleString()} AI Credits!`
+            });
           } catch (verifyErr: any) {
             setStatusMsg({
               type: 'error',
@@ -340,67 +349,184 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
           )}
 
           {/* User Identity Card */}
-          <div
-            style={{
-              background: 'var(--code-box-bg)',
-              border: '1px solid var(--border-color)',
-              borderRadius: '12px',
-              padding: '14px 16px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: '12px'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {(() => {
+            const isRealUser = currentUser && currentUser.email && currentUser.email.trim() && currentUser.email !== 'operator@cyberguard.ai';
+            return (
               <div
                 style={{
-                  width: '44px',
-                  height: '44px',
-                  borderRadius: '50%',
-                  background: isPro ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : 'linear-gradient(135deg, #00f0ff 0%, #6366f1 100%)',
+                  background: 'var(--code-box-bg)',
+                  border: isRealUser ? '1px solid var(--border-color)' : '1px dashed rgba(0, 240, 255, 0.35)',
+                  borderRadius: '12px',
+                  padding: '16px 18px',
                   display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#070a10',
-                  fontWeight: 900,
-                  fontSize: '1.1rem',
-                  border: isPro ? '2px solid #facc15' : '2px solid var(--accent-cyan)'
+                  flexDirection: 'column',
+                  gap: '12px'
                 }}
               >
-                {currentUser?.username ? currentUser.username.substring(0, 1).toUpperCase() : 'G'}
-              </div>
-              <div>
-                <div style={{ fontSize: '0.92rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                  {currentUser?.username || 'Guest Cyber Operator'}
-                </div>
-                <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)' }}>
-                  {currentUser?.email || 'Anonymous Guest Session (No account)'}
-                </div>
-              </div>
-            </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    {isRealUser && currentUser.photoURL ? (
+                      <img
+                        src={currentUser.photoURL}
+                        alt={currentUser.username}
+                        style={{
+                          width: '44px',
+                          height: '44px',
+                          borderRadius: '50%',
+                          border: isPro ? '2px solid #facc15' : '2px solid var(--accent-cyan)',
+                          objectFit: 'cover'
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: '44px',
+                          height: '44px',
+                          borderRadius: '50%',
+                          background: isPro
+                            ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+                            : isRealUser
+                            ? 'linear-gradient(135deg, #00f0ff 0%, #6366f1 100%)'
+                            : 'rgba(255, 255, 255, 0.08)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: isRealUser ? '#070a10' : 'var(--accent-cyan)',
+                          fontWeight: 900,
+                          fontSize: '1.1rem',
+                          border: isPro ? '2px solid #facc15' : isRealUser ? '2px solid var(--accent-cyan)' : '1px solid var(--border-color)'
+                        }}
+                      >
+                        {isRealUser ? currentUser.username.substring(0, 1).toUpperCase() : <User size={20} />}
+                      </div>
+                    )}
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '0.94rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                          {isRealUser ? currentUser.username : 'Guest Session (Unlinked)'}
+                        </span>
+                        {isRealUser ? (
+                          <span
+                            style={{
+                              fontSize: '0.64rem',
+                              background: 'rgba(16, 185, 129, 0.15)',
+                              color: '#10b981',
+                              border: '1px solid rgba(16, 185, 129, 0.4)',
+                              padding: '1px 6px',
+                              borderRadius: '6px',
+                              fontWeight: 700,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '3px'
+                            }}
+                          >
+                            <CheckCircle2 size={10} /> Verified
+                          </span>
+                        ) : (
+                          <span
+                            style={{
+                              fontSize: '0.64rem',
+                              background: 'rgba(234, 179, 8, 0.15)',
+                              color: '#eab308',
+                              border: '1px solid rgba(234, 179, 8, 0.35)',
+                              padding: '1px 6px',
+                              borderRadius: '6px',
+                              fontWeight: 700
+                            }}
+                          >
+                            Local Browser
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: '0.74rem', color: isRealUser ? 'var(--text-secondary)' : '#94a3b8', marginTop: '2px' }}>
+                        {isRealUser ? currentUser.email : 'No email linked — credits stored locally in this browser'}
+                      </div>
+                    </div>
+                  </div>
 
-            {!currentUser && onOpenAuthModal && (
-              <button
-                onClick={() => {
-                  onClose();
-                  onOpenAuthModal();
-                }}
-                style={{
-                  padding: '6px 12px',
-                  borderRadius: '8px',
-                  background: 'rgba(0, 240, 255, 0.12)',
-                  border: '1px solid rgba(0, 240, 255, 0.35)',
-                  color: 'var(--accent-cyan)',
-                  fontSize: '0.72rem',
-                  fontWeight: 800,
-                  cursor: 'pointer'
-                }}
-              >
-                Sign In / Sync
-              </button>
-            )}
-          </div>
+                  {isRealUser ? (
+                    <button
+                      onClick={handleSignOut}
+                      style={{
+                        padding: '6px 12px',
+                        borderRadius: '8px',
+                        background: 'rgba(239, 68, 68, 0.1)',
+                        border: '1px solid rgba(239, 68, 68, 0.3)',
+                        color: '#ef4444',
+                        fontSize: '0.74rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      <LogOut size={12} />
+                      <span>Sign Out</span>
+                    </button>
+                  ) : onOpenAuthModal ? (
+                    <button
+                      onClick={() => {
+                        onClose();
+                        onOpenAuthModal();
+                      }}
+                      style={{
+                        padding: '8px 14px',
+                        borderRadius: '8px',
+                        background: 'linear-gradient(135deg, #00f0ff 0%, #3b82f6 100%)',
+                        border: 'none',
+                        color: '#070a10',
+                        fontSize: '0.75rem',
+                        fontWeight: 900,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        boxShadow: '0 2px 10px rgba(0, 240, 255, 0.3)'
+                      }}
+                    >
+                      <User size={13} />
+                      <span>Sign In with Real Email</span>
+                    </button>
+                  ) : null}
+                </div>
+
+                {!isRealUser && onOpenAuthModal && (
+                  <div
+                    style={{
+                      background: 'rgba(0, 240, 255, 0.06)',
+                      border: '1px solid rgba(0, 240, 255, 0.2)',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      fontSize: '0.72rem',
+                      color: 'var(--text-secondary)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '8px'
+                    }}
+                  >
+                    <span>Want to sync your {isPro ? 'Pro Pass & 5,000 Credits' : 'credits'} across devices?</span>
+                    <span
+                      onClick={() => {
+                        onClose();
+                        onOpenAuthModal();
+                      }}
+                      style={{
+                        color: 'var(--accent-cyan)',
+                        fontWeight: 800,
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      Login / Register Real Account →
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
 
           {/* Metrics Grid: Credits + Memory Fill-Up */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>

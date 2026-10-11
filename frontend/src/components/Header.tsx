@@ -206,7 +206,13 @@ export const Header: React.FC<HeaderProps> = ({
               ) : (
                 <User size={14} color={currentUser ? "#10b981" : "var(--accent-cyan)"} />
               )}
-              <span>{currentUser ? currentUser.username : "Profile & Plans"}</span>
+              <span>
+                {currentUser && currentUser.email && currentUser.email !== 'operator@cyberguard.ai'
+                  ? currentUser.username
+                  : currentUser?.plan === 'premium'
+                  ? 'Pro Pass'
+                  : 'Profile & Plans'}
+              </span>
               {currentUser && (
                 <span
                   style={{

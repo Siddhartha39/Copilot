@@ -2347,59 +2347,85 @@ Plan Tier | Quota Allocation
                   }}
                   title="Click to view full Account Details, Credits & Subscription"
                 >
-                  {/* Avatar */}
-                  <div
-                    style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      background: isPro ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : 'linear-gradient(135deg, #00f0ff 0%, #6366f1 100%)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#070a10',
-                      fontWeight: 900,
-                      fontSize: '0.85rem',
-                      flexShrink: 0,
-                      border: isPro ? '1.5px solid #facc15' : '1.5px solid var(--accent-cyan)'
-                    }}
-                  >
-                    {currentUser?.username ? currentUser.username.substring(0, 1).toUpperCase() : 'G'}
-                  </div>
+                  {/* Avatar & Account Info */}
+                  {(() => {
+                    const isRealUser = currentUser && currentUser.email && currentUser.email.trim() && currentUser.email !== 'operator@cyberguard.ai';
+                    return (
+                      <>
+                        {isRealUser && currentUser.photoURL ? (
+                          <img
+                            src={currentUser.photoURL}
+                            alt={currentUser.username}
+                            style={{
+                              width: '32px',
+                              height: '32px',
+                              borderRadius: '50%',
+                              border: isPro ? '1.5px solid #facc15' : '1.5px solid var(--accent-cyan)',
+                              objectFit: 'cover',
+                              flexShrink: 0
+                            }}
+                          />
+                        ) : (
+                          <div
+                            style={{
+                              width: '32px',
+                              height: '32px',
+                              borderRadius: '50%',
+                              background: isPro
+                                ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
+                                : isRealUser
+                                ? 'linear-gradient(135deg, #00f0ff 0%, #6366f1 100%)'
+                                : 'rgba(255, 255, 255, 0.08)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: isRealUser ? '#070a10' : 'var(--accent-cyan)',
+                              fontWeight: 900,
+                              fontSize: '0.85rem',
+                              flexShrink: 0,
+                              border: isPro ? '1.5px solid #facc15' : isRealUser ? '1.5px solid var(--accent-cyan)' : '1px solid var(--border-color)'
+                            }}
+                          >
+                            {isRealUser ? currentUser.username.substring(0, 1).toUpperCase() : <User size={15} />}
+                          </div>
+                        )}
 
-                  {/* Name and Plan */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span
-                        style={{
-                          fontSize: '0.76rem',
-                          fontWeight: 800,
-                          color: 'var(--text-primary)',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}
-                      >
-                        {currentUser?.username || 'Guest Operator'}
-                      </span>
-                      <span
-                        style={{
-                          fontSize: '0.62rem',
-                          padding: '1px 5px',
-                          borderRadius: '6px',
-                          background: isPro ? 'rgba(234, 179, 8, 0.25)' : 'rgba(0, 240, 255, 0.15)',
-                          color: isPro ? '#facc15' : 'var(--accent-cyan)',
-                          fontWeight: 900
-                        }}
-                      >
-                        {isPro ? '👑 PRO' : 'FREE'}
-                      </span>
-                    </div>
+                        {/* Name and Plan */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <span
+                              style={{
+                                fontSize: '0.76rem',
+                                fontWeight: 800,
+                                color: 'var(--text-primary)',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                              }}
+                            >
+                              {isRealUser ? currentUser.username : 'Guest Session'}
+                            </span>
+                            <span
+                              style={{
+                                fontSize: '0.62rem',
+                                padding: '1px 5px',
+                                borderRadius: '6px',
+                                background: isPro ? 'rgba(234, 179, 8, 0.25)' : 'rgba(0, 240, 255, 0.15)',
+                                color: isPro ? '#facc15' : 'var(--accent-cyan)',
+                                fontWeight: 900
+                              }}
+                            >
+                              {isPro ? '👑 PRO' : 'FREE'}
+                            </span>
+                          </div>
 
-                    <div style={{ fontSize: '0.66rem', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {currentUser?.email || 'Click to Sign In / Manage'}
-                    </div>
-                  </div>
+                          <div style={{ fontSize: '0.65rem', color: isRealUser ? 'var(--text-secondary)' : 'var(--accent-cyan)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {isRealUser ? currentUser.email : 'Click to Link Real Email'}
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </div>
 
                 {/* Quota & Memory Quick Meters */}

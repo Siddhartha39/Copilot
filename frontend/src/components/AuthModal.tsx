@@ -24,6 +24,7 @@ import {
   registerUser, 
   clearStoredAuth, 
   setStoredAuth, 
+  getStoredUser,
   type UserProfile 
 } from '../services/api';
 
@@ -58,12 +59,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setIsGoogleLoading(true);
     try {
       const fbUser = await signInWithGoogle();
+      const existing = getStoredUser();
       const profile: UserProfile = {
         id: fbUser.id,
         username: fbUser.username,
         email: fbUser.email,
         photoURL: fbUser.photoURL,
-        created_at: fbUser.created_at
+        created_at: fbUser.created_at,
+        plan: existing?.plan || 'free',
+        credits: existing?.credits ?? (existing?.plan === 'premium' ? 5000 : 50),
+        max_credits: existing?.max_credits ?? (existing?.plan === 'premium' ? 5000 : 50),
+        memory_used_kb: existing?.memory_used_kb ?? 48,
+        memory_max_kb: existing?.memory_max_kb ?? (existing?.plan === 'premium' ? 8192 : 256),
+        memory_used_pct: existing?.memory_used_pct ?? 1
       };
       setStoredAuth(fbUser.id, profile);
       setSuccessMsg(`Welcome, ${profile.username}! Signed in with Google.`);
@@ -130,6 +138,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
 
       if (profile && token) {
+        const existing = getStoredUser();
+        if (existing?.plan === 'premium') {
+          profile.plan = 'premium';
+          profile.credits = Math.max(profile.credits || 5000, existing.credits || 5000);
+          profile.max_credits = 5000;
+          profile.memory_max_kb = 8192;
+        }
         setStoredAuth(token, profile);
         setSuccessMsg(`Welcome back, ${profile.username}! Syncing cloud history.`);
         setTimeout(() => {
@@ -188,6 +203,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       registerUser(username.trim(), email.trim(), password).catch(() => {});
 
       if (profile && token) {
+        const existing = getStoredUser();
+        if (existing?.plan === 'premium') {
+          profile.plan = 'premium';
+          profile.credits = Math.max(profile.credits || 5000, existing.credits || 5000);
+          profile.max_credits = 5000;
+          profile.memory_max_kb = 8192;
+        }
         setStoredAuth(token, profile);
         setSuccessMsg(`Account created! Welcome, ${profile.username}.`);
         setTimeout(() => {

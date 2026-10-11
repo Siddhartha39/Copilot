@@ -2056,7 +2056,15 @@ export function getStoredUser(): UserProfile | null {
   if (typeof window === 'undefined') return null;
   try {
     const raw = localStorage.getItem(AUTH_USER_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    const user: UserProfile = JSON.parse(raw);
+    if (user.email === 'operator@cyberguard.ai') {
+      user.email = '';
+      if (user.username === 'Operator') {
+        user.username = 'Guest Operator';
+      }
+    }
+    return user;
   } catch {
     return null;
   }
