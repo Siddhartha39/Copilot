@@ -35,6 +35,7 @@ import { ThreatDashboard } from './components/ThreatDashboard';
 import { PasswordChecker } from './components/PasswordChecker';
 import { IpReputationPage } from './components/IpReputationPage';
 import { WatchlistPage } from './components/WatchlistPage';
+import { Shield, Zap } from 'lucide-react';
 
 import type {
   RiskScoreReport,
@@ -85,6 +86,7 @@ export function App() {
   const [report, setReport] = useState<RiskScoreReport | null>(null);
   const [freeScanResult, setFreeScanResult] = useState<FreeScanResult | null>(null);
   const [currentScanningUrl, setCurrentScanningUrl] = useState<string>('');
+  const [scannerFocus, setScannerFocus] = useState<'developer' | 'phishing'>('developer');
   const [cases, setCases] = useState<CaseSummary[]>([]);
   const [feed, setFeed] = useState<FeedItem[]>([]);
   const [benchmarkSamples, setBenchmarkSamples] = useState<BenchmarkSample[]>([]);
@@ -235,9 +237,18 @@ export function App() {
     }
   };
 
-  const handleScan = async (url: string, deep: boolean = false, forceRefresh: boolean = false) => {
+  const handleScan = async (
+    url: string,
+    deep: boolean = false,
+    forceRefresh: boolean = false,
+    focus?: 'developer' | 'phishing'
+  ) => {
     const cleanUrl = url.trim();
     if (!cleanUrl) return;
+
+    if (focus) {
+      setScannerFocus(focus);
+    }
 
     setIsLoading(true);
     setCurrentScanningUrl(cleanUrl);
@@ -486,6 +497,8 @@ export function App() {
               onScan={handleScan}
               isLoading={isLoading}
               benchmarkSamples={benchmarkSamples}
+              scannerFocus={scannerFocus}
+              onScannerFocusChange={setScannerFocus}
             />
 
             {/* Real-time Scanning Telemetry HUD with Animation */}
@@ -547,6 +560,8 @@ export function App() {
                     result={freeScanResult}
                     onUnlockDeepAudit={handleOpenPaymentForFreeScan}
                     onOpenAbout={handleOpenAboutTopic}
+                    scannerFocus={scannerFocus}
+                    onScannerFocusChange={setScannerFocus}
                   />
                 </motion.div>
               )}
@@ -561,59 +576,167 @@ export function App() {
                   transition={{ duration: 0.5, ease: 'easeOut' }}
                   style={{ padding: '0 24px', display: 'flex', flexDirection: 'column', gap: '24px' }}
                 >
-                  {/* Top Risk & Verdict Summary */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35, delay: 0.05 }}
-                  >
-                    <RiskSummaryCard
-                      report={report}
-                      onExportClick={() => setShowExportModal(true)}
-                      onSubmitFeedback={handleSubmitFeedback}
-                      onOpenAbout={handleOpenAboutTopic}
-                    />
-                  </motion.div>
+                  {/* Persona View Switcher for Full Report */}
+                  <div className="glass-panel" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 700 }}>
+                        VIEW MODE:
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setScannerFocus('developer')}
+                        style={{
+                          background: scannerFocus === 'developer'
+                            ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.3) 0%, rgba(59, 130, 246, 0.3) 100%)'
+                            : 'var(--code-box-bg)',
+                          color: scannerFocus === 'developer' ? '#38bdf8' : 'var(--text-secondary)',
+                          border: scannerFocus === 'developer' ? '2px solid #38bdf8' : '1px solid var(--border-color)',
+                          borderRadius: '8px',
+                          padding: '8px 16px',
+                          fontSize: '0.82rem',
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          boxShadow: scannerFocus === 'developer' ? '0 0 16px rgba(56, 189, 248, 0.3)' : 'none',
+                          transition: 'all 0.15s'
+                        }}
+                      >
+                        <Shield size={16} color={scannerFocus === 'developer' ? '#38bdf8' : 'var(--text-muted)'} />
+                        <span>Feature 1: Developer Website Security &amp; Anti-Hacking Audit</span>
+                      </button>
 
-                  {/* Brand Contradiction, Infrastructure Intel & Exploitability Grid */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35, delay: 0.12 }}
-                    style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '24px' }}
-                  >
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                      <BrandContradictionCard brand={report.brand_analysis} domainIntel={report.domain_intel} onOpenAbout={handleOpenAboutTopic} />
-                      <InfrastructureIntelCard domainIntel={report.domain_intel} crawlArtifacts={report.crawl_artifacts} targetDomain={report.canonical_domain} onOpenAbout={handleOpenAboutTopic} />
-                      <ThreatVectorsCard report={report} onOpenAbout={handleOpenAboutTopic} />
+                      <button
+                        type="button"
+                        onClick={() => setScannerFocus('phishing')}
+                        style={{
+                          background: scannerFocus === 'phishing'
+                            ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(249, 115, 22, 0.3) 100%)'
+                            : 'var(--code-box-bg)',
+                          color: scannerFocus === 'phishing' ? '#f87171' : 'var(--text-secondary)',
+                          border: scannerFocus === 'phishing' ? '2px solid #f87171' : '1px solid var(--border-color)',
+                          borderRadius: '8px',
+                          padding: '8px 16px',
+                          fontSize: '0.82rem',
+                          fontWeight: 800,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          boxShadow: scannerFocus === 'phishing' ? '0 0 16px rgba(248, 113, 113, 0.3)' : 'none',
+                          transition: 'all 0.15s'
+                        }}
+                      >
+                        <Zap size={16} color={scannerFocus === 'phishing' ? '#f87171' : 'var(--text-muted)'} />
+                        <span>Feature 2: Phishing &amp; Fraud Intelligence Scanner</span>
+                      </button>
                     </div>
-                    <SecurityPostureCard audit={report.security_audit} aiInsights={report.ai_insights} domain={report.canonical_domain} onOpenAbout={handleOpenAboutTopic} />
-                  </motion.div>
+                  </div>
 
-                  {/* Attack Chain & Forensic Evidence */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35, delay: 0.2 }}
-                  >
-                    <AttackChainVisualizer nodes={report.attack_chain} onOpenAbout={handleOpenAboutTopic} />
-                  </motion.div>
+                  {/* FEATURE 1 ACTIVE: Developer Security Audit featured at the top */}
+                  {scannerFocus === 'developer' ? (
+                    <>
+                      {/* Prominent Developer Security Posture Card & Server Hardening */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35, delay: 0.05 }}
+                      >
+                        <SecurityPostureCard
+                          audit={report.security_audit}
+                          aiInsights={report.ai_insights}
+                          domain={report.canonical_domain}
+                          onOpenAbout={handleOpenAboutTopic}
+                        />
+                      </motion.div>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35, delay: 0.28 }}
-                  >
-                    <EvidenceTable evidence={report.evidence_breakdown} onOpenAbout={handleOpenAboutTopic} />
-                  </motion.div>
+                      {/* Technical Inspector (SSL ciphers, HTTP headers, DoH) */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35, delay: 0.12 }}
+                      >
+                        <TechnicalInspector report={report} onOpenAbout={handleOpenAboutTopic} />
+                      </motion.div>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35, delay: 0.35 }}
-                  >
-                    <TechnicalInspector report={report} onOpenAbout={handleOpenAboutTopic} />
-                  </motion.div>
+                      {/* Supporting Phishing Risk Summary & Threat Vectors */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35, delay: 0.18 }}
+                      >
+                        <RiskSummaryCard
+                          report={report}
+                          onExportClick={() => setShowExportModal(true)}
+                          onSubmitFeedback={handleSubmitFeedback}
+                          onOpenAbout={handleOpenAboutTopic}
+                        />
+                      </motion.div>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '24px' }}>
+                        <BrandContradictionCard brand={report.brand_analysis} domainIntel={report.domain_intel} onOpenAbout={handleOpenAboutTopic} />
+                        <InfrastructureIntelCard domainIntel={report.domain_intel} crawlArtifacts={report.crawl_artifacts} targetDomain={report.canonical_domain} onOpenAbout={handleOpenAboutTopic} />
+                      </div>
+                    </>
+                  ) : (
+                    /* FEATURE 2 ACTIVE: Phishing & Fraud Threat Intelligence featured at the top */
+                    <>
+                      {/* Top Risk & Verdict Summary */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35, delay: 0.05 }}
+                      >
+                        <RiskSummaryCard
+                          report={report}
+                          onExportClick={() => setShowExportModal(true)}
+                          onSubmitFeedback={handleSubmitFeedback}
+                          onOpenAbout={handleOpenAboutTopic}
+                        />
+                      </motion.div>
+
+                      {/* Brand Contradiction, Infrastructure Intel & Exploitability Grid */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35, delay: 0.12 }}
+                        style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '24px' }}
+                      >
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                          <BrandContradictionCard brand={report.brand_analysis} domainIntel={report.domain_intel} onOpenAbout={handleOpenAboutTopic} />
+                          <InfrastructureIntelCard domainIntel={report.domain_intel} crawlArtifacts={report.crawl_artifacts} targetDomain={report.canonical_domain} onOpenAbout={handleOpenAboutTopic} />
+                          <ThreatVectorsCard report={report} onOpenAbout={handleOpenAboutTopic} />
+                        </div>
+                        <SecurityPostureCard audit={report.security_audit} aiInsights={report.ai_insights} domain={report.canonical_domain} onOpenAbout={handleOpenAboutTopic} />
+                      </motion.div>
+
+                      {/* Attack Chain & Forensic Evidence */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35, delay: 0.2 }}
+                      >
+                        <AttackChainVisualizer nodes={report.attack_chain} onOpenAbout={handleOpenAboutTopic} />
+                      </motion.div>
+
+                      <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35, delay: 0.28 }}
+                      >
+                        <EvidenceTable evidence={report.evidence_breakdown} onOpenAbout={handleOpenAboutTopic} />
+                      </motion.div>
+
+                      <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35, delay: 0.35 }}
+                      >
+                        <TechnicalInspector report={report} onOpenAbout={handleOpenAboutTopic} />
+                      </motion.div>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

@@ -190,6 +190,7 @@ export interface FreeScanResult {
   tls_issuer?: string;
   triage_reason: string;
   feature_attributions?: Record<string, number>;
+  security_audit?: SecurityPostureAudit;
   deep_audit_locked: boolean;
   x402_challenge?: PaymentChallenge;
 }

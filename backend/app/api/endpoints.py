@@ -6,13 +6,14 @@ import zipfile
 from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
 from pydantic import BaseModel
-from fastapi import APIRouter, HTTPException, Header, Response
+from fastapi import APIRouter, HTTPException, Header, Response, Query
 from fastapi.responses import JSONResponse, PlainTextResponse, StreamingResponse
 
 from app.schemas.analysis import (
     AnalysisRequest,
     RiskScoreReport,
     FreeScanResult,
+    SecurityPostureAudit,
     CrawlArtifacts,
     PaymentChallengeRequest,
     PaymentChallengeResponse,
@@ -290,6 +291,23 @@ async def free_security_scan(req: AnalysisRequest):
         confidence = 0.98 if basic_score == 0.0 else 0.94
         triage_msg = triage.triage_reason
 
+    # 3. Security Posture & Headers Audit (for Developer Website Security)
+    security_audit = None
+    if domain_intel.is_registered:
+        is_established = (
+            not domain_intel.is_newly_registered
+            and (domain_intel.domain_age_days or 0) > 180
+            and not spoofed_brand
+        )
+        try:
+            security_audit = await audit_security_headers_and_dns(
+                url=canonical_url,
+                txt_records=domain_intel.dns.txt_records,
+                is_established_domain=is_established
+            )
+        except Exception:
+            pass
+
     # Create x402 payment challenge for upgrading to Premium Deep Audit
     challenge = x402_manager.create_payment_challenge(canonical_url, case_id)
     
@@ -317,6 +335,7 @@ async def free_security_scan(req: AnalysisRequest):
         tls_issuer=domain_intel.tls_issuer,
         triage_reason=triage_msg,
         feature_attributions=triage.feature_attributions,
+        security_audit=SecurityPostureAudit(**security_audit.model_dump()) if security_audit else None,
         deep_audit_locked=False,
         x402_challenge=challenge.model_dump()
     )
