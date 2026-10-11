@@ -350,6 +350,13 @@ class UserProfileResponse(BaseModel):
     username: str
     email: str
     created_at: str
+    plan: str = "free"
+    credits: int = 50
+    max_credits: int = 50
+    scans_count: int = 0
+    memory_used_pct: float = 18.5
+    memory_used_kb: float = 48.0
+    memory_max_kb: float = 256.0
 
 class AuthResponse(BaseModel):
     success: bool
@@ -363,5 +370,37 @@ class SyncSessionsRequest(BaseModel):
 class SyncSessionsResponse(BaseModel):
     success: bool
     sessions: List[Dict[str, Any]]
+
+# Razorpay Standard Web Checkout Models
+class CreateOrderRequest(BaseModel):
+    amount: int  # in paise (minimum 100 paise = 1 INR)
+    currency: Optional[str] = "INR"
+    receipt: Optional[str] = None
+    plan: Optional[str] = "premium"
+    credits: Optional[int] = 5000
+
+class CreateOrderResponse(BaseModel):
+    order_id: str
+    amount: int
+    currency: str
+    key_id: Optional[str] = None
+    plan: Optional[str] = "premium"
+    credits: Optional[int] = 5000
+
+class VerifyPaymentRequest(BaseModel):
+    razorpay_order_id: str
+    razorpay_payment_id: str
+    razorpay_signature: str
+    plan: Optional[str] = "premium"
+    credits: Optional[int] = 5000
+
+class VerifyPaymentResponse(BaseModel):
+    success: bool
+    message: str
+    order_id: str
+    payment_id: str
+    plan: str
+    credits: int
+    user: Optional[UserProfileResponse] = None
 
 

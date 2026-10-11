@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Activity, Database, Radar, Home, Puzzle, Sun, Moon, HelpCircle, Coins, History, LayoutDashboard, Terminal, Wallet, Mail, Link, BarChart2, Key, Globe, Bell, Bot, User } from 'lucide-react';
+import { Shield, Activity, Database, Radar, Home, Puzzle, Sun, Moon, HelpCircle, Coins, History, LayoutDashboard, Terminal, Wallet, Mail, Link, BarChart2, Key, Globe, Bell, Bot, User, Crown } from 'lucide-react';
 import { InfoTooltip } from './InfoTooltip';
 import { useAlgorandWallet } from '../context/AlgorandWalletContext';
 import type { UserProfile } from '../services/api';
@@ -18,6 +18,7 @@ interface HeaderProps {
   onOpenCopilot?: () => void;
   currentUser?: UserProfile | null;
   onOpenAuthModal?: () => void;
+  onOpenProfileModal?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -32,7 +33,8 @@ export const Header: React.FC<HeaderProps> = ({
   hasActiveReport = false,
   onOpenCopilot,
   currentUser,
-  onOpenAuthModal
+  onOpenAuthModal,
+  onOpenProfileModal
 }) => {
   const { isConnected, address, balanceAlgo } = useAlgorandWallet();
   
@@ -160,31 +162,65 @@ export const Header: React.FC<HeaderProps> = ({
             </motion.button>
           )}
 
-          {/* User Sign In / Cloud Profile */}
-          {onOpenAuthModal && (
+          {/* User Profile & Subscription / Sign In */}
+          {(onOpenProfileModal || onOpenAuthModal) && (
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onOpenAuthModal}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={onOpenProfileModal || onOpenAuthModal}
               style={{
-                padding: '8px 12px',
+                padding: '7px 12px',
                 borderRadius: '10px',
-                border: currentUser ? '1px solid rgba(16, 185, 129, 0.45)' : '1px solid var(--border-color)',
-                background: currentUser ? 'rgba(16, 185, 129, 0.12)' : 'var(--code-box-bg)',
-                color: currentUser ? '#10b981' : 'var(--text-primary)',
+                border: currentUser?.plan === 'premium'
+                  ? '1px solid rgba(234, 179, 8, 0.55)'
+                  : currentUser
+                  ? '1px solid rgba(16, 185, 129, 0.45)'
+                  : '1px solid var(--border-color)',
+                background: currentUser?.plan === 'premium'
+                  ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.18) 0%, rgba(245, 158, 11, 0.1) 100%)'
+                  : currentUser
+                  ? 'rgba(16, 185, 129, 0.12)'
+                  : 'var(--code-box-bg)',
+                color: currentUser?.plan === 'premium'
+                  ? '#facc15'
+                  : currentUser
+                  ? '#10b981'
+                  : 'var(--text-primary)',
                 fontSize: '0.76rem',
                 fontWeight: 800,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                boxShadow: currentUser ? '0 0 10px rgba(16, 185, 129, 0.25)' : 'none',
+                boxShadow: currentUser?.plan === 'premium'
+                  ? '0 0 14px rgba(234, 179, 8, 0.3)'
+                  : currentUser
+                  ? '0 0 10px rgba(16, 185, 129, 0.25)'
+                  : 'none',
                 whiteSpace: 'nowrap'
               }}
-              title={currentUser ? `Logged in as ${currentUser.username} (Cloud Sync Active)` : "Sign in to access history from anywhere"}
+              title={currentUser ? `Operator: ${currentUser.username} (${currentUser.plan === 'premium' ? 'Pro Plan' : 'Free Tier'} • ${currentUser.credits ?? 50} Credits)` : "Profile, Credits & Subscription Plans"}
             >
-              <User size={14} color={currentUser ? "#10b981" : "var(--accent-cyan)"} />
-              <span>{currentUser ? currentUser.username : "Sign In"}</span>
+              {currentUser?.plan === 'premium' ? (
+                <Crown size={14} color="#facc15" />
+              ) : (
+                <User size={14} color={currentUser ? "#10b981" : "var(--accent-cyan)"} />
+              )}
+              <span>{currentUser ? currentUser.username : "Profile & Plans"}</span>
+              {currentUser && (
+                <span
+                  style={{
+                    fontSize: '0.62rem',
+                    padding: '1px 5px',
+                    borderRadius: '8px',
+                    background: currentUser.plan === 'premium' ? 'rgba(234, 179, 8, 0.3)' : 'rgba(0, 240, 255, 0.15)',
+                    color: currentUser.plan === 'premium' ? '#facc15' : 'var(--accent-cyan)',
+                    fontWeight: 900
+                  }}
+                >
+                  {currentUser.plan === 'premium' ? 'PRO' : `${currentUser.credits ?? 50} CR`}
+                </span>
+              )}
             </motion.button>
           )}
 

@@ -2033,6 +2033,13 @@ export interface UserProfile {
   email: string;
   photoURL?: string;
   created_at: string;
+  plan?: 'free' | 'premium';
+  credits?: number;
+  max_credits?: number;
+  scans_count?: number;
+  memory_used_pct?: number;
+  memory_used_kb?: number;
+  memory_max_kb?: number;
 }
 
 export interface AuthResponse {
@@ -2188,5 +2195,122 @@ export async function clearAllCloudSessions(): Promise<boolean> {
     return false;
   }
 }
+
+// -----------------------------------------------------------------------------------
+// Razorpay Standard Web Checkout Client Services
+// -----------------------------------------------------------------------------------
+export interface RazorpayOrderResponse {
+  order_id: string;
+  amount: number;
+  currency: string;
+  key_id?: string;
+  plan?: string;
+  credits?: number;
+}
+
+export interface VerifyPaymentPayload {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+  plan?: string;
+  credits?: number;
+}
+
+export interface VerifyPaymentResponse {
+  success: boolean;
+  message: string;
+  order_id: string;
+  payment_id: string;
+  plan: string;
+  credits: number;
+  user?: UserProfile;
+}
+
+export async function createRazorpayOrder(
+  amountPaise: number,
+  plan: string = 'premium',
+  credits: number = 5000
+): Promise<RazorpayOrderResponse> {
+  const res = await apiFetch('/create-order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      amount: amountPaise,
+      currency: 'INR',
+      plan,
+      credits
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || 'Failed to create Razorpay payment order');
+  }
+  return res.json();
+}
+
+export async function verifyRazorpayPayment(
+  payload: VerifyPaymentPayload
+): Promise<VerifyPaymentResponse> {
+  const token = getStoredAuthToken();
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const res = await apiFetch('/verify-payment', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.detail || 'Payment signature verification failed');
+  }
+  const data: VerifyPaymentResponse = await res.json();
+  if (data.user) {
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(data.user));
+  } else {
+    const current = getStoredUser();
+    if (current) {
+      const updated: UserProfile = {
+        ...current,
+        plan: (data.plan as any) || 'premium',
+        credits: (current.credits || 0) + (data.credits || 5000)
+      };
+      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(updated));
+    }
+  }
+  return data;
+}
+
+export async function deductUserCredit(): Promise<UserProfile | null> {
+  const token = getStoredAuthToken();
+  if (!token) {
+    const current = getStoredUser();
+    if (current) {
+      const updated: UserProfile = {
+        ...current,
+        credits: Math.max(0, (current.credits ?? 50) - 1),
+        scans_count: (current.scans_count ?? 0) + 1
+      };
+      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(updated));
+      return updated;
+    }
+    return null;
+  }
+  try {
+    const res = await apiFetch('/user/credits/deduct', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (res.ok) {
+      const user = await res.json();
+      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+      return user;
+    }
+  } catch {}
+  return null;
+}
+
 
 

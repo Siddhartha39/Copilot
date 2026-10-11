@@ -40,15 +40,21 @@ from app.schemas.analysis import (
     UserProfileResponse,
     AuthResponse,
     SyncSessionsRequest,
-    SyncSessionsResponse
+    SyncSessionsResponse,
+    CreateOrderRequest,
+    CreateOrderResponse,
+    VerifyPaymentRequest,
+    VerifyPaymentResponse
 )
 import re
 import asyncio
 import math
 import hashlib
+import hmac
 import socket
 import httpx
 import ipaddress
+import razorpay
 from app.collectors.lexical import normalize_url, extract_lexical_features
 from app.collectors.domain_intel import collect_domain_intelligence
 from app.collectors.crawler import execute_safe_browser_crawl
@@ -1322,12 +1328,7 @@ def register_user(req: UserRegisterRequest):
         user_data = db_manager.create_user(req.username, req.email, req.password)
         return AuthResponse(
             success=True,
-            user=UserProfileResponse(
-                id=user_data["id"],
-                username=user_data["username"],
-                email=user_data["email"],
-                created_at=user_data["created_at"]
-            ),
+            user=UserProfileResponse(**user_data),
             token=user_data["token"],
             message="Account created successfully! Your sessions and threat reports are now cloud synced."
         )
@@ -1343,25 +1344,22 @@ def login_user(req: UserLoginRequest):
         raise HTTPException(status_code=401, detail="Invalid username/email or password.")
     return AuthResponse(
         success=True,
-        user=UserProfileResponse(
-            id=user_data["id"],
-            username=user_data["username"],
-            email=user_data["email"],
-            created_at=user_data["created_at"]
-        ),
+        user=UserProfileResponse(**user_data),
         token=user_data["token"],
         message="Signed in successfully. Syncing cloud history."
     )
 
 @router.get("/auth/me", response_model=UserProfileResponse)
+@router.get("/user/profile", response_model=UserProfileResponse)
 def get_me(authorization: Optional[str] = Header(None)):
     user = get_current_user_from_header(authorization)
-    return UserProfileResponse(
-        id=user["id"],
-        username=user["username"],
-        email=user["email"],
-        created_at=user["created_at"]
-    )
+    return UserProfileResponse(**user)
+
+@router.post("/user/credits/deduct", response_model=UserProfileResponse)
+def deduct_credit(authorization: Optional[str] = Header(None)):
+    user = get_current_user_from_header(authorization)
+    updated = db_manager.deduct_user_credit(user["id"], amount=1)
+    return UserProfileResponse(**updated)
 
 @router.get("/auth/sessions", response_model=SyncSessionsResponse)
 def get_user_sessions(authorization: Optional[str] = Header(None)):
@@ -1386,5 +1384,131 @@ def clear_user_sessions(authorization: Optional[str] = Header(None)):
     user = get_current_user_from_header(authorization)
     db_manager.clear_user_chat_sessions(user["id"])
     return {"success": True, "message": "All cloud chat sessions cleared."}
+
+# -----------------------------------------------------------------------------------
+# Razorpay Standard Web Checkout Endpoints
+# -----------------------------------------------------------------------------------
+def get_razorpay_client():
+    key_id = settings.RAZORPAY_KEY_ID
+    key_secret = settings.RAZORPAY_KEY_SECRET
+    if not key_id or not key_secret:
+        raise HTTPException(
+            status_code=500,
+            detail="Razorpay payment gateway credentials not configured on backend."
+        )
+    return razorpay.Client(auth=(key_id, key_secret))
+
+@router.post("/create-order", response_model=CreateOrderResponse)
+@router.post("/payment/razorpay/create-order", response_model=CreateOrderResponse)
+def create_razorpay_order(req: CreateOrderRequest):
+    # STEP 1: Validate amount >= 100 paise
+    if req.amount < 100:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid order amount. Minimum amount must be at least 100 paise (₹1.00)."
+        )
+
+    receipt_id = req.receipt or f"rcpt_{int(time.time())}_{uuid.uuid4().hex[:6]}"
+
+    try:
+        client = get_razorpay_client()
+        order_payload = {
+            "amount": req.amount,
+            "currency": req.currency or "INR",
+            "receipt": receipt_id,
+            "notes": {
+                "plan": req.plan or "premium",
+                "credits": str(req.credits or 5000),
+                "platform": "CyberGuard AI"
+            }
+        }
+        order = client.order.create(data=order_payload)
+
+        return CreateOrderResponse(
+            order_id=order["id"],
+            amount=order["amount"],
+            currency=order["currency"],
+            key_id=settings.RAZORPAY_KEY_ID,
+            plan=req.plan or "premium",
+            credits=req.credits or 5000
+        )
+    except razorpay.errors.BadRequestError as e:
+        raise HTTPException(status_code=400, detail=f"Razorpay Bad Request: {str(e)}")
+    except razorpay.errors.AuthenticationError as e:
+        raise HTTPException(status_code=401, detail=f"Razorpay Authentication Failed: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Razorpay Order Creation Failed: {str(e)}")
+
+@router.post("/verify-payment", response_model=VerifyPaymentResponse)
+@router.post("/payment/razorpay/verify", response_model=VerifyPaymentResponse)
+def verify_razorpay_payment(req: VerifyPaymentRequest, authorization: Optional[str] = Header(None)):
+    # STEP 3: Verify Signature
+    if not req.razorpay_order_id or not req.razorpay_payment_id or not req.razorpay_signature:
+        raise HTTPException(
+            status_code=400,
+            detail="Missing fields: razorpay_order_id, razorpay_payment_id, and razorpay_signature are all required."
+        )
+
+    # Algorithm: HMAC-SHA256(order_id + "|" + payment_id, KEY_SECRET)
+    msg = f"{req.razorpay_order_id}|{req.razorpay_payment_id}"
+    key_secret = settings.RAZORPAY_KEY_SECRET
+
+    generated_signature = hmac.new(
+        key_secret.encode("utf-8"),
+        msg.encode("utf-8"),
+        hashlib.sha256
+    ).hexdigest()
+
+    # Compare generated signature with razorpay_signature
+    if not hmac.compare_digest(generated_signature, req.razorpay_signature):
+        raise HTTPException(
+            status_code=400,
+            detail="Signature mismatch: Generated HMAC-SHA256 signature does not match razorpay_signature. Payment NOT marked as paid."
+        )
+
+    # Identify user if authenticated
+    user_id = None
+    updated_user: Optional[UserProfileResponse] = None
+    if authorization:
+        try:
+            current_user = get_current_user_from_header(authorization)
+            user_id = current_user.get("id")
+        except Exception:
+            pass
+
+    plan_name = req.plan or "premium"
+    credits_to_add = req.credits or 5000
+
+    # Record verified payment
+    db_manager.record_payment(
+        order_id=req.razorpay_order_id,
+        payment_id=req.razorpay_payment_id,
+        signature=req.razorpay_signature,
+        amount=49900,
+        currency="INR",
+        status="paid_verified",
+        user_id=user_id,
+        plan=plan_name,
+        credits_added=credits_to_add
+    )
+
+    if user_id:
+        profile_data = db_manager.update_user_plan_and_credits(
+            user_id=user_id,
+            plan=plan_name,
+            credits_to_add=credits_to_add
+        )
+        if profile_data:
+            updated_user = UserProfileResponse(**profile_data)
+
+    return VerifyPaymentResponse(
+        success=True,
+        message="Payment verified successfully! Account upgraded to Premium with AI credits.",
+        order_id=req.razorpay_order_id,
+        payment_id=req.razorpay_payment_id,
+        plan=plan_name,
+        credits=credits_to_add,
+        user=updated_user
+    )
 
 

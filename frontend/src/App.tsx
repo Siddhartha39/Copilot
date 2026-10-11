@@ -47,6 +47,7 @@ import type {
 } from './types';
 
 import { AuthModal } from './components/AuthModal';
+import { UserProfileModal } from './components/UserProfileModal';
 import {
   analyzeDomain,
   executeFreeScan,
@@ -104,9 +105,10 @@ export function App() {
   const [pendingCopilotPrompt, setPendingCopilotPrompt] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Authentication State
+  // Authentication & Profile State
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => getStoredUser());
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [showProfileModal, setShowProfileModal] = useState<boolean>(false);
 
   // Validate authentication session on mount (Firebase Auth + backend)
   useEffect(() => {
@@ -410,6 +412,7 @@ export function App() {
           onOpenCopilot={() => setShowCopilotChat(true)}
           currentUser={currentUser}
           onOpenAuthModal={() => setShowAuthModal(true)}
+          onOpenProfileModal={() => setShowProfileModal(true)}
         />
 
         {/* Main Content Area */}
@@ -725,6 +728,7 @@ export function App() {
           onScanReportLoaded={(newReport) => setFreeScanResult(newReport as any)}
           currentUser={currentUser}
           onOpenAuthModal={() => setShowAuthModal(true)}
+          onOpenProfileModal={() => setShowProfileModal(true)}
         />
 
         {/* User Authentication & Cloud Sync Modal */}
@@ -732,7 +736,20 @@ export function App() {
           isOpen={showAuthModal}
           onClose={() => setShowAuthModal(false)}
           currentUser={currentUser}
-          onAuthSuccess={(user) => setCurrentUser(user)}
+          onAuthSuccess={(user) => {
+            setCurrentUser(user);
+            if (user) setShowProfileModal(true);
+          }}
+        />
+
+        {/* User Profile, Quota & Razorpay Subscription Modal */}
+        <UserProfileModal
+          isOpen={showProfileModal}
+          onClose={() => setShowProfileModal(false)}
+          currentUser={currentUser}
+          onUpdateUser={(user) => setCurrentUser(user)}
+          onOpenAuthModal={() => setShowAuthModal(true)}
+          theme={theme}
         />
       </div>
     </AlgorandWalletProvider>

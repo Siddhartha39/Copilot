@@ -42,7 +42,8 @@ import {
   Edit3,
   Pin,
   BookOpen,
-  Cloud
+  Cloud,
+  Crown
 } from 'lucide-react';
 import type { RiskScoreReport, FreeScanResult, ChatMessage } from '../types';
 import {
@@ -53,6 +54,7 @@ import {
   fetchCloudSessions,
   deleteCloudSession,
   clearAllCloudSessions,
+  deductUserCredit,
   type UserProfile
 } from '../services/api';
 
@@ -77,6 +79,7 @@ interface CyberCopilotChatProps {
   onScanReportLoaded?: (report: FreeScanResult | RiskScoreReport) => void;
   currentUser?: UserProfile | null;
   onOpenAuthModal?: () => void;
+  onOpenProfileModal?: () => void;
 }
 
 const STORAGE_SESSIONS_KEY = 'cyberguard_copilot_sessions_v1';
@@ -91,7 +94,8 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
   onOpenAboutTopic,
   onScanReportLoaded,
   currentUser,
-  onOpenAuthModal
+  onOpenAuthModal,
+  onOpenProfileModal
 }) => {
   const [activeReport, setActiveReport] = useState<any>(report);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -1914,6 +1918,28 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
             title="Export Chat as Markdown"
           >
             <Download size={14} />
+          </button>
+
+          {/* Plan & Credits Pill */}
+          <button
+            onClick={onOpenProfileModal || onOpenAuthModal}
+            style={{
+              background: currentUser?.plan === 'premium' ? 'rgba(234, 179, 8, 0.18)' : 'rgba(0, 240, 255, 0.1)',
+              border: currentUser?.plan === 'premium' ? '1px solid rgba(234, 179, 8, 0.45)' : '1px solid rgba(0, 240, 255, 0.25)',
+              color: currentUser?.plan === 'premium' ? '#facc15' : 'var(--accent-cyan)',
+              borderRadius: '12px',
+              padding: '2px 8px',
+              fontSize: '0.68rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+            title="View Quota, Memory Fill-Up & Razorpay Subscription Plans"
+          >
+            {currentUser?.plan === 'premium' ? <Crown size={11} color="#facc15" /> : <Zap size={11} color="#00f0ff" />}
+            <span>{currentUser?.plan === 'premium' ? 'PRO' : `${currentUser?.credits ?? 50} CR`}</span>
           </button>
 
           {/* API Key Modal Button */}

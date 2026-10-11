@@ -55,6 +55,10 @@ class Settings(BaseModel):
     PREMIUM_AUDIT_PRICE_ALGO: float = float(os.getenv("PREMIUM_AUDIT_PRICE_ALGO", "0.1"))
     PREMIUM_AUDIT_PRICE_MICROALGOS: int = int(os.getenv("PREMIUM_AUDIT_PRICE_MICROALGOS", "100000"))
 
+    # Razorpay Standard Checkout
+    RAZORPAY_KEY_ID: str = os.getenv("RAZORPAY_KEY_ID", "rzp_test_TmTfojTcJlfmux")
+    RAZORPAY_KEY_SECRET: str = os.getenv("RAZORPAY_KEY_SECRET", "ElXSDhkgkIXDe2duWFzhPOZf")
+
 settings = Settings()
 os.makedirs(settings.SCREENSHOT_DIR, exist_ok=True)
 os.makedirs(os.path.dirname(settings.DATABASE_PATH), exist_ok=True)

@@ -68,6 +68,38 @@ class DatabaseManager:
             email TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
             salt TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            plan TEXT DEFAULT 'free',
+            credits INTEGER DEFAULT 50,
+            max_credits INTEGER DEFAULT 50,
+            scans_count INTEGER DEFAULT 0
+        )
+        """)
+
+        # Migration: ensure columns exist for existing databases
+        for col_def in [
+            ("plan", "TEXT DEFAULT 'free'"),
+            ("credits", "INTEGER DEFAULT 50"),
+            ("max_credits", "INTEGER DEFAULT 50"),
+            ("scans_count", "INTEGER DEFAULT 0"),
+        ]:
+            try:
+                cursor.execute(f"ALTER TABLE users ADD COLUMN {col_def[0]} {col_def[1]}")
+            except Exception:
+                pass  # column already exists
+
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS payments (
+            id TEXT PRIMARY KEY,
+            order_id TEXT NOT NULL,
+            payment_id TEXT,
+            signature TEXT,
+            amount INTEGER NOT NULL,
+            currency TEXT NOT NULL,
+            status TEXT NOT NULL,
+            user_id TEXT,
+            plan TEXT,
+            credits_added INTEGER,
             created_at TEXT NOT NULL
         )
         """)
@@ -214,8 +246,8 @@ class DatabaseManager:
         now = datetime.now(timezone.utc).isoformat()
 
         cursor.execute("""
-        INSERT INTO users (id, username, email, password_hash, salt, created_at)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO users (id, username, email, password_hash, salt, created_at, plan, credits, max_credits, scans_count)
+        VALUES (?, ?, ?, ?, ?, ?, 'free', 50, 50, 0)
         """, (user_id, clean_user, clean_email, pwd_hash, salt, now))
 
         token = f"cg_{secrets.token_urlsafe(32)}"
@@ -224,12 +256,19 @@ class DatabaseManager:
         conn.commit()
         conn.close()
 
+        mem = self._calculate_user_memory(user_id, 'free')
+
         return {
             "id": user_id,
             "username": clean_user,
             "email": clean_email,
             "token": token,
-            "created_at": now
+            "created_at": now,
+            "plan": "free",
+            "credits": 50,
+            "max_credits": 50,
+            "scans_count": 0,
+            **mem
         }
 
     def authenticate_user(self, identifier: str, password: str) -> Optional[Dict[str, Any]]:
@@ -238,7 +277,7 @@ class DatabaseManager:
         cursor = conn.cursor()
 
         cursor.execute("""
-        SELECT id, username, email, password_hash, salt, created_at
+        SELECT id, username, email, password_hash, salt, created_at, COALESCE(plan, 'free'), COALESCE(credits, 50), COALESCE(max_credits, 50), COALESCE(scans_count, 0)
         FROM users
         WHERE LOWER(username) = ? OR LOWER(email) = ?
         """, (clean_id, clean_id))
@@ -248,7 +287,7 @@ class DatabaseManager:
             conn.close()
             return None
 
-        user_id, username, email, pwd_hash, salt, created_at = row
+        user_id, username, email, pwd_hash, salt, created_at, plan, credits, max_credits, scans_count = row
         if not verify_password(password, pwd_hash, salt):
             conn.close()
             return None
@@ -260,12 +299,36 @@ class DatabaseManager:
         conn.commit()
         conn.close()
 
+        mem = self._calculate_user_memory(user_id, plan)
+
         return {
             "id": user_id,
             "username": username,
             "email": email,
             "token": token,
-            "created_at": created_at
+            "created_at": created_at,
+            "plan": plan,
+            "credits": credits,
+            "max_credits": max_credits,
+            "scans_count": scans_count,
+            **mem
+        }
+
+    def _calculate_user_memory(self, user_id: str, plan: str) -> Dict[str, float]:
+        conn = self._get_conn()
+        cursor = conn.cursor()
+        cursor.execute("SELECT messages_json FROM user_chat_sessions WHERE user_id = ?", (user_id,))
+        rows = cursor.fetchall()
+        conn.close()
+        
+        total_bytes = sum(len(r[0].encode("utf-8")) for r in rows if r and r[0]) + 16384  # base context
+        used_kb = round(total_bytes / 1024.0, 1)
+        max_kb = 8192.0 if plan == "premium" else 256.0
+        used_pct = min(100.0, round((used_kb / max_kb) * 100.0, 1))
+        return {
+            "memory_used_kb": used_kb,
+            "memory_max_kb": max_kb,
+            "memory_used_pct": used_pct
         }
 
     def get_user_by_token(self, token: str) -> Optional[Dict[str, Any]]:
@@ -278,7 +341,7 @@ class DatabaseManager:
         conn = self._get_conn()
         cursor = conn.cursor()
         cursor.execute("""
-        SELECT u.id, u.username, u.email, u.created_at
+        SELECT u.id, u.username, u.email, u.created_at, COALESCE(u.plan, 'free'), COALESCE(u.credits, 50), COALESCE(u.max_credits, 50), COALESCE(u.scans_count, 0)
         FROM user_tokens t
         JOIN users u ON t.user_id = u.id
         WHERE t.token = ?
@@ -287,13 +350,100 @@ class DatabaseManager:
         conn.close()
 
         if row:
+            user_id = row[0]
+            plan = row[4]
+            mem = self._calculate_user_memory(user_id, plan)
+            return {
+                "id": user_id,
+                "username": row[1],
+                "email": row[2],
+                "created_at": row[3],
+                "plan": plan,
+                "credits": row[5],
+                "max_credits": row[6],
+                "scans_count": row[7],
+                **mem
+            }
+        return None
+
+    def get_user_profile(self, user_id: str) -> Optional[Dict[str, Any]]:
+        conn = self._get_conn()
+        cursor = conn.cursor()
+        cursor.execute("""
+        SELECT id, username, email, created_at, COALESCE(plan, 'free'), COALESCE(credits, 50), COALESCE(max_credits, 50), COALESCE(scans_count, 0)
+        FROM users
+        WHERE id = ?
+        """, (user_id,))
+        row = cursor.fetchone()
+        conn.close()
+
+        if row:
+            plan = row[4]
+            mem = self._calculate_user_memory(user_id, plan)
             return {
                 "id": row[0],
                 "username": row[1],
                 "email": row[2],
-                "created_at": row[3]
+                "created_at": row[3],
+                "plan": plan,
+                "credits": row[5],
+                "max_credits": row[6],
+                "scans_count": row[7],
+                **mem
             }
         return None
+
+    def update_user_plan_and_credits(self, user_id: str, plan: str = "premium", credits_to_add: int = 5000) -> Dict[str, Any]:
+        conn = self._get_conn()
+        cursor = conn.cursor()
+        cursor.execute("""
+        UPDATE users
+        SET plan = ?,
+            credits = COALESCE(credits, 0) + ?,
+            max_credits = CASE WHEN ? = 'premium' THEN MAX(COALESCE(max_credits, 50), 5000) ELSE max_credits END
+        WHERE id = ?
+        """, (plan, credits_to_add, plan, user_id))
+        conn.commit()
+        conn.close()
+        return self.get_user_profile(user_id) or {}
+
+    def deduct_user_credit(self, user_id: str, amount: int = 1) -> Dict[str, Any]:
+        conn = self._get_conn()
+        cursor = conn.cursor()
+        cursor.execute("""
+        UPDATE users
+        SET credits = MAX(0, COALESCE(credits, 50) - ?),
+            scans_count = COALESCE(scans_count, 0) + 1
+        WHERE id = ?
+        """, (amount, user_id))
+        conn.commit()
+        conn.close()
+        return self.get_user_profile(user_id) or {}
+
+    def record_payment(
+        self,
+        order_id: str,
+        payment_id: str,
+        signature: str,
+        amount: int,
+        currency: str,
+        status: str,
+        user_id: Optional[str] = None,
+        plan: str = "premium",
+        credits_added: int = 5000
+    ) -> str:
+        pid = f"pay_{uuid.uuid4().hex[:12]}"
+        now = datetime.now(timezone.utc).isoformat()
+        conn = self._get_conn()
+        cursor = conn.cursor()
+        cursor.execute("""
+        INSERT INTO payments (
+            id, order_id, payment_id, signature, amount, currency, status, user_id, plan, credits_added, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (pid, order_id, payment_id, signature, amount, currency, status, user_id, plan, credits_added, now))
+        conn.commit()
+        conn.close()
+        return pid
 
     def get_user_chat_sessions(self, user_id: str) -> List[Dict[str, Any]]:
         conn = self._get_conn()
