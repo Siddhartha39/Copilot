@@ -135,9 +135,9 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
       style={{
         padding: '28px 24px',
         margin: '0 24px 24px 24px',
-        background: 'radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.14) 0%, rgba(13, 19, 31, 0.96) 85%)',
-        border: '1px solid rgba(0, 240, 255, 0.45)',
-        boxShadow: '0 12px 45px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 240, 255, 0.15)',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-color)',
+        boxShadow: 'var(--panel-shadow)',
         borderRadius: '16px',
         position: 'relative',
         overflow: 'hidden'
@@ -151,7 +151,7 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
           left: 0,
           width: '100%',
           height: '2px',
-          background: 'linear-gradient(90deg, transparent, #00f0ff, #00ff88, #38bdf8, transparent)',
+          background: 'linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-green), #38bdf8, transparent)',
           animation: 'cyber-shimmer 2s infinite'
         }}
       />
@@ -161,12 +161,12 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           {/* Animated Pulsing Radar Spinner */}
           <div style={{
-            background: 'rgba(0, 240, 255, 0.18)',
-            border: '1px solid #00f0ff',
+            background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.2))',
+            border: '1.5px solid var(--accent-cyan)',
             padding: '10px',
             borderRadius: '12px',
-            color: '#00f0ff',
-            boxShadow: '0 0 20px rgba(0, 240, 255, 0.5)',
+            color: 'var(--accent-cyan)',
+            boxShadow: '0 0 16px rgba(6, 182, 212, 0.35)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
@@ -176,14 +176,14 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
 
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              <h3 className="cyber-font neon-cyan-glow" style={{ fontSize: '1.15rem', fontWeight: 900, letterSpacing: '0.03em' }}>
+              <h3 className="cyber-font" style={{ fontSize: '1.15rem', fontWeight: 900, letterSpacing: '0.03em', color: 'var(--text-primary)' }}>
                 ACTIVE CYBER THREAT TELEMETRY ENGINE
               </h3>
               <span className="mono" style={{
                 fontSize: '0.68rem',
-                background: isDeep ? 'rgba(192, 132, 252, 0.18)' : 'rgba(245, 158, 11, 0.18)',
-                border: isDeep ? '1px solid rgba(192, 132, 252, 0.5)' : '1px solid rgba(245, 158, 11, 0.5)',
-                color: isDeep ? '#c084fc' : '#f59e0b',
+                background: isDeep ? 'rgba(192, 132, 252, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                border: isDeep ? '1px solid rgba(192, 132, 252, 0.45)' : '1px solid rgba(245, 158, 11, 0.45)',
+                color: isDeep ? '#9333ea' : '#d97706',
                 padding: '3px 10px',
                 borderRadius: '12px',
                 fontWeight: 800,
@@ -194,7 +194,7 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
             </div>
 
             <div className="mono" style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-              INSPECTING TARGET: <span style={{ color: '#00f0ff', fontWeight: 800 }}>{targetUrl}</span>
+              INSPECTING TARGET: <span style={{ color: 'var(--accent-cyan)', fontWeight: 800 }}>{targetUrl}</span>
             </div>
           </div>
         </div>
@@ -203,15 +203,15 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
           <div className="mono" style={{ background: 'var(--code-box-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '6px 12px', fontSize: '0.74rem' }}>
             <span style={{ color: 'var(--text-secondary)' }}>TIME: </span>
-            <span style={{ color: '#00f0ff', fontWeight: 800 }}>{(elapsedMs / 1000).toFixed(1)}s</span>
+            <span style={{ color: 'var(--accent-cyan)', fontWeight: 800 }}>{(elapsedMs / 1000).toFixed(1)}s</span>
           </div>
           <div className="mono" style={{ background: 'var(--code-box-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '6px 12px', fontSize: '0.74rem' }}>
             <span style={{ color: 'var(--text-secondary)' }}>STAGE: </span>
-            <span style={{ color: '#00ff88', fontWeight: 800 }}>{currentStep + 1} / {steps.length}</span>
+            <span style={{ color: '#10b981', fontWeight: 800 }}>{currentStep + 1} / {steps.length}</span>
           </div>
           <div className="mono" style={{ background: 'var(--code-box-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '6px 12px', fontSize: '0.74rem' }}>
             <span style={{ color: 'var(--text-secondary)' }}>ADDR: </span>
-            <span style={{ color: '#c084fc', fontWeight: 700 }}>{activeHex}</span>
+            <span style={{ color: '#9333ea', fontWeight: 700 }}>{activeHex}</span>
           </div>
         </div>
       </div>
@@ -221,8 +221,8 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
         {/* Radar Sonar Visualizer Card */}
         <div
           style={{
-            background: 'rgba(0, 0, 0, 0.65)',
-            border: '1px solid rgba(0, 240, 255, 0.3)',
+            background: 'var(--code-box-bg)',
+            border: '1px solid var(--border-color)',
             borderRadius: '12px',
             padding: '16px',
             display: 'flex',
@@ -238,21 +238,21 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
           <div style={{ position: 'relative', width: '160px', height: '160px' }}>
             <svg width="160" height="160" viewBox="0 0 160 160">
               {/* Concentric Circles */}
-              <circle cx="80" cy="80" r="70" stroke="rgba(0, 240, 255, 0.2)" strokeWidth="1" fill="none" />
-              <circle cx="80" cy="80" r="50" stroke="rgba(0, 240, 255, 0.25)" strokeWidth="1" fill="none" />
-              <circle cx="80" cy="80" r="30" stroke="rgba(0, 240, 255, 0.3)" strokeWidth="1" fill="none" />
-              <circle cx="80" cy="80" r="10" stroke="rgba(0, 240, 255, 0.4)" strokeWidth="1" fill="none" />
+              <circle cx="80" cy="80" r="70" stroke="var(--border-color)" strokeWidth="1" fill="none" />
+              <circle cx="80" cy="80" r="50" stroke="var(--border-color)" strokeWidth="1" fill="none" />
+              <circle cx="80" cy="80" r="30" stroke="var(--border-color)" strokeWidth="1" fill="none" />
+              <circle cx="80" cy="80" r="10" stroke="var(--border-color)" strokeWidth="1" fill="none" />
               
               {/* Crosshairs */}
-              <line x1="10" y1="80" x2="150" y2="80" stroke="rgba(0, 240, 255, 0.25)" strokeWidth="1" strokeDasharray="3 3" />
-              <line x1="80" y1="10" x2="80" y2="150" stroke="rgba(0, 240, 255, 0.25)" strokeWidth="1" strokeDasharray="3 3" />
+              <line x1="10" y1="80" x2="150" y2="80" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="3 3" />
+              <line x1="80" y1="10" x2="80" y2="150" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="3 3" />
               
               {/* Target Blip 1 */}
               <circle cx="115" cy="55" r="4" fill="#ef4444" className="cyber-beacon" />
               {/* Target Blip 2 */}
-              <circle cx="45" cy="110" r="3" fill="#00ff88" className="cyber-beacon" />
+              <circle cx="45" cy="110" r="3" fill="#10b981" className="cyber-beacon" />
               {/* Target Blip 3 */}
-              <circle cx="95" cy="120" r="3" fill="#38bdf8" className="cyber-beacon" />
+              <circle cx="95" cy="120" r="3" fill="var(--accent-cyan)" className="cyber-beacon" />
               
               {/* Rotating Radar Sweep Line */}
               <line
@@ -260,7 +260,7 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
                 y1="80"
                 x2="80"
                 y2="10"
-                stroke="#00f0ff"
+                stroke="var(--accent-cyan)"
                 strokeWidth="2"
                 style={{
                   transformOrigin: '80px 80px',
@@ -270,8 +270,8 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
             </svg>
           </div>
 
-          <div className="mono" style={{ fontSize: '0.72rem', color: '#00f0ff', marginTop: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span className="cyber-beacon" style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00ff88' }} />
+          <div className="mono" style={{ fontSize: '0.74rem', color: 'var(--accent-cyan)', marginTop: '10px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700 }}>
+            <span className="cyber-beacon" style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }} />
             <span>INTERCEPTOR ENCLAVE // LIVE SONAR SWEEP</span>
           </div>
         </div>
@@ -280,8 +280,8 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
         <div
           className="mono"
           style={{
-            background: 'rgba(0, 0, 0, 0.85)',
-            border: '1px solid rgba(56, 189, 248, 0.35)',
+            background: 'var(--code-box-bg)',
+            border: '1px solid var(--border-color)',
             borderRadius: '12px',
             padding: '14px 16px',
             display: 'flex',
@@ -289,15 +289,14 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
             justifyContent: 'space-between',
             fontSize: '0.75rem',
             lineHeight: 1.5,
-            minHeight: '200px',
-            boxShadow: 'inset 0 0 20px rgba(0, 0, 0, 0.9)'
+            minHeight: '200px'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', paddingBottom: '6px', marginBottom: '8px' }}>
-            <span style={{ color: 'var(--accent-cyan)', fontWeight: 800, fontSize: '0.7rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px', marginBottom: '8px' }}>
+            <span style={{ color: 'var(--accent-cyan)', fontWeight: 800, fontSize: '0.72rem' }}>
               &gt; CYBERGUARD EXECUTION LOG
             </span>
-            <span style={{ color: '#00ff88', fontSize: '0.65rem' }}>STREAM ACTIVE</span>
+            <span style={{ color: '#10b981', fontSize: '0.68rem', fontWeight: 700 }}>STREAM ACTIVE</span>
           </div>
 
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px', overflowY: 'auto' }}>
@@ -308,8 +307,8 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.15 }}
                 style={{
-                  color: idx === activeLogIndex ? '#00ff88' : idx > activeLogIndex - 3 ? '#38bdf8' : 'var(--text-muted)',
-                  fontWeight: idx === activeLogIndex ? 700 : 400
+                  color: idx === activeLogIndex ? '#10b981' : idx > activeLogIndex - 3 ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                  fontWeight: idx === activeLogIndex ? 700 : 500
                 }}
               >
                 {log}
@@ -317,47 +316,47 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
             ))}
           </div>
 
-          <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '6px', marginTop: '6px', display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '0.68rem' }}>
+          <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '6px', marginTop: '6px', display: 'flex', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.68rem' }}>
             <span>ENTROPY: {entropySim} BITS</span>
-            <span>ALGORAND TESTNET: NODELY 4160</span>
+            <span>STATUS: LIVE STREAMING</span>
           </div>
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div style={{ width: '100%', background: 'rgba(255, 255, 255, 0.08)', height: '8px', borderRadius: '4px', overflow: 'hidden', position: 'relative', marginBottom: '18px' }}>
+      <div style={{ width: '100%', background: 'var(--code-box-bg)', border: '1px solid var(--border-color)', height: '8px', borderRadius: '4px', overflow: 'hidden', position: 'relative', marginBottom: '18px' }}>
         <motion.div
           animate={{ width: `${progressPercent}%` }}
           transition={{ duration: 0.2, ease: 'easeOut' }}
           style={{
             height: '100%',
-            background: 'linear-gradient(90deg, #00f0ff 0%, #38bdf8 40%, #00ff88 100%)',
-            boxShadow: '0 0 15px #00f0ff'
+            background: 'linear-gradient(90deg, #0284c7 0%, #38bdf8 40%, #10b981 100%)',
+            boxShadow: '0 0 10px rgba(2, 132, 199, 0.35)'
           }}
         />
       </div>
 
       {/* Progress Stage Tracker Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px' }}>
         {steps.map((st, idx) => {
           const isDone = currentStep > idx;
           const isCurrent = currentStep === idx;
           const IconComponent = st.icon;
 
-          let cardBorder = 'rgba(255, 255, 255, 0.08)';
+          let cardBorder = '1px solid var(--border-color)';
           let cardBg = 'var(--code-box-bg)';
-          let iconColor = 'var(--text-muted)';
+          let iconColor = 'var(--text-secondary)';
           let statusText = 'QUEUED';
 
           if (isDone) {
-            cardBorder = 'rgba(0, 255, 136, 0.45)';
-            cardBg = 'rgba(0, 255, 136, 0.08)';
-            iconColor = '#00ff88';
+            cardBorder = '1.5px solid #10b981';
+            cardBg = 'rgba(16, 185, 129, 0.08)';
+            iconColor = '#10b981';
             statusText = `DONE (${st.latency})`;
           } else if (isCurrent) {
-            cardBorder = 'rgba(0, 240, 255, 0.7)';
-            cardBg = 'rgba(0, 240, 255, 0.15)';
-            iconColor = '#00f0ff';
+            cardBorder = '1.5px solid var(--accent-cyan)';
+            cardBg = 'rgba(6, 182, 212, 0.08)';
+            iconColor = 'var(--accent-cyan)';
             statusText = 'INSPECTION ACTIVE...';
           }
 
@@ -366,18 +365,18 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
               key={st.id}
               animate={{
                 scale: isCurrent ? 1.02 : 1,
-                borderColor: isCurrent ? '#00f0ff' : cardBorder
+                borderColor: isCurrent ? 'var(--accent-cyan)' : undefined
               }}
               transition={{ duration: 0.2 }}
               style={{
                 background: cardBg,
-                border: `1px solid ${cardBorder}`,
-                borderRadius: '10px',
-                padding: '12px 14px',
+                border: cardBorder,
+                borderRadius: '12px',
+                padding: '14px',
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '12px',
-                boxShadow: isCurrent ? '0 0 18px rgba(0, 240, 255, 0.25)' : 'none'
+                boxShadow: isCurrent ? '0 0 16px rgba(6, 182, 212, 0.2)' : 'none'
               }}
             >
               <div style={{ marginTop: '2px', color: iconColor }}>

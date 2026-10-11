@@ -34,9 +34,9 @@
 [data-theme="light"], body.light-theme {
   --bg-primary: #f8fafc;
   --bg-secondary: #ffffff;
-  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-card: #ffffff;
   --bg-card-hover: #ffffff;
-  --border-color: #cbd5e1;
+  --border-color: #e2e8f0;
   --border-focus: #0284c7;
 
   --accent-cyan: #0284c7;
@@ -51,11 +51,11 @@
   --text-secondary: #334155;
   --text-muted: #64748b;
 
-  --panel-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-  --panel-shadow-hover: 0 15px 30px -5px rgba(2, 132, 199, 0.15), 0 0 0 1px rgba(2, 132, 199, 0.3);
-  --hero-bg: radial-gradient(circle at 50% 20%, rgba(224, 242, 254, 0.8) 0%, #ffffff 80%);
-  --code-box-bg: #f1f5f9;
-  --nav-bar-bg: #f8fafc;
+  --panel-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  --panel-shadow-hover: 0 12px 30px -4px rgba(2, 132, 199, 0.12), 0 0 0 1px rgba(2, 132, 199, 0.25);
+  --hero-bg: radial-gradient(circle at 50% 10%, rgba(224, 242, 254, 0.6) 0%, rgba(248, 250, 252, 0.9) 70%, #ffffff 100%);
+  --code-box-bg: #f8fafc;
+  --nav-bar-bg: rgba(255, 255, 255, 0.94);
 }
 
 * {

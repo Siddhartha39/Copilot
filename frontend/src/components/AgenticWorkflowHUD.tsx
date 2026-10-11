@@ -79,37 +79,38 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
 
   return (
     <div
+      className="glass-panel"
       style={{
-        background: 'rgba(10, 15, 29, 0.75)',
-        border: '1px solid rgba(6, 182, 212, 0.35)',
-        borderRadius: '14px',
-        padding: '20px',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-color)',
+        borderRadius: '16px',
+        padding: '22px',
         margin: '0 24px 24px 24px',
-        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(6, 182, 212, 0.05)'
+        boxShadow: 'var(--panel-shadow)'
       }}
     >
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(75, 85, 99, 0.3)', paddingBottom: '12px', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '14px', marginBottom: '18px', flexWrap: 'wrap', gap: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ background: 'rgba(6, 182, 212, 0.15)', border: '1px solid rgba(6, 182, 212, 0.5)', borderRadius: '10px', padding: '8px', display: 'flex' }}>
-            <Bot size={22} color="#00f0ff" />
+          <div style={{ background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.2))', border: '1px solid rgba(6, 182, 212, 0.4)', borderRadius: '10px', padding: '8px', display: 'flex' }}>
+            <Bot size={22} color="var(--accent-cyan)" />
           </div>
           <div>
-            <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ fontSize: '0.98rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span>Autonomous Cyber Intelligence Agent</span>
               <span className="badge-info" style={{ fontSize: '0.65rem', padding: '2px 8px', borderRadius: '10px' }}>
                 100% FREE & OPEN
               </span>
             </div>
-            <div className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-              Target: <span style={{ color: 'var(--accent-cyan)' }}>{targetUrl || 'Ready for URL analysis'}</span>
+            <div className="mono" style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+              Target: <span style={{ color: 'var(--accent-cyan)', fontWeight: 700 }}>{targetUrl || 'Ready for URL analysis'}</span>
             </div>
           </div>
         </div>
 
         {/* Status Indicator */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)', padding: '4px 10px', borderRadius: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.35)', padding: '5px 12px', borderRadius: '20px', fontWeight: 700 }}>
             <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981' }} />
             <span>AGENT ACTIVE &amp; UNRESTRICTED</span>
           </div>
@@ -117,26 +118,26 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
       </div>
 
       {/* Workflow Stage Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
         {steps.map((step, idx) => {
-          let statusBorder = 'var(--border-color)';
+          let statusBorder = '1px solid var(--border-color)';
           let statusBg = 'var(--code-box-bg)';
           let statusColor = 'var(--text-secondary)';
           let StatusIcon = Cpu;
 
           if (step.status === 'completed') {
-            statusBorder = 'rgba(16, 185, 129, 0.4)';
+            statusBorder = '1.5px solid #10b981';
             statusBg = 'rgba(16, 185, 129, 0.08)';
             statusColor = '#10b981';
             StatusIcon = CheckCircle2;
           } else if (step.status === 'running') {
-            statusBorder = 'rgba(56, 189, 248, 0.6)';
-            statusBg = 'rgba(56, 189, 248, 0.12)';
+            statusBorder = '1.5px solid var(--accent-cyan)';
+            statusBg = 'rgba(6, 182, 212, 0.08)';
             statusColor = 'var(--accent-cyan)';
             StatusIcon = Loader2;
           } else if (step.status === 'paused_for_payment') {
-            statusBorder = 'rgba(245, 158, 11, 0.6)';
-            statusBg = 'rgba(245, 158, 11, 0.12)';
+            statusBorder = '1.5px solid #f59e0b';
+            statusBg = 'rgba(245, 158, 11, 0.08)';
             statusColor = '#f59e0b';
             StatusIcon = Coins;
           }
@@ -146,27 +147,28 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
               key={step.id}
               style={{
                 background: statusBg,
-                border: `1px solid ${statusBorder}`,
-                borderRadius: '10px',
-                padding: '12px',
+                border: statusBorder,
+                borderRadius: '12px',
+                padding: '14px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                transition: 'all 0.2s'
+                transition: 'all 0.2s',
+                boxShadow: step.status === 'running' ? '0 0 14px rgba(6, 182, 212, 0.2)' : 'none'
               }}
             >
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '0.65rem', fontWeight: 800, color: statusColor, letterSpacing: '0.05em' }}>
+                  <span style={{ fontSize: '0.68rem', fontWeight: 800, color: statusColor, letterSpacing: '0.04em' }}>
                     STAGE {idx + 1}: {step.stage}
                   </span>
                   <StatusIcon size={14} color={statusColor} className={step.status === 'running' ? 'animate-spin' : ''} />
                 </div>
-                <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px', lineHeight: 1.3 }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px', lineHeight: 1.35 }}>
                   {step.action}
                 </div>
               </div>
-              <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', lineHeight: 1.4, marginTop: '6px' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.45, marginTop: '8px' }}>
                 {step.detail}
               </div>
             </div>

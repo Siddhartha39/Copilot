@@ -47,42 +47,42 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, current
           const isWarning = step.status === 'warning';
           const isLocked = step.status === 'locked';
 
-          let borderColor = 'rgba(255, 255, 255, 0.08)';
+          let borderColor = '1px solid var(--border-color)';
           let bgColor = 'var(--code-box-bg)';
-          let icon = <CircleDot size={17} color="var(--text-muted)" />;
+          let icon = <CircleDot size={17} color="var(--text-secondary)" />;
 
           if (isCompleted) {
-            borderColor = 'rgba(0, 255, 136, 0.4)';
-            bgColor = 'rgba(0, 255, 136, 0.08)';
-            icon = <CheckCircle2 size={17} color="#00ff88" />;
+            borderColor = '1.5px solid #10b981';
+            bgColor = 'rgba(16, 185, 129, 0.08)';
+            icon = <CheckCircle2 size={17} color="#10b981" />;
           } else if (isRunning) {
-            borderColor = 'rgba(0, 240, 255, 0.8)';
-            bgColor = 'rgba(0, 240, 255, 0.14)';
-            icon = <Loader2 size={17} color="#00f0ff" className="radar-spinner" />;
+            borderColor = '1.5px solid var(--accent-cyan)';
+            bgColor = 'rgba(6, 182, 212, 0.08)';
+            icon = <Loader2 size={17} color="var(--accent-cyan)" className="radar-spinner" />;
           } else if (isWarning) {
-            borderColor = 'rgba(249, 115, 22, 0.5)';
+            borderColor = '1.5px solid #f97316';
             bgColor = 'rgba(249, 115, 22, 0.08)';
             icon = <AlertTriangle size={17} color="#f97316" />;
           } else if (isLocked) {
-            borderColor = 'rgba(56, 189, 248, 0.45)';
-            bgColor = 'rgba(56, 189, 248, 0.08)';
-            icon = <Lock size={17} color="#38bdf8" />;
+            borderColor = '1px solid var(--border-color)';
+            bgColor = 'var(--code-box-bg)';
+            icon = <Lock size={17} color="var(--text-secondary)" />;
           }
 
           return (
             <motion.div
               key={step.id}
               onClick={isLocked && onUnlock ? onUnlock : undefined}
-              whileHover={isLocked && onUnlock ? { scale: 1.03, borderColor: '#38bdf8' } : undefined}
+              whileHover={isLocked && onUnlock ? { scale: 1.03, borderColor: 'var(--accent-cyan)' } : undefined}
               animate={{
                 scale: isRunning ? 1.02 : 1,
-                borderColor: isRunning ? '#00f0ff' : borderColor
+                borderColor: isRunning ? 'var(--accent-cyan)' : undefined
               }}
               transition={{ duration: 0.2 }}
               style={{
                 padding: '12px 14px',
                 borderRadius: '10px',
-                border: `1px solid ${borderColor}`,
+                border: borderColor,
                 background: bgColor,
                 display: 'flex',
                 alignItems: 'flex-start',
