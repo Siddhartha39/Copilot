@@ -997,97 +997,463 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
     return renderMarkdownWithCodeBlocks(content, `msg-${msgIdx}`);
   };
 
+  // Rich Inline Markdown Token Parser
+  const renderInlineTokens = (text: string, inlineKeyPrefix: string): React.ReactNode => {
+    const tokenRegex = /(\[([^\]]+)\]\(([^)]+)\)|`([^`]+)`|\*\*([^*]+)\*\*|\*([^*]+)\*|_([^_]+)_)/g;
+    const nodes: React.ReactNode[] = [];
+    let lastIdx = 0;
+    let match: RegExpExecArray | null;
+    let tIdx = 0;
+
+    while ((match = tokenRegex.exec(text)) !== null) {
+      if (match.index > lastIdx) {
+        nodes.push(text.substring(lastIdx, match.index));
+      }
+
+      if (match[2] && match[3]) {
+        nodes.push(
+          <a
+            key={`${inlineKeyPrefix}-lnk-${tIdx}`}
+            href={match[3]}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'var(--accent-cyan)', textDecoration: 'underline', fontWeight: 600 }}
+          >
+            {match[2]}
+          </a>
+        );
+      } else if (match[4]) {
+        nodes.push(
+          <code
+            key={`${inlineKeyPrefix}-cd-${tIdx}`}
+            className="mono"
+            style={{
+              background: 'rgba(0, 240, 255, 0.08)',
+              border: '1px solid rgba(0, 240, 255, 0.25)',
+              padding: '1px 5px',
+              borderRadius: '4px',
+              fontSize: '0.78rem',
+              color: 'var(--accent-cyan)'
+            }}
+          >
+            {match[4]}
+          </code>
+        );
+      } else if (match[5]) {
+        nodes.push(
+          <strong
+            key={`${inlineKeyPrefix}-bld-${tIdx}`}
+            style={{ color: 'var(--text-primary)', fontWeight: 800 }}
+          >
+            {match[5]}
+          </strong>
+        );
+      } else if (match[6] || match[7]) {
+        const itText = match[6] || match[7];
+        nodes.push(
+          <em
+            key={`${inlineKeyPrefix}-it-${tIdx}`}
+            style={{ fontStyle: 'italic', color: 'var(--text-primary)' }}
+          >
+            {itText}
+          </em>
+        );
+      }
+
+      lastIdx = match.index + match[0].length;
+      tIdx++;
+    }
+
+    if (lastIdx < text.length) {
+      nodes.push(text.substring(lastIdx));
+    }
+
+    return nodes.length === 0 ? text : nodes;
+  };
+
+  // Dedicated Risk Assessment & Metric Formatter
+  const renderRiskMetricLine = (text: string, itemKey: string): React.ReactNode => {
+    const strippedStars = text.replace(/\*\*/g, '').trim();
+
+    const riskScoreMatch = strippedStars.match(/^Risk Score\s*:\s*(\d+)(\s*\/\s*100)?/i);
+    if (riskScoreMatch) {
+      const score = parseInt(riskScoreMatch[1], 10);
+      const isSafe = score < 30;
+      const isWarning = score >= 30 && score < 70;
+      const badgeColor = isSafe ? '#10b981' : isWarning ? '#f59e0b' : '#ef4444';
+      const badgeBg = isSafe ? 'rgba(16, 185, 129, 0.14)' : isWarning ? 'rgba(245, 158, 11, 0.14)' : 'rgba(239, 68, 68, 0.14)';
+      const badgeBorder = isSafe ? 'rgba(16, 185, 129, 0.35)' : isWarning ? 'rgba(245, 158, 11, 0.35)' : 'rgba(239, 68, 68, 0.35)';
+      const statusText = isSafe ? 'SAFE' : isWarning ? 'SUSPICIOUS' : 'HIGH RISK';
+
+      return (
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <strong style={{ color: 'var(--text-primary)', fontWeight: 700 }}>Risk Score:</strong>
+          <span
+            style={{
+              background: badgeBg,
+              color: badgeColor,
+              border: `1px solid ${badgeBorder}`,
+              borderRadius: '12px',
+              padding: '2px 8px',
+              fontSize: '0.74rem',
+              fontWeight: 800,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            {score} / 100 • {statusText}
+          </span>
+        </div>
+      );
+    }
+
+    const verdictMatch = strippedStars.match(/^Verdict\s*:\s*(.+)$/i);
+    if (verdictMatch) {
+      const verdict = verdictMatch[1].trim();
+      const isSafe = /benign|safe|clean/i.test(verdict);
+      const isPhish = /phish|malicious|danger|critical/i.test(verdict);
+      const badgeColor = isSafe ? '#10b981' : isPhish ? '#ef4444' : '#f59e0b';
+      const badgeBg = isSafe ? 'rgba(16, 185, 129, 0.14)' : isPhish ? 'rgba(239, 68, 68, 0.14)' : 'rgba(245, 158, 11, 0.14)';
+      const badgeBorder = isSafe ? 'rgba(16, 185, 129, 0.35)' : isPhish ? 'rgba(239, 68, 68, 0.35)' : 'rgba(239, 68, 68, 0.35)';
+
+      return (
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <strong style={{ color: 'var(--text-primary)', fontWeight: 700 }}>Verdict:</strong>
+          <span
+            style={{
+              background: badgeBg,
+              color: badgeColor,
+              border: `1px solid ${badgeBorder}`,
+              borderRadius: '12px',
+              padding: '2px 8px',
+              fontSize: '0.74rem',
+              fontWeight: 800
+            }}
+          >
+            {verdict}
+          </span>
+        </div>
+      );
+    }
+
+    const gradeMatch = strippedStars.match(/^Security Grade\s*:\s*(.+)$/i);
+    if (gradeMatch) {
+      const grade = gradeMatch[1].trim();
+      const isGood = /^(A\+|A|B)/i.test(grade);
+      const badgeColor = isGood ? '#10b981' : '#f59e0b';
+      const badgeBg = isGood ? 'rgba(16, 185, 129, 0.14)' : 'rgba(245, 158, 11, 0.14)';
+      const badgeBorder = isGood ? 'rgba(16, 185, 129, 0.35)' : isWarning(false) ? 'rgba(245, 158, 11, 0.35)' : 'rgba(239, 68, 68, 0.35)';
+
+      return (
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <strong style={{ color: 'var(--text-primary)', fontWeight: 700 }}>Security Grade:</strong>
+          <span
+            style={{
+              background: badgeBg,
+              color: badgeColor,
+              border: `1px solid ${badgeBorder}`,
+              borderRadius: '12px',
+              padding: '2px 8px',
+              fontSize: '0.74rem',
+              fontWeight: 800
+            }}
+          >
+            {grade}
+          </span>
+        </div>
+      );
+    }
+
+    return renderInlineTokens(text, itemKey);
+  };
+
   const renderTextWithFormatting = (rawText: string, keyPrefix: string) => {
     const lines = rawText.split('\n');
-    return (
-      <div key={keyPrefix} style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-        {lines.map((line, lIdx) => {
-          if (!line.trim()) return <div key={`${keyPrefix}-blank-${lIdx}`} style={{ height: '4px' }} />;
+    const elements: React.ReactNode[] = [];
+    let i = 0;
 
-          // Process markdown tables (| Col 1 | Col 2 |)
-          if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
-            const cells = line.split('|').filter((_, idx, arr) => idx > 0 && idx < arr.length - 1);
-            if (line.includes('---')) {
-              return <div key={`${keyPrefix}-sep-${lIdx}`} style={{ height: '1px', background: 'var(--border-color)', margin: '4px 0' }} />;
-            }
-            return (
-              <div
-                key={`${keyPrefix}-row-${lIdx}`}
+    const parseTableRow = (rowStr: string): string[] => {
+      let s = rowStr.trim();
+      if (s.startsWith('|')) s = s.slice(1);
+      if (s.endsWith('|')) s = s.slice(0, -1);
+      return s.split('|').map(c => c.trim());
+    };
+
+    const isTableDivider = (str: string) => {
+      const parts = parseTableRow(str);
+      return parts.length >= 2 && parts.every(p => /^:?-+:?$/.test(p.trim()));
+    };
+
+    const isTableRow = (str: string) => {
+      const trimmed = str.trim();
+      if (!trimmed || trimmed.startsWith('#') || trimmed.startsWith('>') || /^(\-{3,}|\*{3,}|_{3,})$/.test(trimmed)) return false;
+      if (!trimmed.includes('|')) return false;
+      const parts = parseTableRow(trimmed);
+      return parts.length >= 2;
+    };
+
+    while (i < lines.length) {
+      const line = lines[i];
+      const trimmed = line.trim();
+
+      // Blank line
+      if (!trimmed) {
+        elements.push(<div key={`${keyPrefix}-blank-${i}`} style={{ height: '4px' }} />);
+        i++;
+        continue;
+      }
+
+      // Check for Table Block
+      if (isTableRow(line)) {
+        const tableLines: string[] = [];
+        const startIdx = i;
+        while (i < lines.length && (isTableRow(lines[i]) || isTableDivider(lines[i]))) {
+          tableLines.push(lines[i]);
+          i++;
+        }
+
+        if (tableLines.length > 0) {
+          const headerRow = parseTableRow(tableLines[0]);
+          let bodyRowLines = tableLines.slice(1);
+          bodyRowLines = bodyRowLines.filter(l => !isTableDivider(l));
+          const bodyRows = bodyRowLines.map(parseTableRow);
+
+          elements.push(
+            <div
+              key={`${keyPrefix}-tbl-${startIdx}`}
+              style={{
+                margin: '8px 0',
+                overflowX: 'auto',
+                borderRadius: '8px',
+                border: '1px solid var(--border-color)',
+                background: 'rgba(255, 255, 255, 0.02)',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
+              }}
+            >
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.76rem', textAlign: 'left' }}>
+                <thead>
+                  <tr style={{ background: 'rgba(0, 240, 255, 0.08)', borderBottom: '1px solid var(--border-color)' }}>
+                    {headerRow.map((h, hIdx) => (
+                      <th
+                        key={hIdx}
+                        style={{
+                          padding: '8px 12px',
+                          fontWeight: 800,
+                          color: 'var(--accent-cyan)',
+                          letterSpacing: '0.3px',
+                          borderRight: hIdx < headerRow.length - 1 ? '1px solid var(--border-color)' : 'none'
+                        }}
+                      >
+                        {renderInlineTokens(h, `${keyPrefix}-tbl-${startIdx}-th-${hIdx}`)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {bodyRows.map((row, rIdx) => (
+                    <tr
+                      key={rIdx}
+                      style={{
+                        borderBottom: rIdx < bodyRows.length - 1 ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
+                        background: rIdx % 2 === 1 ? 'rgba(255, 255, 255, 0.025)' : 'transparent'
+                      }}
+                    >
+                      {row.map((cell, cIdx) => (
+                        <td
+                          key={cIdx}
+                          style={{
+                            padding: '7px 12px',
+                            color: 'var(--text-primary)',
+                            borderRight: cIdx < row.length - 1 ? '1px solid rgba(255, 255, 255, 0.05)' : 'none'
+                          }}
+                        >
+                          {renderInlineTokens(cell, `${keyPrefix}-tbl-${startIdx}-td-${rIdx}-${cIdx}`)}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+          continue;
+        }
+      }
+
+      // Check for Horizontal Divider
+      if (/^(\-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+        elements.push(
+          <div
+            key={`${keyPrefix}-div-${i}`}
+            style={{
+              height: '1px',
+              background: 'linear-gradient(90deg, rgba(0,240,255,0.4) 0%, var(--border-color) 60%, transparent 100%)',
+              margin: '8px 0'
+            }}
+          />
+        );
+        i++;
+        continue;
+      }
+
+      // Check for Headings
+      if (trimmed.startsWith('#')) {
+        const hMatch = trimmed.match(/^(#{1,4})\s+(.+)$/);
+        if (hMatch) {
+          const level = hMatch[1].length;
+          const headingText = hMatch[2];
+          if (level === 1) {
+            elements.push(
+              <h3
+                key={`${keyPrefix}-h-${i}`}
                 style={{
-                  display: 'grid',
-                  gridTemplateColumns: `repeat(${cells.length}, 1fr)`,
-                  gap: '6px',
-                  padding: '4px 8px',
-                  background: 'rgba(255, 255, 255, 0.03)',
-                  borderRadius: '4px',
-                  fontSize: '0.74rem'
+                  margin: '12px 0 6px',
+                  fontSize: '1.05rem',
+                  fontWeight: 800,
+                  color: 'var(--accent-cyan)',
+                  letterSpacing: '0.3px'
                 }}
               >
-                {cells.map((c, cIdx) => (
-                  <span key={`cell-${lIdx}-${cIdx}`} style={{ fontWeight: lIdx === 0 ? 800 : 500, color: 'var(--text-primary)' }}>
-                    {c.trim()}
-                  </span>
-                ))}
-              </div>
+                {renderInlineTokens(headingText, `${keyPrefix}-h1-${i}`)}
+              </h3>
             );
-          }
-
-          const parts = [];
-          const regex = /(\*\*[^*]+\*\*|`[^`]+`)/g;
-          let lastPos = 0;
-          let match;
-
-          while ((match = regex.exec(line)) !== null) {
-            if (match.index > lastPos) {
-              parts.push(line.substring(lastPos, match.index));
-            }
-            const token = match[0];
-            if (token.startsWith('**') && token.endsWith('**')) {
-              parts.push(
-                <strong key={`b-${lIdx}-${match.index}`} style={{ color: 'var(--text-primary)', fontWeight: 800 }}>
-                  {token.slice(2, -2)}
-                </strong>
-              );
-            } else if (token.startsWith('`') && token.endsWith('`')) {
-              parts.push(
-                <code
-                  key={`c-${lIdx}-${match.index}`}
-                  className="mono"
+          } else if (level === 2) {
+            elements.push(
+              <h4
+                key={`${keyPrefix}-h-${i}`}
+                style={{
+                  margin: '10px 0 5px',
+                  fontSize: '0.95rem',
+                  fontWeight: 800,
+                  color: 'var(--accent-cyan)',
+                  letterSpacing: '0.2px'
+                }}
+              >
+                {renderInlineTokens(headingText, `${keyPrefix}-h2-${i}`)}
+              </h4>
+            );
+          } else {
+            elements.push(
+              <div
+                key={`${keyPrefix}-h-${i}`}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  margin: '9px 0 4px',
+                  paddingBottom: '3px',
+                  borderBottom: '1px solid rgba(0, 240, 255, 0.15)'
+                }}
+              >
+                <span
                   style={{
-                    background: 'rgba(0, 240, 255, 0.08)',
-                    border: '1px solid rgba(0, 240, 255, 0.25)',
-                    padding: '1px 5px',
-                    borderRadius: '4px',
-                    fontSize: '0.78rem',
-                    color: 'var(--accent-cyan)'
+                    fontSize: '0.86rem',
+                    fontWeight: 800,
+                    color: 'var(--accent-cyan)',
+                    letterSpacing: '0.2px'
                   }}
                 >
-                  {token.slice(1, -1)}
-                </code>
-              );
-            }
-            lastPos = match.index + token.length;
-          }
-
-          if (lastPos < line.length) {
-            parts.push(line.substring(lastPos));
-          }
-
-          if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
-            return (
-              <div key={`${keyPrefix}-li-${lIdx}`} style={{ display: 'flex', alignItems: 'flex-start', gap: '6px', paddingLeft: '4px' }}>
-                <span style={{ color: 'var(--accent-cyan)', fontSize: '0.8rem', lineHeight: '1.4' }}>•</span>
-                <span style={{ flex: 1, fontSize: '0.82rem', lineHeight: '1.45', color: 'var(--text-primary)' }}>{parts}</span>
+                  {renderInlineTokens(headingText, `${keyPrefix}-h3-${i}`)}
+                </span>
               </div>
             );
           }
+          i++;
+          continue;
+        }
+      }
 
-          return (
-            <p key={`${keyPrefix}-p-${lIdx}`} style={{ margin: 0, fontSize: '0.82rem', lineHeight: '1.5', color: 'var(--text-primary)' }}>
-              {parts}
-            </p>
-          );
-        })}
+      // Check for Blockquote
+      if (trimmed.startsWith('>')) {
+        const quoteText = trimmed.replace(/^>\s*/, '');
+        elements.push(
+          <div
+            key={`${keyPrefix}-quote-${i}`}
+            style={{
+              borderLeft: '3px solid var(--accent-cyan)',
+              padding: '6px 12px',
+              margin: '6px 0',
+              background: 'rgba(0, 240, 255, 0.04)',
+              borderRadius: '0 6px 6px 0',
+              fontSize: '0.8rem',
+              color: 'var(--text-secondary)',
+              lineHeight: '1.45'
+            }}
+          >
+            {renderInlineTokens(quoteText, `${keyPrefix}-quote-${i}`)}
+          </div>
+        );
+        i++;
+        continue;
+      }
+
+      // Check for List Item
+      if (/^\s*([•*\-+]|\d+\.)\s+/.test(trimmed)) {
+        const cleanText = trimmed.replace(/^(\s*([•*\-+]|\d+\.)\s*)+/, '').trim();
+        elements.push(
+          <div
+            key={`${keyPrefix}-li-${i}`}
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '8px',
+              paddingLeft: '4px'
+            }}
+          >
+            <span style={{ color: 'var(--accent-cyan)', fontSize: '0.85rem', lineHeight: '1.4' }}>•</span>
+            <div style={{ flex: 1, fontSize: '0.82rem', lineHeight: '1.45', color: 'var(--text-primary)' }}>
+              {renderRiskMetricLine(cleanText, `${keyPrefix}-li-metric-${i}`)}
+            </div>
+          </div>
+        );
+        i++;
+        continue;
+      }
+
+      // Check for Recommendation / Tip
+      if (trimmed.startsWith('💡') || trimmed.toLowerCase().startsWith('recommendation:') || trimmed.toLowerCase().startsWith('tip:')) {
+        elements.push(
+          <div
+            key={`${keyPrefix}-tip-${i}`}
+            style={{
+              background: 'rgba(0, 240, 255, 0.05)',
+              border: '1px solid rgba(0, 240, 255, 0.2)',
+              borderRadius: '8px',
+              padding: '8px 12px',
+              margin: '6px 0',
+              fontSize: '0.82rem',
+              lineHeight: '1.5',
+              color: 'var(--text-primary)'
+            }}
+          >
+            {renderInlineTokens(trimmed, `${keyPrefix}-tip-${i}`)}
+          </div>
+        );
+        i++;
+        continue;
+      }
+
+      // Regular Paragraph
+      elements.push(
+        <p
+          key={`${keyPrefix}-p-${i}`}
+          style={{
+            margin: 0,
+            fontSize: '0.82rem',
+            lineHeight: '1.5',
+            color: 'var(--text-primary)'
+          }}
+        >
+          {renderInlineTokens(trimmed, `${keyPrefix}-p-${i}`)}
+        </p>
+      );
+      i++;
+    }
+
+    return (
+      <div key={keyPrefix} style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+        {elements}
       </div>
     );
   };
@@ -2290,16 +2656,20 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
 
           {/* Quick Prompt Chips (Horizontal Carousel) */}
           <div
+            className="copilot-chips-carousel no-scrollbar"
             style={{
-              padding: '6px 14px',
+              padding: '8px 14px',
               borderTop: '1px solid var(--border-color)',
-              background: 'rgba(7, 10, 16, 0.4)',
+              background: 'var(--bg-tertiary, rgba(7, 10, 16, 0.4))',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
+              gap: '8px',
               overflowX: 'auto',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
               whiteSpace: 'nowrap',
-              flexShrink: 0
+              flexShrink: 0,
+              boxSizing: 'border-box'
             }}
           >
             {quickPrompts.map((p, idx) => (
@@ -2310,12 +2680,14 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '5px',
+                  gap: '6px',
                   cursor: 'pointer',
-                  fontSize: '0.7rem',
+                  fontSize: '0.72rem',
                   fontWeight: 600,
-                  padding: '4px 10px',
-                  borderRadius: '12px'
+                  padding: '5px 12px',
+                  borderRadius: '16px',
+                  flexShrink: 0,
+                  whiteSpace: 'nowrap'
                 }}
               >
                 {p.icon}
