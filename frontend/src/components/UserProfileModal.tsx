@@ -19,7 +19,8 @@ import {
   Layers,
   Award,
   Clock,
-  ArrowUpRight
+  ArrowUpRight,
+  Mail
 } from 'lucide-react';
 import {
   createRazorpayOrder,
@@ -239,11 +240,11 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
         style={{
           background: 'var(--bg-card)',
           border: '1.5px solid var(--accent-cyan)',
-          borderRadius: '18px',
+          borderRadius: '20px',
           width: '100%',
-          maxWidth: '560px',
-          maxHeight: '92vh',
-          boxShadow: '0 25px 65px rgba(0,0,0,0.85), 0 0 35px rgba(0,240,255,0.22)',
+          maxWidth: '630px',
+          maxHeight: '90vh',
+          boxShadow: '0 25px 70px rgba(0,0,0,0.85), 0 0 35px rgba(0,240,255,0.2)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden'
@@ -355,55 +356,58 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <div
                 style={{
                   background: 'var(--code-box-bg)',
-                  border: isRealUser ? '1px solid var(--border-color)' : '1px dashed rgba(0, 240, 255, 0.35)',
-                  borderRadius: '12px',
+                  border: isRealUser ? '1px solid var(--border-color)' : '1px solid rgba(0, 240, 255, 0.25)',
+                  borderRadius: '14px',
                   padding: '16px 18px',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '12px'
+                  gap: '12px',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.06)'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                     {isRealUser && currentUser.photoURL ? (
                       <img
                         src={currentUser.photoURL}
                         alt={currentUser.username}
                         style={{
-                          width: '44px',
-                          height: '44px',
+                          width: '46px',
+                          height: '46px',
                           borderRadius: '50%',
-                          border: isPro ? '2px solid #facc15' : '2px solid var(--accent-cyan)',
-                          objectFit: 'cover'
+                          border: isPro ? '2.5px solid #d97706' : '2.5px solid var(--accent-cyan)',
+                          objectFit: 'cover',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
                         }}
                       />
                     ) : (
                       <div
                         style={{
-                          width: '44px',
-                          height: '44px',
+                          width: '46px',
+                          height: '46px',
                           borderRadius: '50%',
                           background: isPro
                             ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'
                             : isRealUser
                             ? 'linear-gradient(135deg, #00f0ff 0%, #6366f1 100%)'
-                            : 'rgba(255, 255, 255, 0.08)',
+                            : 'linear-gradient(135deg, rgba(0, 240, 255, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           color: isRealUser ? '#070a10' : 'var(--accent-cyan)',
                           fontWeight: 900,
-                          fontSize: '1.1rem',
-                          border: isPro ? '2px solid #facc15' : isRealUser ? '2px solid var(--accent-cyan)' : '1px solid var(--border-color)'
+                          fontSize: '1.15rem',
+                          border: isPro ? '2px solid #d97706' : isRealUser ? '2px solid var(--accent-cyan)' : '1px solid rgba(0, 240, 255, 0.35)',
+                          boxShadow: '0 2px 10px rgba(0, 240, 255, 0.15)'
                         }}
                       >
-                        {isRealUser ? currentUser.username.substring(0, 1).toUpperCase() : <User size={20} />}
+                        {isRealUser ? currentUser.username.substring(0, 1).toUpperCase() : <Shield size={22} />}
                       </div>
                     )}
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '0.94rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                          {isRealUser ? currentUser.username : 'Guest Session (Unlinked)'}
+                        <span style={{ fontSize: '0.96rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                          {isRealUser ? currentUser.username : 'Guest Session'}
                         </span>
                         {isRealUser ? (
                           <span
@@ -412,12 +416,12 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                               background: 'rgba(16, 185, 129, 0.15)',
                               color: '#10b981',
                               border: '1px solid rgba(16, 185, 129, 0.4)',
-                              padding: '1px 6px',
+                              padding: '2px 7px',
                               borderRadius: '6px',
                               fontWeight: 700,
                               display: 'flex',
                               alignItems: 'center',
-                              gap: '3px'
+                              gap: '4px'
                             }}
                           >
                             <CheckCircle2 size={10} /> Verified
@@ -427,19 +431,19 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                             style={{
                               fontSize: '0.64rem',
                               background: 'rgba(234, 179, 8, 0.15)',
-                              color: '#eab308',
+                              color: '#d97706',
                               border: '1px solid rgba(234, 179, 8, 0.35)',
-                              padding: '1px 6px',
+                              padding: '2px 7px',
                               borderRadius: '6px',
                               fontWeight: 700
                             }}
                           >
-                            Local Browser
+                            Local Storage
                           </span>
                         )}
                       </div>
-                      <div style={{ fontSize: '0.74rem', color: isRealUser ? 'var(--text-secondary)' : '#94a3b8', marginTop: '2px' }}>
-                        {isRealUser ? currentUser.email : 'No email linked — credits stored locally in this browser'}
+                      <div style={{ fontSize: '0.74rem', color: isRealUser ? 'var(--text-secondary)' : 'var(--text-secondary)', marginTop: '2px' }}>
+                        {isRealUser ? currentUser.email : 'Sign in with mail to sync credits and history across devices'}
                       </div>
                     </div>
                   </div>
@@ -448,54 +452,56 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     <button
                       onClick={handleSignOut}
                       style={{
-                        padding: '6px 12px',
+                        padding: '7px 14px',
                         borderRadius: '8px',
                         background: 'rgba(239, 68, 68, 0.1)',
                         border: '1px solid rgba(239, 68, 68, 0.3)',
                         color: '#ef4444',
-                        fontSize: '0.74rem',
+                        fontSize: '0.75rem',
                         fontWeight: 700,
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '4px'
+                        gap: '5px'
                       }}
                     >
                       <LogOut size={12} />
                       <span>Sign Out</span>
                     </button>
                   ) : onOpenAuthModal ? (
-                    <button
+                    <motion.button
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
                       onClick={() => {
                         onClose();
                         onOpenAuthModal();
                       }}
                       style={{
-                        padding: '8px 14px',
-                        borderRadius: '8px',
+                        padding: '8px 16px',
+                        borderRadius: '9px',
                         background: 'linear-gradient(135deg, #00f0ff 0%, #3b82f6 100%)',
                         border: 'none',
                         color: '#070a10',
-                        fontSize: '0.75rem',
+                        fontSize: '0.78rem',
                         fontWeight: 900,
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '6px',
-                        boxShadow: '0 2px 10px rgba(0, 240, 255, 0.3)'
+                        boxShadow: '0 3px 12px rgba(0, 240, 255, 0.35)'
                       }}
                     >
-                      <User size={13} />
-                      <span>Sign In with Real Email</span>
-                    </button>
+                      <Mail size={14} />
+                      <span>Sign In with Mail</span>
+                    </motion.button>
                   ) : null}
                 </div>
 
                 {!isRealUser && onOpenAuthModal && (
                   <div
                     style={{
-                      background: 'rgba(0, 240, 255, 0.06)',
-                      border: '1px solid rgba(0, 240, 255, 0.2)',
+                      background: 'rgba(0, 240, 255, 0.05)',
+                      border: '1px solid rgba(0, 240, 255, 0.18)',
                       borderRadius: '8px',
                       padding: '8px 12px',
                       fontSize: '0.72rem',
@@ -506,7 +512,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                       gap: '8px'
                     }}
                   >
-                    <span>Want to sync your {isPro ? 'Pro Pass & 5,000 Credits' : 'credits'} across devices?</span>
+                    <span>Want to sync your {isPro ? 'Pro Pass & 5,000 Credits' : 'credits'} across browsers?</span>
                     <span
                       onClick={() => {
                         onClose();
@@ -520,7 +526,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                         whiteSpace: 'nowrap'
                       }}
                     >
-                      Login / Register Real Account →
+                      Sign In with Mail →
                     </span>
                   </div>
                 )}
@@ -536,19 +542,20 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               style={{
                 background: 'var(--code-box-bg)',
                 border: '1px solid var(--border-color)',
-                borderRadius: '12px',
-                padding: '14px',
+                borderRadius: '14px',
+                padding: '14px 16px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '8px'
+                gap: '8px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '5px' }}>
                   <Zap size={14} color="#00f0ff" />
                   <span>AI Credits Remaining</span>
                 </span>
-                <span className="mono" style={{ fontSize: '0.82rem', fontWeight: 900, color: 'var(--accent-cyan)' }}>
+                <span className="mono" style={{ fontSize: '0.84rem', fontWeight: 900, color: 'var(--accent-cyan)' }}>
                   {currentCredits.toLocaleString()} / {maxCredits.toLocaleString()}
                 </span>
               </div>
@@ -567,7 +574,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: 'var(--text-secondary)' }}>
                 <span>{isPro ? 'Priority AI Processing' : 'Daily Quota (50/day)'}</span>
-                <span>{creditPct}% left</span>
+                <span style={{ fontWeight: 700 }}>{creditPct}% left</span>
               </div>
             </div>
 
@@ -576,21 +583,27 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               style={{
                 background: 'var(--code-box-bg)',
                 border: '1px solid var(--border-color)',
-                borderRadius: '12px',
-                padding: '14px',
+                borderRadius: '14px',
+                padding: '14px 16px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '8px'
+                gap: '8px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '5px' }}>
                   <HardDrive size={14} color="#a855f7" />
                   <span>Copilot Memory Fill-Up</span>
                 </span>
-                <span className="mono" style={{ fontSize: '0.82rem', fontWeight: 900, color: '#a855f7' }}>
-                  {memoryPct}% ({memoryUsedKb} KB)
-                </span>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', whiteSpace: 'nowrap' }}>
+                  <span className="mono" style={{ fontSize: '0.84rem', fontWeight: 900, color: '#a855f7' }}>
+                    {memoryPct}%
+                  </span>
+                  <span style={{ fontSize: '0.70rem', color: 'var(--text-secondary)' }}>
+                    ({memoryUsedKb} KB)
+                  </span>
+                </div>
               </div>
 
               {/* Memory progress bar */}
@@ -607,7 +620,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: 'var(--text-secondary)' }}>
                 <span>{isPro ? 'Extended 8 MB Context' : '256 KB Session Memory'}</span>
-                <span>Max: {memoryMaxKb >= 1024 ? `${(memoryMaxKb / 1024).toFixed(0)} MB` : `${memoryMaxKb} KB`}</span>
+                <span style={{ fontWeight: 700 }}>Max: {memoryMaxKb >= 1024 ? `${(memoryMaxKb / 1024).toFixed(0)} MB` : `${memoryMaxKb} KB`}</span>
               </div>
             </div>
 
@@ -620,13 +633,13 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <span>Subscription &amp; Feature Comparison</span>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
               {/* Free Tier Card */}
               <div
                 style={{
                   border: isPro ? '1px solid var(--border-color)' : '1.5px solid var(--accent-cyan)',
                   borderRadius: '12px',
-                  padding: '12px',
+                  padding: '14px',
                   background: isPro ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 240, 255, 0.04)',
                   display: 'flex',
                   flexDirection: 'column',
@@ -634,12 +647,12 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-primary)' }}>Free Tier</span>
-                  <span style={{ fontSize: '0.65rem', padding: '1px 6px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)' }}>
+                  <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text-primary)' }}>Free Tier</span>
+                  <span style={{ fontSize: '0.65rem', padding: '2px 7px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)', fontWeight: 700 }}>
                     {!isPro ? 'Active Plan' : 'Standard'}
                   </span>
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px' }}>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '5px', marginTop: '4px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <CheckCircle2 size={12} color="#10b981" />
                     <span>All 8 security scanners (100% Free)</span>
@@ -654,7 +667,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <CheckCircle2 size={12} color="#10b981" />
-                    <span>Community threat feed</span>
+                    <span>Community threat intelligence</span>
                   </div>
                 </div>
               </div>
@@ -662,39 +675,39 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               {/* Premium Pro Card */}
               <div
                 style={{
-                  border: isPro ? '1.5px solid #eab308' : '1px solid rgba(234, 179, 8, 0.4)',
+                  border: isPro ? '1.5px solid #d97706' : '1px solid rgba(217, 119, 6, 0.45)',
                   borderRadius: '12px',
-                  padding: '12px',
-                  background: 'rgba(234, 179, 8, 0.05)',
+                  padding: '14px',
+                  background: 'rgba(217, 119, 6, 0.05)',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '6px'
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#facc15', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <Crown size={13} color="#facc15" />
+                  <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#d97706', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <Crown size={14} color="#d97706" />
                     <span>Premium Pro</span>
                   </span>
-                  <span style={{ fontSize: '0.65rem', padding: '1px 6px', borderRadius: '8px', background: isPro ? 'rgba(234, 179, 8, 0.25)' : 'rgba(234, 179, 8, 0.15)', color: '#facc15', fontWeight: 800 }}>
+                  <span style={{ fontSize: '0.65rem', padding: '2px 8px', borderRadius: '8px', background: isPro ? 'rgba(217, 119, 6, 0.25)' : 'rgba(217, 119, 6, 0.15)', color: '#d97706', fontWeight: 800 }}>
                     {isPro ? 'Active' : 'Upgrade'}
                   </span>
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px' }}>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '5px', marginTop: '4px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <CheckCircle2 size={12} color="#facc15" />
-                    <span><strong>5,000 AI Credits</strong> per pool</span>
+                    <CheckCircle2 size={12} color="#10b981" />
+                    <span><strong style={{ color: 'var(--text-primary)' }}>5,000 AI Credits</strong> per pool</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <CheckCircle2 size={12} color="#facc15" />
-                    <span><strong>8 MB</strong> Copilot Context Memory</span>
+                    <CheckCircle2 size={12} color="#10b981" />
+                    <span><strong style={{ color: 'var(--text-primary)' }}>8 MB</strong> Copilot Context Memory</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <CheckCircle2 size={12} color="#facc15" />
+                    <CheckCircle2 size={12} color="#10b981" />
                     <span>Priority Zero-Day Sandbox Execution</span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <CheckCircle2 size={12} color="#facc15" />
+                    <CheckCircle2 size={12} color="#10b981" />
                     <span>PDF/CSV Export &amp; Dedicated AI Analyst</span>
                   </div>
                 </div>
@@ -705,51 +718,64 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
           {/* Razorpay Standard Web Checkout Purchase Section */}
           <div
             style={{
-              background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.06) 0%, rgba(99, 102, 241, 0.06) 100%)',
-              border: '1px solid rgba(0, 240, 255, 0.3)',
+              background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%)',
+              border: '1px solid rgba(0, 240, 255, 0.25)',
               borderRadius: '14px',
-              padding: '16px',
+              padding: '16px 18px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '12px'
+              gap: '14px',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.04)'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
                 <CreditCard size={16} color="var(--accent-cyan)" />
                 <span style={{ fontSize: '0.84rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                  Upgrade or Top-Up with Razorpay Checkout
+                  Upgrade or Top-Up with Razorpay
                 </span>
               </div>
-              <span className="mono" style={{ fontSize: '0.66rem', color: 'var(--text-secondary)' }}>
-                Powered by Razorpay
+              <span className="mono" style={{ fontSize: '0.66rem', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.06)', padding: '2px 6px', borderRadius: '4px' }}>
+                Live Gateway
               </span>
             </div>
 
             {/* Selection Options */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
               
               {/* Option 1: Pro Pass */}
               <div
                 onClick={() => setSelectedPlan('pro')}
                 style={{
                   border: selectedPlan === 'pro' ? '1.5px solid var(--accent-cyan)' : '1px solid var(--border-color)',
-                  background: selectedPlan === 'pro' ? 'rgba(0, 240, 255, 0.12)' : 'var(--code-box-bg)',
-                  borderRadius: '10px',
-                  padding: '10px 12px',
+                  background: selectedPlan === 'pro' ? 'rgba(0, 240, 255, 0.10)' : 'var(--code-box-bg)',
+                  borderRadius: '12px',
+                  padding: '12px 14px',
                   cursor: 'pointer',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '4px',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  position: 'relative'
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-primary)' }}>Pro Pass</span>
-                  <span style={{ fontSize: '0.86rem', fontWeight: 900, color: 'var(--accent-cyan)' }}>₹2</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div
+                      style={{
+                        width: '12px',
+                        height: '12px',
+                        borderRadius: '50%',
+                        border: selectedPlan === 'pro' ? '3.5px solid var(--accent-cyan)' : '1.5px solid var(--text-secondary)',
+                        background: 'transparent'
+                      }}
+                    />
+                    <span style={{ fontSize: '0.80rem', fontWeight: 800, color: 'var(--text-primary)' }}>Pro Pass</span>
+                  </div>
+                  <span style={{ fontSize: '0.90rem', fontWeight: 900, color: 'var(--accent-cyan)' }}>₹2</span>
                 </div>
-                <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>
-                  5,000 Credits + 8MB Memory + Pro Status
+                <div style={{ fontSize: '0.69rem', color: 'var(--text-secondary)', paddingLeft: '18px' }}>
+                  5,000 Credits • 8MB Context • Pro Status
                 </div>
               </div>
 
@@ -758,21 +784,33 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 onClick={() => setSelectedPlan('booster')}
                 style={{
                   border: selectedPlan === 'booster' ? '1.5px solid var(--accent-cyan)' : '1px solid var(--border-color)',
-                  background: selectedPlan === 'booster' ? 'rgba(0, 240, 255, 0.12)' : 'var(--code-box-bg)',
-                  borderRadius: '10px',
-                  padding: '10px 12px',
+                  background: selectedPlan === 'booster' ? 'rgba(0, 240, 255, 0.10)' : 'var(--code-box-bg)',
+                  borderRadius: '12px',
+                  padding: '12px 14px',
                   cursor: 'pointer',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '4px',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  position: 'relative'
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-primary)' }}>Credit Booster</span>
-                  <span style={{ fontSize: '0.86rem', fontWeight: 900, color: 'var(--accent-cyan)' }}>₹1</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <div
+                      style={{
+                        width: '12px',
+                        height: '12px',
+                        borderRadius: '50%',
+                        border: selectedPlan === 'booster' ? '3.5px solid var(--accent-cyan)' : '1.5px solid var(--text-secondary)',
+                        background: 'transparent'
+                      }}
+                    />
+                    <span style={{ fontSize: '0.80rem', fontWeight: 800, color: 'var(--text-primary)' }}>Credit Booster</span>
+                  </div>
+                  <span style={{ fontSize: '0.90rem', fontWeight: 900, color: 'var(--accent-cyan)' }}>₹1</span>
                 </div>
-                <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>
+                <div style={{ fontSize: '0.69rem', color: 'var(--text-secondary)', paddingLeft: '18px' }}>
                   500 AI Credits Instant Top-Up
                 </div>
               </div>
@@ -789,9 +827,9 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 background: 'linear-gradient(135deg, #00f0ff 0%, #3b82f6 100%)',
                 color: '#070a10',
                 border: 'none',
-                borderRadius: '10px',
-                padding: '12px 18px',
-                fontSize: '0.85rem',
+                borderRadius: '11px',
+                padding: '13px 20px',
+                fontSize: '0.88rem',
                 fontWeight: 900,
                 cursor: isProcessing ? 'wait' : 'pointer',
                 display: 'flex',
@@ -799,7 +837,9 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 justifyContent: 'center',
                 gap: '8px',
                 boxShadow: '0 4px 18px rgba(0, 240, 255, 0.35)',
-                opacity: isProcessing ? 0.75 : 1
+                opacity: isProcessing ? 0.75 : 1,
+                width: '100%',
+                marginTop: '4px'
               }}
             >
               {isProcessing ? (

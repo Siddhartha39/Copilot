@@ -2420,7 +2420,7 @@ Plan Tier | Quota Allocation
                           </div>
 
                           <div style={{ fontSize: '0.65rem', color: isRealUser ? 'var(--text-secondary)' : 'var(--accent-cyan)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {isRealUser ? currentUser.email : 'Click to Link Real Email'}
+                            {isRealUser ? currentUser.email : 'Click to Link Email'}
                           </div>
                         </div>
                       </>
