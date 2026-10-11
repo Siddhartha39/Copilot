@@ -84,8 +84,47 @@ interface CyberCopilotChatProps {
   onOpenProfileModal?: () => void;
 }
 
-const STORAGE_SESSIONS_KEY = 'cyberguard_copilot_sessions_v1';
-const STORAGE_ACTIVE_ID_KEY = 'cyberguard_copilot_active_id_v1';
+const getScopedSessionsKey = (user?: UserProfile | null): string => {
+  if (!user || !user.email) return 'cyberguard_copilot_sessions_guest';
+  const sanitized = (user.email || user.id || 'anon').trim().toLowerCase().replace(/[^a-z0-9_.-]/g, '_');
+  return `cyberguard_copilot_sessions_${sanitized}`;
+};
+
+const getScopedActiveIdKey = (user?: UserProfile | null): string => {
+  if (!user || !user.email) return 'cyberguard_copilot_active_id_guest';
+  const sanitized = (user.email || user.id || 'anon').trim().toLowerCase().replace(/[^a-z0-9_.-]/g, '_');
+  return `cyberguard_copilot_active_id_${sanitized}`;
+};
+
+const loadUserSessionsFromStorage = (user?: UserProfile | null): ChatSession[] => {
+  if (typeof window === 'undefined') return [];
+  // One-time cleanup: migrate legacy shared key to previous user so it never leaks to other accounts
+  try {
+    const legacy = localStorage.getItem('cyberguard_copilot_sessions_v1');
+    if (legacy) {
+      const targetKey = 'cyberguard_copilot_sessions_6387siddhartha_gmail_com';
+      if (!localStorage.getItem(targetKey)) {
+        localStorage.setItem(targetKey, legacy);
+      }
+      localStorage.removeItem('cyberguard_copilot_sessions_v1');
+      localStorage.removeItem('cyberguard_copilot_active_id_v1');
+    }
+  } catch (e) {}
+
+  const key = getScopedSessionsKey(user);
+  try {
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to parse saved chat sessions:', e);
+  }
+  return [];
+};
 
 export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
   report,
@@ -133,27 +172,14 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
   });
   const [tempApiKey, setTempApiKey] = useState(geminiApiKey);
 
-  // Chat sessions state
+  // Chat sessions state - isolated specifically per user account
   const [sessions, setSessions] = useState<ChatSession[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem(STORAGE_SESSIONS_KEY);
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed;
-          }
-        }
-      } catch (e) {
-        console.warn('Failed to parse saved chat sessions:', e);
-      }
-    }
-    return [];
+    return loadUserSessionsFromStorage(currentUser);
   });
 
   const [activeSessionId, setActiveSessionId] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      const storedId = localStorage.getItem(STORAGE_ACTIVE_ID_KEY);
+      const storedId = localStorage.getItem(getScopedActiveIdKey(currentUser));
       if (storedId) return storedId;
     }
     return '';
@@ -185,7 +211,68 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
     }
   }, [report]);
 
-  // Create default initial session if none exist
+  // Reactive Account Switch: When user changes, load THAT specific user's chat history
+  const previousUserKeyRef = useRef<string>(
+    (currentUser?.email || currentUser?.id || 'guest').trim().toLowerCase()
+  );
+
+  useEffect(() => {
+    const currentKey = (currentUser?.email || currentUser?.id || 'guest').trim().toLowerCase();
+    
+    // Check if account has switched
+    if (previousUserKeyRef.current !== currentKey) {
+      previousUserKeyRef.current = currentKey;
+
+      const userLocalSessions = loadUserSessionsFromStorage(currentUser);
+
+      const applyLoadedSessions = (loaded: ChatSession[]) => {
+        if (loaded.length > 0) {
+          setSessions(loaded);
+          const savedActiveId = localStorage.getItem(getScopedActiveIdKey(currentUser));
+          const active = loaded.find(s => s.id === savedActiveId) || loaded[0];
+          setActiveSessionId(active.id);
+          setMessages(active.messages);
+        } else {
+          const fresh = createNewSessionObject(domain);
+          setSessions([fresh]);
+          setActiveSessionId(fresh.id);
+          setMessages(fresh.messages);
+          try {
+            localStorage.setItem(getScopedSessionsKey(currentUser), JSON.stringify([fresh]));
+          } catch (e) {}
+        }
+      };
+
+      if (currentUser && currentUser.id) {
+        // Fetch from Firestore specifically for this newly signed-in user
+        import('../services/firebase').then(({ fetchChatSessionsFromFirestore }) => {
+          fetchChatSessionsFromFirestore(currentUser.id).then((fsSessions) => {
+            if (previousUserKeyRef.current !== currentKey) return;
+            if (Array.isArray(fsSessions) && fsSessions.length > 0) {
+              applyLoadedSessions(fsSessions);
+              try {
+                localStorage.setItem(getScopedSessionsKey(currentUser), JSON.stringify(fsSessions));
+              } catch (e) {}
+            } else {
+              applyLoadedSessions(userLocalSessions);
+            }
+          }).catch(() => {
+            if (previousUserKeyRef.current === currentKey) {
+              applyLoadedSessions(userLocalSessions);
+            }
+          });
+        }).catch(() => {
+          if (previousUserKeyRef.current === currentKey) {
+            applyLoadedSessions(userLocalSessions);
+          }
+        });
+      } else {
+        applyLoadedSessions(userLocalSessions);
+      }
+    }
+  }, [currentUser?.email, currentUser?.id]);
+
+  // Create default initial session on first render if none exist
   useEffect(() => {
     if (sessions.length === 0) {
       const initialSession = createNewSessionObject(domain);
@@ -201,79 +288,42 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
     }
   }, []);
 
-  // Save sessions to localStorage whenever sessions change
+  // Save sessions to user-scoped localStorage whenever sessions change
   useEffect(() => {
     if (typeof window !== 'undefined' && sessions.length > 0) {
       try {
-        localStorage.setItem(STORAGE_SESSIONS_KEY, JSON.stringify(sessions));
+        const key = getScopedSessionsKey(currentUser);
+        localStorage.setItem(key, JSON.stringify(sessions));
       } catch (e) {
         console.warn('Failed to save sessions to storage:', e);
       }
     }
-  }, [sessions]);
+  }, [sessions, currentUser?.email, currentUser?.id]);
 
   // Save activeSessionId
   useEffect(() => {
     if (typeof window !== 'undefined' && activeSessionId) {
-      localStorage.setItem(STORAGE_ACTIVE_ID_KEY, activeSessionId);
+      const key = getScopedActiveIdKey(currentUser);
+      localStorage.setItem(key, activeSessionId);
     }
-  }, [activeSessionId]);
-
-  // Cloud Sync: Fetch & merge cloud sessions whenever currentUser signs in (Firestore + Backend API)
-  useEffect(() => {
-    if (currentUser) {
-      // 1. Fetch from Firestore
-      import('../services/firebase').then(({ fetchChatSessionsFromFirestore }) => {
-        fetchChatSessionsFromFirestore(currentUser.id).then((fsSessions) => {
-          if (Array.isArray(fsSessions) && fsSessions.length > 0) {
-            setSessions((prev) => {
-              const map = new Map<string, ChatSession>();
-              prev.forEach((s) => map.set(s.id, s));
-              fsSessions.forEach((s) => {
-                const existing = map.get(s.id);
-                if (!existing || (s.updatedAt || 0) >= (existing.updatedAt || 0)) {
-                  map.set(s.id, s);
-                }
-              });
-              return Array.from(map.values());
-            });
-          }
-        });
-      }).catch(() => {});
-
-      // 2. Fetch from backend SQLite as well
-      fetchCloudSessions().then((cloudSessions) => {
-        if (Array.isArray(cloudSessions) && cloudSessions.length > 0) {
-          setSessions((prev) => {
-            const map = new Map<string, ChatSession>();
-            prev.forEach((s) => map.set(s.id, s));
-            cloudSessions.forEach((s) => {
-              const existing = map.get(s.id);
-              if (!existing || (s.updatedAt || 0) >= (existing.updatedAt || 0)) {
-                map.set(s.id, s);
-              }
-            });
-            return Array.from(map.values());
-          });
-        }
-      });
-    }
-  }, [currentUser]);
+  }, [activeSessionId, currentUser?.email, currentUser?.id]);
 
   // Cloud Sync: Automatically sync sessions to Firestore & backend when logged in
   useEffect(() => {
     if (currentUser && sessions.length > 0) {
+      const targetUserId = currentUser.id;
+      const targetEmail = currentUser.email?.trim().toLowerCase();
       const timer = setTimeout(() => {
-        // Sync to backend SQLite
-        syncCloudSessions(sessions);
-        // Sync to Firebase Firestore
-        import('../services/firebase').then(({ syncChatSessionsToFirestore }) => {
-          syncChatSessionsToFirestore(currentUser.id, sessions);
-        }).catch(() => {});
+        if (currentUser.id === targetUserId && (currentUser.email?.trim().toLowerCase() === targetEmail)) {
+          syncCloudSessions(sessions);
+          import('../services/firebase').then(({ syncChatSessionsToFirestore }) => {
+            syncChatSessionsToFirestore(targetUserId, sessions);
+          }).catch(() => {});
+        }
       }, 800);
       return () => clearTimeout(timer);
     }
-  }, [sessions, currentUser]);
+  }, [sessions, currentUser?.id, currentUser?.email]);
 
   function getInitialWelcomeMessage(targetDomain?: string | null): ChatMessage {
     if (targetDomain) {
@@ -350,7 +400,8 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
       setActiveSessionId(fresh.id);
       setMessages(fresh.messages);
       try {
-        localStorage.removeItem(STORAGE_SESSIONS_KEY);
+        localStorage.removeItem(getScopedSessionsKey(currentUser));
+        localStorage.removeItem(getScopedActiveIdKey(currentUser));
       } catch (e) {}
     }
   };
