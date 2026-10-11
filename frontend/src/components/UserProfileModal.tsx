@@ -64,7 +64,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     setStatusMsg(null);
     setIsProcessing(true);
 
-    const amountPaise = planType === 'pro' ? 49900 : 9900; // ₹499 or ₹99 in paise
+    const amountPaise = planType === 'pro' ? 200 : 100; // ₹2 or ₹1 in paise (< ₹5 for testing)
     const planName = planType === 'pro' ? 'premium' : (currentUser?.plan || 'free');
     const creditsToAdd = planType === 'pro' ? 5000 : 500;
 
@@ -578,7 +578,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-primary)' }}>Pro Pass</span>
-                  <span style={{ fontSize: '0.86rem', fontWeight: 900, color: 'var(--accent-cyan)' }}>₹499</span>
+                  <span style={{ fontSize: '0.86rem', fontWeight: 900, color: 'var(--accent-cyan)' }}>₹2</span>
                 </div>
                 <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>
                   5,000 Credits + 8MB Memory + Pro Status
@@ -602,7 +602,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-primary)' }}>Credit Booster</span>
-                  <span style={{ fontSize: '0.86rem', fontWeight: 900, color: 'var(--accent-cyan)' }}>₹99</span>
+                  <span style={{ fontSize: '0.86rem', fontWeight: 900, color: 'var(--accent-cyan)' }}>₹1</span>
                 </div>
                 <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)' }}>
                   500 AI Credits Instant Top-Up
@@ -643,7 +643,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 <>
                   <Sparkles size={16} />
                   <span>
-                    Pay {selectedPlan === 'pro' ? '₹499' : '₹99'} via Razorpay Checkout
+                    Pay {selectedPlan === 'pro' ? '₹2' : '₹1'} via Razorpay Checkout
                   </span>
                   <ArrowUpRight size={16} />
                 </>

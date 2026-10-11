@@ -1484,7 +1484,7 @@ def verify_razorpay_payment(req: VerifyPaymentRequest, authorization: Optional[s
         order_id=req.razorpay_order_id,
         payment_id=req.razorpay_payment_id,
         signature=req.razorpay_signature,
-        amount=49900,
+        amount=200 if plan_name == "premium" else 100,
         currency="INR",
         status="paid_verified",
         user_id=user_id,
