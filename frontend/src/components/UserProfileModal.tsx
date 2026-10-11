@@ -26,6 +26,11 @@ import {
   createRazorpayOrder,
   verifyRazorpayPayment,
   clearStoredAuth,
+  setStoredAuth,
+  isPremiumEmail,
+  getPremiumRecord,
+  syncUserSubscription,
+  recordPremiumEmail,
   type UserProfile
 } from '../services/api';
 
@@ -70,7 +75,71 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 }) => {
   const [selectedPlan, setSelectedPlan] = useState<'pro' | 'booster'>('pro');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
+
+  // Auto-restore / sync subscription on open if user is recognized premium
+  React.useEffect(() => {
+    if (!isOpen || !currentUser) return;
+    const email = currentUser.email;
+    if (email) {
+      if (isPremiumEmail(email) && currentUser.plan !== 'premium') {
+        const rec = getPremiumRecord(email);
+        const upgraded: UserProfile = {
+          ...currentUser,
+          plan: 'premium',
+          credits: Math.max(currentUser.credits || 0, rec?.credits || 10000),
+          max_credits: Math.max(currentUser.max_credits || 0, rec?.credits || 10000),
+          memory_max_kb: 8192.0
+        };
+        setStoredAuth(upgraded.id, upgraded);
+        onUpdateUser(upgraded);
+      }
+      syncUserSubscription(email).then((res) => {
+        if (res && (res.plan === 'premium' || res.is_premium) && currentUser.plan !== 'premium') {
+          const upgraded: UserProfile = {
+            ...currentUser,
+            plan: 'premium',
+            credits: Math.max(currentUser.credits || 0, res.credits || 10000),
+            max_credits: Math.max(currentUser.max_credits || 0, res.max_credits || 10000),
+            memory_max_kb: 8192.0
+          };
+          setStoredAuth(upgraded.id, upgraded);
+          onUpdateUser(upgraded);
+        }
+      }).catch(() => {});
+    }
+  }, [isOpen, currentUser?.email, currentUser?.plan]);
+
+  const handleRestorePurchases = async () => {
+    if (!currentUser?.email) {
+      setStatusMsg({ type: 'error', text: 'Please sign in with mail first to restore your purchases.' });
+      return;
+    }
+    setIsSyncing(true);
+    setStatusMsg({ type: 'info', text: 'Checking live payment records with Razorpay...' });
+    try {
+      const synced = await syncUserSubscription(currentUser.email);
+      if (synced && (synced.plan === 'premium' || synced.is_premium)) {
+        const upgraded: UserProfile = {
+          ...currentUser,
+          plan: 'premium',
+          credits: Math.max(currentUser.credits || 0, synced.credits || 10000),
+          max_credits: Math.max(currentUser.max_credits || 0, synced.max_credits || 10000),
+          memory_max_kb: 8192.0
+        };
+        setStoredAuth(upgraded.id, upgraded);
+        onUpdateUser(upgraded);
+        setStatusMsg({ type: 'success', text: `Pro Plan Restored! ${upgraded.credits.toLocaleString()} AI Credits & 8 MB Copilot Context activated.` });
+      } else {
+        setStatusMsg({ type: 'info', text: 'No active payments found for this email on the gateway.' });
+      }
+    } catch (err: any) {
+      setStatusMsg({ type: 'error', text: 'Could not sync with payment gateway.' });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   const handleSignOut = () => {
     import('../services/firebase').then(({ firebaseSignOut }) => {
@@ -178,6 +247,10 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               memory_max_kb: planName === 'premium' ? 8192.0 : 256.0,
               memory_used_kb: memoryUsedKb,
             };
+            if (updated.email) {
+              recordPremiumEmail(updated.email, updated.plan, updated.credits);
+            }
+            setStoredAuth(updated.id, updated);
             onUpdateUser(updated);
             setStatusMsg({
               type: 'success',
@@ -449,25 +522,49 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                   </div>
 
                   {isRealUser ? (
-                    <button
-                      onClick={handleSignOut}
-                      style={{
-                        padding: '7px 14px',
-                        borderRadius: '8px',
-                        background: 'rgba(239, 68, 68, 0.1)',
-                        border: '1px solid rgba(239, 68, 68, 0.3)',
-                        color: '#ef4444',
-                        fontSize: '0.75rem',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '5px'
-                      }}
-                    >
-                      <LogOut size={12} />
-                      <span>Sign Out</span>
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <button
+                        onClick={handleRestorePurchases}
+                        disabled={isSyncing}
+                        title="Check gateway and restore your Pro subscription"
+                        style={{
+                          padding: '7px 12px',
+                          borderRadius: '8px',
+                          background: isPro ? 'rgba(217, 119, 6, 0.12)' : 'rgba(0, 240, 255, 0.12)',
+                          border: isPro ? '1px solid rgba(217, 119, 6, 0.35)' : '1px solid rgba(0, 240, 255, 0.35)',
+                          color: isPro ? '#d97706' : 'var(--accent-cyan)',
+                          fontSize: '0.74rem',
+                          fontWeight: 700,
+                          cursor: isSyncing ? 'wait' : 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '5px'
+                        }}
+                      >
+                        <RefreshCw size={12} className={isSyncing ? 'spinning' : ''} />
+                        <span>{isSyncing ? 'Syncing...' : isPro ? 'Sync Pro' : 'Restore Pro'}</span>
+                      </button>
+
+                      <button
+                        onClick={handleSignOut}
+                        style={{
+                          padding: '7px 14px',
+                          borderRadius: '8px',
+                          background: 'rgba(239, 68, 68, 0.1)',
+                          border: '1px solid rgba(239, 68, 68, 0.3)',
+                          color: '#ef4444',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '5px'
+                        }}
+                      >
+                        <LogOut size={12} />
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
                   ) : onOpenAuthModal ? (
                     <motion.button
                       whileHover={{ scale: 1.03 }}
@@ -739,6 +836,26 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 Live Gateway
               </span>
             </div>
+            {isPro && (
+              <div
+                style={{
+                  background: 'rgba(16, 185, 129, 0.1)',
+                  border: '1px solid rgba(16, 185, 129, 0.35)',
+                  borderRadius: '10px',
+                  padding: '8px 12px',
+                  fontSize: '0.74rem',
+                  color: '#10b981',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <Crown size={14} color="#f59e0b" />
+                <span>
+                  <strong>👑 Premium Pro is Active on your account!</strong> 8MB memory &amp; priority features unlocked.
+                </span>
+              </div>
+            )}
 
             {/* Selection Options */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>

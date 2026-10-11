@@ -25,6 +25,9 @@ import {
   clearStoredAuth, 
   setStoredAuth, 
   getStoredUser,
+  isPremiumEmail,
+  getPremiumRecord,
+  syncUserSubscription,
   type UserProfile 
 } from '../services/api';
 
@@ -60,21 +63,30 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     try {
       const fbUser = await signInWithGoogle();
       const existing = getStoredUser();
+      const isPremium = isPremiumEmail(fbUser.email) || existing?.plan === 'premium';
+      const premRec = getPremiumRecord(fbUser.email);
+      const allocatedCredits = isPremium ? Math.max(5000, premRec?.credits || (existing?.credits ?? 10000)) : (existing?.credits ?? 50);
+      const allocatedMax = isPremium ? Math.max(5000, premRec?.credits || (existing?.max_credits ?? 10000)) : (existing?.max_credits ?? 50);
+
       const profile: UserProfile = {
         id: fbUser.id,
         username: fbUser.username,
         email: fbUser.email,
         photoURL: fbUser.photoURL,
         created_at: fbUser.created_at,
-        plan: existing?.plan || 'free',
-        credits: existing?.credits ?? (existing?.plan === 'premium' ? 5000 : 50),
-        max_credits: existing?.max_credits ?? (existing?.plan === 'premium' ? 5000 : 50),
+        plan: isPremium ? 'premium' : 'free',
+        credits: allocatedCredits,
+        max_credits: allocatedMax,
         memory_used_kb: existing?.memory_used_kb ?? 48,
-        memory_max_kb: existing?.memory_max_kb ?? (existing?.plan === 'premium' ? 8192 : 256),
+        memory_max_kb: isPremium ? 8192 : 256,
         memory_used_pct: existing?.memory_used_pct ?? 1
       };
       setStoredAuth(fbUser.id, profile);
-      setSuccessMsg(`Welcome, ${profile.username}! Signed in with Google.`);
+      // Sync subscription with server in background
+      if (fbUser.email) {
+        syncUserSubscription(fbUser.email).catch(() => {});
+      }
+      setSuccessMsg(`Welcome, ${profile.username}! Signed in with Google${isPremium ? ' (👑 Premium Pro Active)' : ''}.`);
       setTimeout(() => {
         onAuthSuccess(profile);
         onClose();
@@ -139,14 +151,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
       if (profile && token) {
         const existing = getStoredUser();
-        if (existing?.plan === 'premium') {
+        const isPremium = isPremiumEmail(profile.email) || existing?.plan === 'premium';
+        const premRec = getPremiumRecord(profile.email);
+        if (isPremium) {
           profile.plan = 'premium';
-          profile.credits = Math.max(profile.credits || 5000, existing.credits || 5000);
-          profile.max_credits = 5000;
+          profile.credits = Math.max(5000, premRec?.credits || (profile.credits || 10000));
+          profile.max_credits = Math.max(5000, premRec?.credits || (profile.max_credits || 10000));
           profile.memory_max_kb = 8192;
         }
         setStoredAuth(token, profile);
-        setSuccessMsg(`Welcome back, ${profile.username}! Syncing cloud history.`);
+        if (profile.email) {
+          syncUserSubscription(profile.email).catch(() => {});
+        }
+        setSuccessMsg(`Welcome back, ${profile.username}! Syncing cloud history${isPremium ? ' (👑 Premium Pro Active)' : ''}.`);
         setTimeout(() => {
           onAuthSuccess(profile);
           onClose();
@@ -204,14 +221,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
       if (profile && token) {
         const existing = getStoredUser();
-        if (existing?.plan === 'premium') {
+        const isPremium = isPremiumEmail(profile.email) || existing?.plan === 'premium';
+        const premRec = getPremiumRecord(profile.email);
+        if (isPremium) {
           profile.plan = 'premium';
-          profile.credits = Math.max(profile.credits || 5000, existing.credits || 5000);
-          profile.max_credits = 5000;
+          profile.credits = Math.max(5000, premRec?.credits || (profile.credits || 10000));
+          profile.max_credits = Math.max(5000, premRec?.credits || (profile.max_credits || 10000));
           profile.memory_max_kb = 8192;
         }
         setStoredAuth(token, profile);
-        setSuccessMsg(`Account created! Welcome, ${profile.username}.`);
+        if (profile.email) {
+          syncUserSubscription(profile.email).catch(() => {});
+        }
+        setSuccessMsg(`Account created! Welcome, ${profile.username}${isPremium ? ' (👑 Premium Pro Active)' : ''}.`);
         setTimeout(() => {
           onAuthSuccess(profile);
           onClose();

@@ -60,6 +60,10 @@ import {
   escalateCandidate,
   fetchCurrentUser,
   getStoredUser,
+  setStoredAuth,
+  isPremiumEmail,
+  getPremiumRecord,
+  syncUserSubscription,
   type UserProfile
 } from './services/api';
 
@@ -113,20 +117,59 @@ export function App() {
   // Validate authentication session on mount (Firebase Auth + backend)
   useEffect(() => {
     import('./services/firebase').then(({ auth, onAuthStateChanged, mapFirebaseUser }) => {
-      onAuthStateChanged(auth, (fbUser) => {
+      onAuthStateChanged(auth, async (fbUser) => {
         if (fbUser) {
-          const profile = mapFirebaseUser(fbUser);
-          setCurrentUser(profile);
-          import('./services/api').then(({ setStoredAuth }) => {
-            setStoredAuth(fbUser.uid, profile);
-          });
+          const basic = mapFirebaseUser(fbUser);
+          const existing = getStoredUser();
+          const isPremium = isPremiumEmail(basic.email) || existing?.plan === 'premium';
+          const premRec = getPremiumRecord(basic.email);
+
+          const fullProfile: UserProfile = {
+            id: basic.id,
+            username: basic.username,
+            email: basic.email,
+            photoURL: basic.photoURL,
+            created_at: basic.created_at,
+            plan: isPremium ? 'premium' : (existing?.plan || 'free'),
+            credits: isPremium ? Math.max(5000, premRec?.credits || (existing?.credits ?? 10000)) : (existing?.credits ?? 50),
+            max_credits: isPremium ? Math.max(5000, premRec?.credits || (existing?.max_credits ?? 10000)) : (existing?.max_credits ?? 50),
+            memory_used_kb: existing?.memory_used_kb ?? 48,
+            memory_max_kb: isPremium ? 8192 : 256,
+            memory_used_pct: existing?.memory_used_pct ?? 1
+          };
+
+          setCurrentUser(fullProfile);
+          setStoredAuth(fbUser.uid, fullProfile);
+
+          // Verify with Razorpay in background
+          if (basic.email) {
+            syncUserSubscription(basic.email).then((synced) => {
+              if (synced && (synced.plan === 'premium' || synced.is_premium)) {
+                setCurrentUser((prev) => prev ? {
+                  ...prev,
+                  plan: 'premium',
+                  credits: Math.max(prev.credits || 0, synced.credits || 10000),
+                  max_credits: synced.max_credits || 10000,
+                  memory_max_kb: 8192
+                } : null);
+              }
+            }).catch(() => {});
+          }
         }
       });
     }).catch(() => {});
 
     fetchCurrentUser()
       .then((user) => {
-        if (user) setCurrentUser(user);
+        if (user) {
+          if (user.email && isPremiumEmail(user.email)) {
+            user.plan = 'premium';
+            user.credits = Math.max(5000, user.credits ?? 10000);
+            user.max_credits = Math.max(5000, user.max_credits ?? 10000);
+            user.memory_max_kb = 8192;
+          }
+          setCurrentUser(user);
+        }
       })
       .catch((err) => {
         console.warn('Auth check skipped:', err);
@@ -747,7 +790,12 @@ export function App() {
           isOpen={showProfileModal}
           onClose={() => setShowProfileModal(false)}
           currentUser={currentUser}
-          onUpdateUser={(user) => setCurrentUser(user)}
+          onUpdateUser={(user) => {
+            setCurrentUser(user);
+            if (user) {
+              setStoredAuth(user.id, user);
+            }
+          }}
           onOpenAuthModal={() => setShowAuthModal(true)}
           theme={theme}
         />

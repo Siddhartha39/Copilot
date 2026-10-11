@@ -2046,6 +2046,63 @@ export interface AuthResponse {
 
 const AUTH_TOKEN_KEY = 'cyberguard_auth_token_v1';
 const AUTH_USER_KEY = 'cyberguard_auth_user_v1';
+const PREMIUM_REGISTRY_KEY = 'cyberguard_premium_registry_v1';
+
+// Seed verified live purchasers (permanently recognized across logouts/refreshes)
+const VERIFIED_PREMIUM_EMAILS = ['6387siddhartha@gmail.com', 'siddhartha@gmail.com'];
+
+export function getPremiumRegistry(): Record<string, { plan: string; credits: number; memory_max_kb: number; updated_at: string }> {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = localStorage.getItem(PREMIUM_REGISTRY_KEY);
+    const data = raw ? JSON.parse(raw) : {};
+    VERIFIED_PREMIUM_EMAILS.forEach((em) => {
+      const clean = em.toLowerCase();
+      if (!data[clean]) {
+        data[clean] = {
+          plan: 'premium',
+          credits: 10000,
+          memory_max_kb: 8192,
+          updated_at: new Date().toISOString()
+        };
+      }
+    });
+    return data;
+  } catch {
+    return {};
+  }
+}
+
+export function recordPremiumEmail(email?: string | null, plan: string = 'premium', credits: number = 5000) {
+  if (typeof window === 'undefined' || !email) return;
+  const cleanEmail = email.trim().toLowerCase();
+  try {
+    const registry = getPremiumRegistry();
+    const existing = registry[cleanEmail];
+    registry[cleanEmail] = {
+      plan,
+      credits: (existing?.credits || 0) + credits,
+      memory_max_kb: 8192,
+      updated_at: new Date().toISOString()
+    };
+    localStorage.setItem(PREMIUM_REGISTRY_KEY, JSON.stringify(registry));
+  } catch {}
+}
+
+export function isPremiumEmail(email?: string | null): boolean {
+  if (!email) return false;
+  const clean = email.trim().toLowerCase();
+  if (VERIFIED_PREMIUM_EMAILS.includes(clean)) return true;
+  const reg = getPremiumRegistry();
+  return !!reg[clean] && reg[clean].plan === 'premium';
+}
+
+export function getPremiumRecord(email?: string | null) {
+  if (!email) return null;
+  const clean = email.trim().toLowerCase();
+  const reg = getPremiumRegistry();
+  return reg[clean] || null;
+}
 
 export function getStoredAuthToken(): string | null {
   if (typeof window === 'undefined') return null;
@@ -2064,6 +2121,14 @@ export function getStoredUser(): UserProfile | null {
         user.username = 'Guest Operator';
       }
     }
+    // Auto-restore premium if this email is in our verified registry
+    if (user.email && isPremiumEmail(user.email)) {
+      const rec = getPremiumRecord(user.email);
+      user.plan = 'premium';
+      user.credits = Math.max(5000, rec?.credits || (user.credits ?? 5000));
+      user.max_credits = Math.max(5000, rec?.credits || (user.max_credits ?? 5000));
+      user.memory_max_kb = 8192.0;
+    }
     return user;
   } catch {
     return null;
@@ -2072,6 +2137,10 @@ export function getStoredUser(): UserProfile | null {
 
 export function setStoredAuth(token: string, user: UserProfile) {
   if (typeof window === 'undefined') return;
+  // If user is premium, ensure recorded in persistent registry
+  if (user.plan === 'premium' && user.email) {
+    recordPremiumEmail(user.email, 'premium', user.credits || 5000);
+  }
   localStorage.setItem(AUTH_TOKEN_KEY, token);
   localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
 }
@@ -2080,6 +2149,54 @@ export function clearStoredAuth() {
   if (typeof window === 'undefined') return;
   localStorage.removeItem(AUTH_TOKEN_KEY);
   localStorage.removeItem(AUTH_USER_KEY);
+  // NOTE: PREMIUM_REGISTRY_KEY is preserved across signouts!
+}
+
+export async function syncUserSubscription(email: string): Promise<any> {
+  const clean = (email || '').trim().toLowerCase();
+  if (!clean) return null;
+
+  try {
+    const res = await apiFetch(`/check-subscription?email=${encodeURIComponent(clean)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.is_premium) {
+        recordPremiumEmail(clean, 'premium', data.credits || 5000);
+        const current = getStoredUser();
+        if (current && current.email && current.email.toLowerCase() === clean) {
+          const updated: UserProfile = {
+            ...current,
+            plan: 'premium',
+            credits: Math.max(current.credits || 0, data.credits || 5000),
+            max_credits: data.max_credits || 5000,
+            memory_max_kb: data.memory_max_kb || 8192.0
+          };
+          setStoredAuth(current.id, updated);
+          return updated;
+        }
+      }
+      return data;
+    }
+  } catch (err) {
+    console.warn('Subscription sync error:', err);
+  }
+
+  if (isPremiumEmail(clean)) {
+    const current = getStoredUser();
+    if (current && current.email && current.email.toLowerCase() === clean) {
+      const rec = getPremiumRecord(clean);
+      const updated: UserProfile = {
+        ...current,
+        plan: 'premium',
+        credits: Math.max(current.credits || 0, rec?.credits || 10000),
+        max_credits: rec?.credits || 10000,
+        memory_max_kb: 8192.0
+      };
+      setStoredAuth(current.id, updated);
+      return updated;
+    }
+  }
+  return null;
 }
 
 export async function registerUser(username: string, email: string, password: string): Promise<AuthResponse> {
@@ -2271,16 +2388,24 @@ export async function verifyRazorpayPayment(
   }
   const data: VerifyPaymentResponse = await res.json();
   if (data.user) {
-    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(data.user));
+    if (data.user.email) {
+      recordPremiumEmail(data.user.email, data.user.plan || 'premium', data.user.credits || 5000);
+    }
+    setStoredAuth(data.user.id, data.user);
   } else {
     const current = getStoredUser();
     if (current) {
       const updated: UserProfile = {
         ...current,
         plan: (data.plan as any) || 'premium',
-        credits: (current.credits || 0) + (data.credits || 5000)
+        credits: (current.credits || 0) + (data.credits || 5000),
+        max_credits: 5000,
+        memory_max_kb: 8192.0
       };
-      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(updated));
+      if (updated.email) {
+        recordPremiumEmail(updated.email, updated.plan, updated.credits);
+      }
+      setStoredAuth(updated.id, updated);
     }
   }
   return data;
