@@ -1015,4 +1015,77 @@ body.light-theme .copilot-window-body {
   background: #ffffff !important;
 }
 
+/* =========================================================================
+   PRINT / PDF EXPORT MEDIA OVERRIDES
+   Prevents duplicate fixed background layers, hides non-printable elements
+========================================================================= */
+@media print {
+  /* Hide non-printable app background elements */
+  body > #root > div > header,
+  body > #root > div > footer,
+  .matrix-canvas-container,
+  .ambient-orb-cyan,
+  .ambient-orb-purple,
+  .scanner-submit-btn,
+  .copilot-floating-pill,
+  .cyber-copilot-container,
+  button,
+  select,
+  input {
+    display: none !important;
+  }
+
+  /* Make sure background is white and text is sharp for clean PDF generation */
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Reset fixed modal containers so they don't repeat on multiple pages */
+  .report-export-modal-backdrop {
+    position: static !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .report-export-modal-dialog {
+    position: static !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  .report-export-modal-content {
+    overflow: visible !important;
+    max-height: none !important;
+    padding: 0 !important;
+  }
+
+  .report-export-modal-header {
+    display: none !important;
+  }
+
+  .report-printable-area {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  .print-avoid-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+
+
 
