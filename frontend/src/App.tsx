@@ -219,7 +219,7 @@ export function App() {
       setActiveTab(tabParam);
     }
     if (scanUrl) {
-      handleScan(scanUrl, false, false);
+      handleScan(scanUrl, true, false);
     }
   }, []);
 
@@ -240,7 +240,7 @@ export function App() {
 
   const handleScan = async (
     url: string,
-    deep: boolean = false,
+    deep: boolean = true,
     forceRefresh: boolean = false,
     focus?: 'developer' | 'phishing'
   ) => {
@@ -501,7 +501,7 @@ export function App() {
             onLaunchScanner={handleLaunchScanner}
             onOpenExtension={() => setActiveTab('extension')}
             onOpenDiscovery={() => setActiveTab('discovery')}
-            onScanUrl={(url) => handleScan(url, false, false)}
+            onScanUrl={(url) => handleScan(url, true, false)}
           />
         )}
 
@@ -591,61 +591,97 @@ export function App() {
                   transition={{ duration: 0.5, ease: 'easeOut' }}
                   style={{ padding: '0 24px', display: 'flex', flexDirection: 'column', gap: '24px' }}
                 >
-                  {/* Persona View Switcher for Full Report */}
-                  <div className="glass-panel" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 700 }}>
-                        VIEW MODE:
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => setScannerFocus('developer')}
-                        style={{
-                          background: scannerFocus === 'developer'
-                            ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.3) 0%, rgba(59, 130, 246, 0.3) 100%)'
-                            : 'var(--code-box-bg)',
-                          color: scannerFocus === 'developer' ? '#38bdf8' : 'var(--text-secondary)',
-                          border: scannerFocus === 'developer' ? '2px solid #38bdf8' : '1px solid var(--border-color)',
-                          borderRadius: '8px',
-                          padding: '8px 16px',
-                          fontSize: '0.82rem',
-                          fontWeight: 800,
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          boxShadow: scannerFocus === 'developer' ? '0 0 16px rgba(56, 189, 248, 0.3)' : 'none',
-                          transition: 'all 0.15s'
-                        }}
-                      >
-                        <Shield size={16} color={scannerFocus === 'developer' ? '#38bdf8' : 'var(--text-muted)'} />
-                        <span>Feature 1: Developer Website Security &amp; Anti-Hacking Audit</span>
-                      </button>
+                  {/* Dual-Feature View Switcher for Full Report */}
+                  <div className="glass-panel" style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                        <button
+                          type="button"
+                          onClick={() => setScannerFocus('developer')}
+                          style={{
+                            background: scannerFocus === 'developer'
+                              ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(59, 130, 246, 0.25) 100%)'
+                              : 'var(--code-box-bg)',
+                            color: scannerFocus === 'developer' ? '#38bdf8' : 'var(--text-secondary)',
+                            border: scannerFocus === 'developer' ? '2px solid #38bdf8' : '1px solid var(--border-color)',
+                            borderRadius: '10px',
+                            padding: '10px 16px',
+                            fontSize: '0.84rem',
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            boxShadow: scannerFocus === 'developer' ? '0 0 16px rgba(56, 189, 248, 0.25)' : 'none',
+                            transition: 'all 0.15s'
+                          }}
+                        >
+                          <Shield size={17} color={scannerFocus === 'developer' ? '#38bdf8' : 'var(--text-muted)'} />
+                          <span>Feature 1: Developer Website Security &amp; Anti-Hacking Audit</span>
+                        </button>
 
-                      <button
-                        type="button"
-                        onClick={() => setScannerFocus('phishing')}
-                        style={{
-                          background: scannerFocus === 'phishing'
-                            ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(249, 115, 22, 0.3) 100%)'
-                            : 'var(--code-box-bg)',
-                          color: scannerFocus === 'phishing' ? '#f87171' : 'var(--text-secondary)',
-                          border: scannerFocus === 'phishing' ? '2px solid #f87171' : '1px solid var(--border-color)',
-                          borderRadius: '8px',
-                          padding: '8px 16px',
-                          fontSize: '0.82rem',
-                          fontWeight: 800,
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          boxShadow: scannerFocus === 'phishing' ? '0 0 16px rgba(248, 113, 113, 0.3)' : 'none',
-                          transition: 'all 0.15s'
-                        }}
-                      >
-                        <Zap size={16} color={scannerFocus === 'phishing' ? '#f87171' : 'var(--text-muted)'} />
-                        <span>Feature 2: Phishing &amp; Fraud Intelligence Scanner</span>
-                      </button>
+                        <button
+                          type="button"
+                          onClick={() => setScannerFocus('phishing')}
+                          style={{
+                            background: scannerFocus === 'phishing'
+                              ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(249, 115, 22, 0.25) 100%)'
+                              : 'var(--code-box-bg)',
+                            color: scannerFocus === 'phishing' ? '#f87171' : 'var(--text-secondary)',
+                            border: scannerFocus === 'phishing' ? '2px solid #f87171' : '1px solid var(--border-color)',
+                            borderRadius: '10px',
+                            padding: '10px 16px',
+                            fontSize: '0.84rem',
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            boxShadow: scannerFocus === 'phishing' ? '0 0 16px rgba(248, 113, 113, 0.25)' : 'none',
+                            transition: 'all 0.15s'
+                          }}
+                        >
+                          <Zap size={17} color={scannerFocus === 'phishing' ? '#f87171' : 'var(--text-muted)'} />
+                          <span>Feature 2: Phishing &amp; Fraud Intelligence Scanner</span>
+                        </button>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span className="mono" style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                          Audited Target: <strong style={{ color: scannerFocus === 'developer' ? '#38bdf8' : '#f87171' }}>{report.canonical_domain}</strong>
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Active Persona Explainer Callout (matching user design) */}
+                    <div
+                      style={{
+                        padding: '10px 14px',
+                        borderRadius: '8px',
+                        fontSize: '0.78rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        background: scannerFocus === 'developer' ? 'rgba(56, 189, 248, 0.08)' : 'rgba(239, 68, 68, 0.08)',
+                        border: scannerFocus === 'developer' ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)',
+                        color: 'var(--text-primary)'
+                      }}
+                    >
+                      {scannerFocus === 'developer' ? (
+                        <>
+                          <Shield size={16} color="#38bdf8" style={{ flexShrink: 0 }} />
+                          <span>
+                            <strong>Feature 1 Active (Webmaster &amp; Developer Mode):</strong> Audits your website's defensive HTTP headers (CSP, HSTS, X-Frame-Options), tests anti-code injection &amp; clickjacking immunity, evaluates TLS/DNS, and generates drop-in server hardening configurations (Nginx, Apache, Next.js, Node.js Helmet, Cloudflare).
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <Zap size={16} color="#f87171" style={{ flexShrink: 0 }} />
+                          <span>
+                            <strong>Feature 2 Active (SOC &amp; Threat Intelligence Mode):</strong> Inspects suspicious URLs for brand impersonation, visual logo contradiction (64-bit pHash), 24-dimensional lexical URL ML, newly registered domain (NRD) risk, and credential-harvesting traps.
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
 
@@ -675,24 +711,51 @@ export function App() {
                         <TechnicalInspector report={report} onOpenAbout={handleOpenAboutTopic} />
                       </motion.div>
 
-                      {/* Supporting Phishing Risk Summary & Threat Vectors */}
+                      {/* Developer Cross-Link to Feature 2 */}
                       <motion.div
-                        initial={{ opacity: 0, y: 15 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.35, delay: 0.18 }}
+                        transition={{ duration: 0.3, delay: 0.18 }}
+                        className="glass-panel"
+                        style={{
+                          padding: '18px 24px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          flexWrap: 'wrap',
+                          gap: '16px',
+                          border: '1px solid rgba(56, 189, 248, 0.25)'
+                        }}
                       >
-                        <RiskSummaryCard
-                          report={report}
-                          onExportClick={() => setShowExportModal(true)}
-                          onSubmitFeedback={handleSubmitFeedback}
-                          onOpenAbout={handleOpenAboutTopic}
-                        />
+                        <div>
+                          <div style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                            Looking for External Phishing, Brand Fraud &amp; Scam Intelligence?
+                          </div>
+                          <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                            Inspect whether {report.canonical_domain} is impersonating major brands, using deceptive homoglyphs, or harvesting credentials.
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setScannerFocus('phishing')}
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(249, 115, 22, 0.2) 100%)',
+                            color: '#f87171',
+                            border: '1.5px solid #f87171',
+                            borderRadius: '8px',
+                            padding: '9px 16px',
+                            fontSize: '0.82rem',
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
+                          }}
+                        >
+                          <Zap size={15} />
+                          <span>Switch to Feature 2: Phishing Scanner</span>
+                        </button>
                       </motion.div>
-
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '24px' }}>
-                        <BrandContradictionCard brand={report.brand_analysis} domainIntel={report.domain_intel} onOpenAbout={handleOpenAboutTopic} />
-                        <InfrastructureIntelCard domainIntel={report.domain_intel} crawlArtifacts={report.crawl_artifacts} targetDomain={report.canonical_domain} onOpenAbout={handleOpenAboutTopic} />
-                      </div>
                     </>
                   ) : (
                     /* FEATURE 2 ACTIVE: Phishing & Fraud Threat Intelligence featured at the top */
@@ -711,19 +774,24 @@ export function App() {
                         />
                       </motion.div>
 
-                      {/* Brand Contradiction, Infrastructure Intel & Exploitability Grid */}
+                      {/* Brand Contradiction & Infrastructure Intel Grid */}
                       <motion.div
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.35, delay: 0.12 }}
                         style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '24px' }}
                       >
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                          <BrandContradictionCard brand={report.brand_analysis} domainIntel={report.domain_intel} onOpenAbout={handleOpenAboutTopic} />
-                          <InfrastructureIntelCard domainIntel={report.domain_intel} crawlArtifacts={report.crawl_artifacts} targetDomain={report.canonical_domain} onOpenAbout={handleOpenAboutTopic} />
-                          <ThreatVectorsCard report={report} onOpenAbout={handleOpenAboutTopic} />
-                        </div>
-                        <SecurityPostureCard audit={report.security_audit} aiInsights={report.ai_insights} domain={report.canonical_domain} onOpenAbout={handleOpenAboutTopic} />
+                        <BrandContradictionCard brand={report.brand_analysis} domainIntel={report.domain_intel} onOpenAbout={handleOpenAboutTopic} />
+                        <InfrastructureIntelCard domainIntel={report.domain_intel} crawlArtifacts={report.crawl_artifacts} targetDomain={report.canonical_domain} onOpenAbout={handleOpenAboutTopic} />
+                      </motion.div>
+
+                      {/* Threat Vectors & Exploitability */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35, delay: 0.18 }}
+                      >
+                        <ThreatVectorsCard report={report} onOpenAbout={handleOpenAboutTopic} />
                       </motion.div>
 
                       {/* Attack Chain & Forensic Evidence */}
@@ -743,12 +811,50 @@ export function App() {
                         <EvidenceTable evidence={report.evidence_breakdown} onOpenAbout={handleOpenAboutTopic} />
                       </motion.div>
 
+                      {/* Threat Analyst Cross-Link to Feature 1 */}
                       <motion.div
-                        initial={{ opacity: 0, y: 15 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.35, delay: 0.35 }}
+                        transition={{ duration: 0.3, delay: 0.32 }}
+                        className="glass-panel"
+                        style={{
+                          padding: '18px 24px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          flexWrap: 'wrap',
+                          gap: '16px',
+                          border: '1px solid rgba(239, 68, 68, 0.25)'
+                        }}
                       >
-                        <TechnicalInspector report={report} onOpenAbout={handleOpenAboutTopic} />
+                        <div>
+                          <div style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+                            Do you own or manage {report.canonical_domain}?
+                          </div>
+                          <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                            Audit your website's defensive headers (CSP, HSTS, X-Frame-Options) and generate drop-in server hardening configurations.
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setScannerFocus('developer')}
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%)',
+                            color: '#38bdf8',
+                            border: '1.5px solid #38bdf8',
+                            borderRadius: '8px',
+                            padding: '9px 16px',
+                            fontSize: '0.82rem',
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
+                          }}
+                        >
+                          <Shield size={15} />
+                          <span>Switch to Feature 1: Developer Audit</span>
+                        </button>
                       </motion.div>
                     </>
                   )}
@@ -841,12 +947,12 @@ export function App() {
         )}
 
         {/* New Pages */}
-        {activeTab === 'email-scanner' && <EmailPhishingScanner theme={theme} onScanUrl={(url) => handleScan(url, false, false)} />}
-        {activeTab === 'bulk-scanner' && <BulkScanner theme={theme} onScanUrl={(url) => handleScan(url, false, false)} />}
-        {activeTab === 'threat-dashboard' && <ThreatDashboard theme={theme} cases={cases} feed={feed} onScanUrl={(url) => handleScan(url, false, false)} />}
+        {activeTab === 'email-scanner' && <EmailPhishingScanner theme={theme} onScanUrl={(url) => handleScan(url, true, false)} />}
+        {activeTab === 'bulk-scanner' && <BulkScanner theme={theme} onScanUrl={(url) => handleScan(url, true, false)} />}
+        {activeTab === 'threat-dashboard' && <ThreatDashboard theme={theme} cases={cases} feed={feed} onScanUrl={(url) => handleScan(url, true, false)} />}
         {activeTab === 'password-checker' && <PasswordChecker theme={theme} />}
         {activeTab === 'ip-reputation' && <IpReputationPage theme={theme} />}
-        {activeTab === 'watchlist' && <WatchlistPage theme={theme} onScanUrl={(url) => handleScan(url, false, false)} />}
+        {activeTab === 'watchlist' && <WatchlistPage theme={theme} onScanUrl={(url) => handleScan(url, true, false)} />}
             </motion.div>
           </AnimatePresence>
         </main>

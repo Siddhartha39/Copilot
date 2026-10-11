@@ -36,7 +36,7 @@ export const Scanner: React.FC<ScannerProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!url.trim()) return;
-    onScan(url.trim(), scanMode === 'deep', forceRefresh, activeFocus);
+    onScan(url.trim(), true, forceRefresh, activeFocus);
   };
 
   const handleSelectSample = (sampleId: string) => {
@@ -271,8 +271,8 @@ export const Scanner: React.FC<ScannerProps> = ({
                   {activeFocus === 'developer' ? <Shield size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
                   <span className="cyber-font">
                     {activeFocus === 'developer'
-                      ? 'AUDIT WEBSITE DEFENSE & HARDENING'
-                      : 'RUN PHISHING & FRAUD SCAN'}
+                      ? 'RUN FULL AUDIT & SERVER HARDENING'
+                      : 'RUN FULL PHISHING & FRAUD SCAN'}
                   </span>
                 </>
               )}
