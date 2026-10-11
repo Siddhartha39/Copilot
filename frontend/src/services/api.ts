@@ -22,13 +22,8 @@ export const getApiBase = (): string => {
     const custom = localStorage.getItem('cyberguard_api_url');
     if (custom) return custom.replace(/\/$/, '');
   } catch {}
-  // 3. Localhost development with Vite proxy or direct backend
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return '/api';
-  }
-  // 4. Remote static hosting (e.g. *.vercel.app) without configured backend URL:
-  // Return empty string to signify client-native execution mode (avoids doomed 404 network requests)
-  return '';
+  // 3. Localhost and remote deployments (served via Vercel serverless /api routes or FastAPI)
+  return '/api';
 };
 
 export const isBackendConfigured = (): boolean => {

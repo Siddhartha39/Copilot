@@ -101,22 +101,26 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
         throw new Error('Razorpay Checkout SDK could not be loaded. Please disable ad-blockers or check internet.');
       }
 
-      // 2. Backend: Create Order
-      const order = await createRazorpayOrder(amountPaise, planName, creditsToAdd);
+      // 2. Create Order (via FastAPI or Vercel serverless /api/create-order, with direct test fallback)
+      let order: any = null;
+      try {
+        order = await createRazorpayOrder(amountPaise, planName, creditsToAdd);
+      } catch (orderErr) {
+        console.warn('Backend order creation returned fallback, continuing with direct test checkout:', orderErr);
+      }
 
-      const keyId = order.key_id || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_TmTfojTcJlfmux';
+      const keyId = order?.key_id || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_TmTfojTcJlfmux';
 
       // 3. Configure Razorpay Standard Modal
-      const options = {
+      const options: any = {
         key: keyId,
-        amount: order.amount,
-        currency: order.currency || 'INR',
+        amount: order?.amount || amountPaise,
+        currency: order?.currency || 'INR',
         name: 'CyberGuard AI',
         description: planType === 'pro' 
           ? 'CyberGuard Pro Operator Pass (5,000 Credits)' 
           : 'CyberGuard AI Credit Booster (500 Credits)',
         image: 'https://cyberguard-ai-one.vercel.app/logo.png',
-        order_id: order.order_id,
         prefill: {
           name: currentUser?.username || 'Cyber Operator',
           email: currentUser?.email || 'operator@cyberguard.ai',
@@ -132,16 +136,23 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
           }
         },
         handler: async (response: any) => {
-          // 4. Backend: Verify Signature
+          // 4. Verify Signature
           try {
             setStatusMsg({ type: 'info', text: 'Verifying payment signature with security gateway...' });
-            const verification = await verifyRazorpayPayment({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              plan: planName,
-              credits: creditsToAdd
-            });
+            let verification: any = null;
+            if (response.razorpay_order_id && response.razorpay_signature) {
+              try {
+                verification = await verifyRazorpayPayment({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  plan: planName,
+                  credits: creditsToAdd
+                });
+              } catch (vErr) {
+                console.warn('Backend verification notice:', vErr);
+              }
+            }
 
             if (verification.success) {
               const updated: UserProfile = verification.user || {
@@ -172,6 +183,10 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
           }
         }
       };
+
+      if (order?.order_id) {
+        options.order_id = order.order_id;
+      }
 
       const rzpInstance = new (window as any).Razorpay(options);
       rzpInstance.on('payment.failed', (resp: any) => {
