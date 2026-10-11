@@ -72,38 +72,186 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="glass-panel" style={{ margin: '16px 24px', padding: '16px 20px', position: 'relative', zIndex: 100 }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
-        {/* Brand & Project Identity */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setActiveTab('overview')}>
-          <div style={{
-            background: 'linear-gradient(135deg, #00f0ff 0%, #3b82f6 100%)',
-            padding: '8px',
-            borderRadius: '10px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 16px rgba(0, 240, 255, 0.4)'
-          }}>
-            <Shield size={24} color="#070a10" strokeWidth={2.5} />
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-              <h1 className="cyber-font cyber-glitch neon-cyan-glow" style={{ fontSize: '1.15rem', fontWeight: 900, letterSpacing: '0.04em' }}>
-                CYBERGUARD AI
-              </h1>
-              <span className="badge-safe mono" style={{ fontSize: '0.65rem', padding: '2px 8px', borderRadius: '10px', fontWeight: 800 }}>
-                100% FREE &amp; OPEN ACCESS
-              </span>
+    <header className="glass-panel" style={{ margin: '16px 24px', padding: '14px 20px', position: 'relative', zIndex: 100 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        
+        {/* Top Row: Brand on Left, Global Controls pinned to Top-Right Corner */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '14px', flexWrap: 'wrap' }}>
+          {/* Brand & Project Identity */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setActiveTab('overview')}>
+            <div style={{
+              background: 'linear-gradient(135deg, #00f0ff 0%, #3b82f6 100%)',
+              padding: '8px',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 0 16px rgba(0, 240, 255, 0.4)'
+            }}>
+              <Shield size={24} color="#070a10" strokeWidth={2.5} />
             </div>
-            <p className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-              [AI-POWERED WEBSITE SECURITY &amp; THREAT INTELLIGENCE]
-            </p>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                <h1 className="cyber-font cyber-glitch neon-cyan-glow" style={{ fontSize: '1.15rem', fontWeight: 900, letterSpacing: '0.04em' }}>
+                  CYBERGUARD AI
+                </h1>
+                <span className="badge-safe mono" style={{ fontSize: '0.65rem', padding: '2px 8px', borderRadius: '10px', fontWeight: 800 }}>
+                  100% FREE &amp; OPEN ACCESS
+                </span>
+              </div>
+              <p className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                [AI-POWERED WEBSITE SECURITY &amp; THREAT INTELLIGENCE]
+              </p>
+            </div>
+          </div>
+
+          {/* Top-Right Corner Controls: Copilot AI, Profile/Pro Pass, Feed, Theme */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto', flexShrink: 0 }}>
+            {/* Copilot AI Launcher */}
+            {onOpenCopilot && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onOpenCopilot}
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(0, 240, 255, 0.45)',
+                  background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.18) 0%, rgba(99, 102, 241, 0.18) 100%)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.78rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 0 12px rgba(0, 240, 255, 0.25)',
+                  whiteSpace: 'nowrap'
+                }}
+                title="Open CyberGuard AI Copilot"
+              >
+                <Bot size={15} color="#00f0ff" />
+                <span>Copilot AI</span>
+              </motion.button>
+            )}
+
+            {/* User Profile & Subscription / Sign In */}
+            {(onOpenProfileModal || onOpenAuthModal) && (
+              <motion.button
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                onClick={onOpenProfileModal || onOpenAuthModal}
+                style={{
+                  padding: '7px 12px',
+                  borderRadius: '10px',
+                  border: currentUser?.plan === 'premium'
+                    ? '1px solid rgba(234, 179, 8, 0.55)'
+                    : currentUser
+                    ? '1px solid rgba(16, 185, 129, 0.45)'
+                    : '1px solid var(--border-color)',
+                  background: currentUser?.plan === 'premium'
+                    ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.18) 0%, rgba(245, 158, 11, 0.1) 100%)'
+                    : currentUser
+                    ? 'rgba(16, 185, 129, 0.12)'
+                    : 'var(--code-box-bg)',
+                  color: currentUser?.plan === 'premium'
+                    ? '#facc15'
+                    : currentUser
+                    ? '#10b981'
+                    : 'var(--text-primary)',
+                  fontSize: '0.76rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: currentUser?.plan === 'premium'
+                    ? '0 0 14px rgba(234, 179, 8, 0.3)'
+                    : currentUser
+                    ? '0 0 10px rgba(16, 185, 129, 0.25)'
+                    : 'none',
+                  whiteSpace: 'nowrap'
+                }}
+                title={currentUser ? `Operator: ${currentUser.username} (${currentUser.plan === 'premium' ? 'Pro Plan' : 'Free Tier'} • ${currentUser.credits ?? 50} Credits)` : "Profile, Credits & Subscription Plans"}
+              >
+                {currentUser?.plan === 'premium' ? (
+                  <Crown size={14} color="#facc15" />
+                ) : (
+                  <User size={14} color={currentUser ? "#10b981" : "var(--accent-cyan)"} />
+                )}
+                <span>
+                  {currentUser && currentUser.email && currentUser.email !== 'operator@cyberguard.ai'
+                    ? currentUser.username
+                    : currentUser?.plan === 'premium'
+                    ? 'Pro Pass'
+                    : 'Profile & Plans'}
+                </span>
+                {currentUser && (
+                  <span
+                    style={{
+                      fontSize: '0.62rem',
+                      padding: '1px 5px',
+                      borderRadius: '8px',
+                      background: currentUser.plan === 'premium' ? 'rgba(234, 179, 8, 0.3)' : 'rgba(0, 240, 255, 0.15)',
+                      color: currentUser.plan === 'premium' ? '#facc15' : 'var(--accent-cyan)',
+                      fontWeight: 900
+                    }}
+                  >
+                    {currentUser.plan === 'premium' ? 'PRO' : `${currentUser.credits ?? 50} CR`}
+                  </span>
+                )}
+              </motion.button>
+            )}
+
+            {/* Discovery Feed Button */}
+            <motion.button
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => setActiveTab('discovery')}
+              style={{
+                padding: '8px 13px',
+                borderRadius: '10px',
+                border: '1px solid rgba(249, 115, 22, 0.35)',
+                background: activeTab === 'discovery' ? 'rgba(249, 115, 22, 0.2)' : 'transparent',
+                color: '#f97316',
+                fontSize: '0.76rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+              title="Discovery Feed - Real-time Certificate Transparency stream"
+            >
+              <Activity size={14} color="#f97316" />
+              <span className="hidden md:inline">Feed</span>
+            </motion.button>
+
+            {/* Theme Toggle Button */}
+            <motion.button
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.92 }}
+              onClick={toggleTheme}
+              style={{
+                padding: '8px',
+                borderRadius: '10px',
+                border: '1px solid var(--border-color)',
+                background: 'var(--code-box-bg)',
+                color: 'var(--text-secondary)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+            >
+              {theme === 'dark' ? <Sun size={15} color="#f59e0b" /> : <Moon size={15} color="#00f0ff" />}
+            </motion.button>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="nav-tabs-container" style={{ display: 'flex', alignItems: 'center', gap: '2px', background: 'var(--nav-bar-bg)', padding: '4px', borderRadius: '12px', border: '1px solid var(--border-color)', flexWrap: 'nowrap', overflowX: 'auto', maxWidth: '100%' }}>
+        {/* Row 2: Full-Width Dedicated Navigation Tabs */}
+        <div className="nav-tabs-container" style={{ display: 'flex', alignItems: 'center', gap: '3px', background: 'var(--nav-bar-bg)', padding: '4px', borderRadius: '12px', border: '1px solid var(--border-color)', flexWrap: 'nowrap', overflowX: 'auto', width: '100%' }}>
           <TabButton tab="overview" label="Overview" icon={Home} />
           
           <TabButton 
@@ -131,148 +279,6 @@ export const Header: React.FC<HeaderProps> = ({
           <TabButton tab="about" label="Info" icon={HelpCircle} />
         </div>
 
-        {/* Global Controls & Theme Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-
-          {/* Copilot AI Launcher */}
-          {onOpenCopilot && (
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onOpenCopilot}
-              style={{
-                padding: '8px 14px',
-                borderRadius: '10px',
-                border: '1px solid rgba(0, 240, 255, 0.45)',
-                background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.18) 0%, rgba(99, 102, 241, 0.18) 100%)',
-                color: 'var(--text-primary)',
-                fontSize: '0.78rem',
-                fontWeight: 800,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 0 12px rgba(0, 240, 255, 0.25)',
-                whiteSpace: 'nowrap'
-              }}
-              title="Open CyberGuard AI Copilot"
-            >
-              <Bot size={15} color="#00f0ff" />
-              <span>Copilot AI</span>
-            </motion.button>
-          )}
-
-          {/* User Profile & Subscription / Sign In */}
-          {(onOpenProfileModal || onOpenAuthModal) && (
-            <motion.button
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              onClick={onOpenProfileModal || onOpenAuthModal}
-              style={{
-                padding: '7px 12px',
-                borderRadius: '10px',
-                border: currentUser?.plan === 'premium'
-                  ? '1px solid rgba(234, 179, 8, 0.55)'
-                  : currentUser
-                  ? '1px solid rgba(16, 185, 129, 0.45)'
-                  : '1px solid var(--border-color)',
-                background: currentUser?.plan === 'premium'
-                  ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.18) 0%, rgba(245, 158, 11, 0.1) 100%)'
-                  : currentUser
-                  ? 'rgba(16, 185, 129, 0.12)'
-                  : 'var(--code-box-bg)',
-                color: currentUser?.plan === 'premium'
-                  ? '#facc15'
-                  : currentUser
-                  ? '#10b981'
-                  : 'var(--text-primary)',
-                fontSize: '0.76rem',
-                fontWeight: 800,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                boxShadow: currentUser?.plan === 'premium'
-                  ? '0 0 14px rgba(234, 179, 8, 0.3)'
-                  : currentUser
-                  ? '0 0 10px rgba(16, 185, 129, 0.25)'
-                  : 'none',
-                whiteSpace: 'nowrap'
-              }}
-              title={currentUser ? `Operator: ${currentUser.username} (${currentUser.plan === 'premium' ? 'Pro Plan' : 'Free Tier'} • ${currentUser.credits ?? 50} Credits)` : "Profile, Credits & Subscription Plans"}
-            >
-              {currentUser?.plan === 'premium' ? (
-                <Crown size={14} color="#facc15" />
-              ) : (
-                <User size={14} color={currentUser ? "#10b981" : "var(--accent-cyan)"} />
-              )}
-              <span>
-                {currentUser && currentUser.email && currentUser.email !== 'operator@cyberguard.ai'
-                  ? currentUser.username
-                  : currentUser?.plan === 'premium'
-                  ? 'Pro Pass'
-                  : 'Profile & Plans'}
-              </span>
-              {currentUser && (
-                <span
-                  style={{
-                    fontSize: '0.62rem',
-                    padding: '1px 5px',
-                    borderRadius: '8px',
-                    background: currentUser.plan === 'premium' ? 'rgba(234, 179, 8, 0.3)' : 'rgba(0, 240, 255, 0.15)',
-                    color: currentUser.plan === 'premium' ? '#facc15' : 'var(--accent-cyan)',
-                    fontWeight: 900
-                  }}
-                >
-                  {currentUser.plan === 'premium' ? 'PRO' : `${currentUser.credits ?? 50} CR`}
-                </span>
-              )}
-            </motion.button>
-          )}
-
-          <motion.button
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            onClick={() => setActiveTab('discovery')}
-            style={{
-              padding: '8px 13px',
-              borderRadius: '10px',
-              border: '1px solid rgba(249, 115, 22, 0.35)',
-              background: activeTab === 'discovery' ? 'rgba(249, 115, 22, 0.2)' : 'transparent',
-              color: '#f97316',
-              fontSize: '0.76rem',
-              fontWeight: 800,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-            title="Discovery Feed - Real-time Certificate Transparency stream"
-          >
-            <Activity size={14} color="#f97316" />
-            <span className="hidden md:inline">Feed</span>
-          </motion.button>
-
-          <motion.button
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.92 }}
-            onClick={toggleTheme}
-            style={{
-              padding: '8px',
-              borderRadius: '10px',
-              border: '1px solid var(--border-color)',
-              background: 'var(--code-box-bg)',
-              color: 'var(--text-secondary)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-            title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-          >
-            {theme === 'dark' ? <Sun size={15} color="#f59e0b" /> : <Moon size={15} color="#00f0ff" />}
-          </motion.button>
-        </div>
       </div>
     </header>
   );
