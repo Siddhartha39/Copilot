@@ -18,8 +18,8 @@ export default async function handler(req, res) {
 
   const { amount = 200, currency = 'INR', plan = 'premium', credits = 5000 } = req.body || {};
 
-  const keyId = process.env.RAZORPAY_KEY_ID || 'rzp_test_TmTfojTcJlfmux';
-  const keySecret = process.env.RAZORPAY_KEY_SECRET || 'ElXSDhkgkIXDe2duWFzhPOZf';
+  const keyId = process.env.RAZORPAY_KEY_ID || 'rzp_live_TmVEzobckpil2B';
+  const keySecret = process.env.RAZORPAY_KEY_SECRET || 'QqJF5tUX6RBqH0SUqF3G3sRW';
 
   try {
     const authHeader = 'Basic ' + Buffer.from(`${keyId}:${keySecret}`).toString('base64');

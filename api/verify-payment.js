@@ -32,7 +32,7 @@ export default async function handler(req, res) {
 
   // If order_id and signature are present, verify HMAC-SHA256
   if (razorpay_order_id && razorpay_signature) {
-    const keySecret = process.env.RAZORPAY_KEY_SECRET || 'ElXSDhkgkIXDe2duWFzhPOZf';
+    const keySecret = process.env.RAZORPAY_KEY_SECRET || 'QqJF5tUX6RBqH0SUqF3G3sRW';
     const expectedSig = crypto
       .createHmac('sha256', keySecret)
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)

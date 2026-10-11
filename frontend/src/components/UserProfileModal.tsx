@@ -119,7 +119,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
         console.warn('Backend order creation returned fallback, continuing with direct test checkout:', orderErr);
       }
 
-      const keyId = order?.key_id || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_TmTfojTcJlfmux';
+      const keyId = order?.key_id || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_live_TmVEzobckpil2B';
 
       // 3. Configure Razorpay Standard Modal
       const options: any = {
