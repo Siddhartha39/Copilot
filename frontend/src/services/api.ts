@@ -1348,11 +1348,47 @@ export const DEFAULT_GEMINI_API_KEY = typeof atob !== 'undefined'
 /**
  * 9. AI Cyber Copilot Chat Endpoint (/api/chat)
  */
+export function recordScanInHistory(item: {
+  domain: string;
+  url: string;
+  verdict: string;
+  riskScore: number;
+  grade?: string;
+}) {
+  if (typeof window === 'undefined' || !item.domain) return;
+  try {
+    const raw = localStorage.getItem('cyberguard_scan_history');
+    const list: any[] = raw ? JSON.parse(raw) : [];
+    const cleanDomain = item.domain.toLowerCase().trim();
+    const filtered = list.filter((i: any) => (i.domain || '').toLowerCase().trim() !== cleanDomain);
+    filtered.unshift({
+      domain: cleanDomain,
+      url: item.url,
+      verdict: item.verdict,
+      riskScore: item.riskScore,
+      grade: item.grade || 'Audited',
+      timestamp: new Date().toISOString()
+    });
+    localStorage.setItem('cyberguard_scan_history', JSON.stringify(filtered.slice(0, 100)));
+  } catch {}
+}
+
+export function getStoredScanHistory(): any[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem('cyberguard_scan_history');
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
 export async function sendChatMessage(
   message: string,
   report?: any,
   history?: { role: string; content: string }[],
-  apiKey?: string
+  apiKey?: string,
+  scanHistory?: any[]
 ): Promise<ChatResponse> {
   const effectiveApiKey = (
     apiKey ||
@@ -1360,6 +1396,12 @@ export async function sendChatMessage(
     (import.meta.env.VITE_GEMINI_API_KEY || '') ||
     DEFAULT_GEMINI_API_KEY
   ).trim();
+
+  // Load persistent scan history from localStorage if not explicitly passed
+  let effectiveScanHistory = scanHistory;
+  if (!effectiveScanHistory && typeof window !== 'undefined') {
+    effectiveScanHistory = getStoredScanHistory();
+  }
 
   // 1. First try backend /chat endpoint
   try {
@@ -1371,7 +1413,8 @@ export async function sendChatMessage(
         domain: report?.canonical_domain || report?.domain,
         report,
         api_key: effectiveApiKey || undefined,
-        history: history?.map(h => ({ role: h.role, content: h.content }))
+        history: history?.map(h => ({ role: h.role, content: h.content })),
+        scan_history: effectiveScanHistory || []
       }),
     });
     if (res && res.ok) {
@@ -1506,6 +1549,56 @@ function generateClientChatResponse(message: string, report?: any): ChatResponse
   const tlsValid = report?.tls_valid !== false;
 
   let reply = '';
+
+  // 0.1 Scan History Query Handler (Persistent Memory across sessions)
+  const isHistoryQuery = /\b(which\s+(domain|website|site|url)s?\s+(i\s+)?(have\s+)?scanned|what\s+(domain|website|site|url)s?\s+(i\s+)?(have\s+)?scanned|tell\s+me\s+which\s+domain|tell\s+me\s+what\s+domain|domains?\s+(i\s+)?(have\s+)?scanned|scanned\s+till\s+now|scanned\s+so\s+far|list\s+(all\s+)?(my\s+)?(scanned\s+)?(domain|website|site|url)s?|my\s+scan\s+history|scan\s+history|past\s+scans|previous\s+scans|show\s+(my\s+)?(scan\s+)?history|what\s+did\s+i\s+scan|have\s+i\s+scanned|websites?\s+i\s+scanned|all\s+(my\s+)?scans)\b/i.test(msgLower);
+
+  if (isHistoryQuery) {
+    const stored = getStoredScanHistory();
+    if (stored.length === 0) {
+      return {
+        reply: `🗄️ **CyberCopilot Memory: No Previous Scans Recorded Yet**\n\nI don't have any recorded domain scans in your session memory yet.\n\nTo start building your persistent threat intelligence memory:\n1. Enter any domain (e.g. \`psit.ac.in\` or \`github.com\`) into the scanner.\n2. Or ask me: *"Audit psit.ac.in"* right here in the chat!\n\nOnce you scan a domain, I will remember its risk score, security grade, and findings across all chat sessions.`,
+        suggested_actions: [
+          'Audit psit.ac.in',
+          'Audit github.com',
+          'How does CyberCopilot memory work?',
+          'Check password breach'
+        ]
+      };
+    }
+
+    const lines = [
+      `🗄️ **CyberCopilot Memory Dossier: Domains Scanned Till Now**\n`,
+      `I have persistent memory of your audit activity. Here are all **${stored.length}** domains you have scanned across your sessions:\n`,
+      '| # | Target Domain | Threat Verdict | Risk Score | Audit Type / Grade | Recorded Time |',
+      '|:---:|:---|:---:|:---:|:---:|:---|'
+    ];
+
+    stored.forEach((item, idx) => {
+      const v = String(item.verdict || 'BENIGN').toUpperCase();
+      const vBadge = v === 'PHISHING' ? `🔴 ${v}` : v === 'SUSPICIOUS' ? `🟠 ${v}` : v === 'UNREGISTERED' ? `🔵 ${v}` : `🟢 ${v}`;
+      const scoreStr = item.riskScore !== undefined ? `${Number(item.riskScore).toFixed(1)}/100` : (item.risk_score !== undefined ? `${Number(item.risk_score).toFixed(1)}/100` : '0.0/100');
+      const dateClean = String(item.timestamp || item.created_at || 'Recent').slice(0, 19).replace('T', ' ');
+      lines.push(`| ${idx + 1} | **\`${item.domain}\`** | ${vBadge} | \`${scoreStr}\` | ${item.grade || 'Audited'} | ${dateClean} |`);
+    });
+
+    const topDomain = stored[0]?.domain || 'target domain';
+    lines.push(
+      `\n🧠 **Persistent Memory Active:** Even in a brand new chat session, I remember every domain you have audited. ` +
+      `You can ask me to re-audit any of these, compare two domains (e.g. *"Compare \`${topDomain}\` with another domain"*), ` +
+      `or generate server hardening configs!`
+    );
+
+    return {
+      reply: lines.join('\n'),
+      suggested_actions: [
+        `Re-audit ${topDomain}`,
+        `Show vulnerabilities for ${topDomain}`,
+        'Filter high-risk domains only',
+        'Audit a new domain'
+      ]
+    };
+  }
 
   // 0. Sandbox Launch Request
   const isSandboxQuery = /\b(open\s+sandbox|launch\s+sandbox|show\s+sandbox|view\s+sandbox|run\s+sandbox|interactive\s+sandbox|playwright\s+sandbox|\bsandbox\b)\b/i.test(msgLower);

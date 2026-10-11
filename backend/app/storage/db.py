@@ -6,7 +6,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import List, Optional, Dict, Any
 from app.config import settings
-from app.schemas.analysis import RiskScoreReport, AnalystFeedback
+from app.schemas.analysis import RiskScoreReport, FreeScanResult, AnalystFeedback
 
 def hash_password(password: str, salt: Optional[str] = None) -> tuple[str, str]:
     if not salt:
@@ -154,6 +154,33 @@ class DatabaseManager:
             None,
             None,
             report_json
+        ))
+        conn.commit()
+        conn.close()
+
+    def save_free_scan(self, free_scan: FreeScanResult) -> None:
+        conn = self._get_conn()
+        cursor = conn.cursor()
+        
+        free_json = free_scan.model_dump_json()
+        cursor.execute("""
+        INSERT OR REPLACE INTO cases (
+            case_id, target_url, canonical_domain, risk_score, verdict,
+            matched_brand, is_contradiction, created_at, analyst_verdict,
+            analyst_notes, full_report_json
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            free_scan.case_id,
+            free_scan.target_url,
+            free_scan.canonical_domain,
+            free_scan.basic_risk_score,
+            free_scan.verdict,
+            None,
+            0,
+            free_scan.timestamp,
+            None,
+            None,
+            free_json
         ))
         conn.commit()
         conn.close()

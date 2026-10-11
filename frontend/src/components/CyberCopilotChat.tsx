@@ -326,15 +326,21 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
   }, [sessions, currentUser?.id, currentUser?.email]);
 
   function getInitialWelcomeMessage(targetDomain?: string | null): ChatMessage {
+    let scannedCount = 0;
+    try {
+      const raw = typeof window !== 'undefined' ? localStorage.getItem('cyberguard_scan_history') : null;
+      if (raw) scannedCount = JSON.parse(raw).length;
+    } catch {}
+
     if (targetDomain) {
       return {
         role: 'assistant',
-        content: `👋 **CyberGuard AI Copilot Active (ChatGPT SOC Mode)**\n\nI have loaded live forensic intelligence for **\`${targetDomain}\`**:\n- **Verdict:** \`${verdict || 'ANALYZED'}\`\n- **Risk Score:** \`${riskScore !== undefined ? `${riskScore}/100` : 'Evaluated'}\`\n- **Security Grade:** \`${grade || 'Active'}\`\n\nAsk me anything: Is it easily hackable? How do I harden Nginx headers? What vulnerabilities does it expose? Or type **\`open sandbox\`** to inspect it in a live headless viewport.`
+        content: `👋 **CyberGuard AI Copilot Active (ChatGPT SOC Mode)**\n\nI have loaded live forensic intelligence for **\`${targetDomain}\`**:\n- **Verdict:** \`${verdict || 'ANALYZED'}\`\n- **Risk Score:** \`${riskScore !== undefined ? `${riskScore}/100` : 'Evaluated'}\`\n- **Security Grade:** \`${grade || 'Active'}\`\n\n${scannedCount > 0 ? `🧠 *Persistent Memory: I remember all ${scannedCount} domains you have audited till now! Ask "which domain I scanned till now" at any time.*\n\n` : ''}Ask me anything: Is it easily hackable? How do I harden Nginx headers? What vulnerabilities does it expose? Or type **\`open sandbox\`** to inspect it in a live headless viewport.`
       };
     }
     return {
       role: 'assistant',
-      content: `👋 **CyberGuard AI Copilot Online (ChatGPT SOC Mode)**\n\nI am your autonomous defensive cybersecurity analyst and technical AI assistant with live internet telemetry execution.\n\nType **\`analyze amazon.in\`** (or any domain) for an instant live audit, ask me to **\`open sandbox\`** to preview any link, or ask any question on web security, DevSecOps, and secure coding!`
+      content: `👋 **CyberGuard AI Copilot Online (ChatGPT SOC Mode)**\n\nI am your autonomous defensive cybersecurity analyst and technical AI assistant with live internet telemetry and cross-session scan memory.\n\n${scannedCount > 0 ? `🧠 **Audit Memory Active:** I remember all **${scannedCount}** domains you have scanned till now! Ask **\`which domain I scanned till now\`** to see your complete scan history.\n\n` : ''}Type **\`analyze amazon.in\`** (or any domain) for an instant live audit, ask me to **\`open sandbox\`** to preview any link, or ask any question on web security, DevSecOps, and secure coding!`
     };
   }
 
@@ -671,7 +677,13 @@ Plan Tier | Quota Allocation
         processedQuery = `[MODE: COMPREHENSIVE CYBERSECURITY EXPERT] ${query}`;
       }
 
-      const response = await sendChatMessage(processedQuery, currentContextReport, chatHistory, geminiApiKey);
+      let scanHistory: any[] = [];
+      try {
+        const raw = typeof window !== 'undefined' ? localStorage.getItem('cyberguard_scan_history') : null;
+        if (raw) scanHistory = JSON.parse(raw);
+      } catch {}
+
+      const response = await sendChatMessage(processedQuery, currentContextReport, chatHistory, geminiApiKey, scanHistory);
       deductUserCredit().catch(() => {});
 
       const finalMessages = [

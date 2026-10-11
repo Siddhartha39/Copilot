@@ -311,7 +311,7 @@ async def free_security_scan(req: AnalysisRequest):
     # Create x402 payment challenge for upgrading to Premium Deep Audit
     challenge = x402_manager.create_payment_challenge(canonical_url, case_id)
     
-    return FreeScanResult(
+    free_res = FreeScanResult(
         case_id=case_id,
         target_url=canonical_url,
         canonical_domain=registrable_domain,
@@ -339,6 +339,11 @@ async def free_security_scan(req: AnalysisRequest):
         deep_audit_locked=False,
         x402_challenge=challenge.model_dump()
     )
+    try:
+        db_manager.save_free_scan(free_res)
+    except Exception:
+        pass
+    return free_res
 
 # -----------------------------------------------------------------------------------
 # 2. x402 Payment Challenge & Discovery Endpoints
@@ -626,7 +631,8 @@ async def chat_with_copilot(req: ChatRequest):
         message=req.message.strip(),
         report=req.report,
         history=req.history,
-        api_key=req.api_key
+        api_key=req.api_key,
+        scan_history=req.scan_history
     )
     return ChatResponse(
         reply=result.get("reply", "No response generated."),

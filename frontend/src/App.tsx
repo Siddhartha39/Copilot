@@ -65,6 +65,7 @@ import {
   isPremiumEmail,
   getPremiumRecord,
   syncUserSubscription,
+  recordScanInHistory,
   type UserProfile
 } from './services/api';
 
@@ -302,6 +303,13 @@ export function App() {
         setCurrentAgentStage(2);
         setFreeScanResult(freeRes);
         setActiveChallenge(null);
+        recordScanInHistory({
+          domain: freeRes.canonical_domain,
+          url: freeRes.target_url,
+          verdict: freeRes.verdict,
+          riskScore: freeRes.basic_risk_score,
+          grade: freeRes.security_audit?.security_grade || (freeRes.tls_valid ? 'B' : 'F')
+        });
       } else {
         // Full Deep Security Audit (Stages 0 through 5)
         const analysisPromise = analyzeDomain(cleanUrl, true, forceRefresh);
@@ -355,6 +363,13 @@ export function App() {
         await sleep(350);
 
         setReport(result);
+        recordScanInHistory({
+          domain: result.canonical_domain,
+          url: result.target_url,
+          verdict: result.verdict,
+          riskScore: result.overall_risk_score,
+          grade: result.security_audit?.security_grade || 'Audited'
+        });
         loadInitialData();
       }
     } catch (err: any) {

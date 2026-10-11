@@ -122,15 +122,133 @@ async def ask_cyber_copilot(
     message: str,
     report: Optional[Dict[str, Any]] = None,
     history: Optional[list] = None,
-    api_key: Optional[str] = None
+    api_key: Optional[str] = None,
+    scan_history: Optional[list] = None
 ) -> Dict[str, Any]:
     """
     Interactive Cyber Security Copilot answering questions about scan results,
-    vulnerabilities, brand contradiction, code injection immunity, and server hardening.
-    Works like ChatGPT/Gemini with live domain analysis and optional Gemini API integration.
+    vulnerabilities, brand contradiction, code injection immunity, server hardening,
+    and persistent memory of previously scanned domains across all chat sessions.
+    Works like ChatGPT/Gemini with live domain analysis and persistent scan memory.
     """
     import re
     import os
+
+    # -------------------------------------------------------------
+    # 0. Retrieve Persistent Scan History from Database & Client Payload
+    # -------------------------------------------------------------
+    from app.storage.db import db_manager
+    db_cases = []
+    try:
+        db_cases = db_manager.get_all_cases(limit=100) or []
+    except Exception:
+        pass
+
+    merged_history = []
+    seen_domains = set()
+
+    # Add client-provided scans first (most recent browser activity)
+    if scan_history and isinstance(scan_history, list):
+        for item in scan_history:
+            if isinstance(item, dict):
+                d = (item.get("domain") or item.get("canonical_domain") or "").strip().lower()
+                if d and d not in seen_domains:
+                    seen_domains.add(d)
+                    merged_history.append({
+                        "domain": d,
+                        "target_url": item.get("url") or item.get("target_url") or f"https://{d}",
+                        "verdict": item.get("verdict", "BENIGN"),
+                        "risk_score": item.get("riskScore") if item.get("riskScore") is not None else item.get("risk_score", 0),
+                        "created_at": item.get("timestamp") or item.get("created_at") or "Recent Session",
+                        "grade": item.get("grade") or "Audited"
+                    })
+
+    # Add database cases
+    for case in db_cases:
+        if isinstance(case, dict):
+            d = (case.get("canonical_domain") or "").strip().lower()
+            if d and d not in seen_domains:
+                seen_domains.add(d)
+                merged_history.append({
+                    "domain": d,
+                    "target_url": case.get("target_url") or f"https://{d}",
+                    "verdict": case.get("verdict", "BENIGN"),
+                    "risk_score": case.get("risk_score", 0),
+                    "created_at": case.get("created_at") or "Recorded in database",
+                    "grade": "Audited"
+                })
+
+    msg_clean = message.lower().strip()
+
+    # Check if query is asking for scan history or previously scanned domains
+    is_history_query = bool(re.search(
+        r'\b('
+        r'which\s+(domain|website|site|url)s?\s+(i\s+)?(have\s+)?scanned|'
+        r'what\s+(domain|website|site|url)s?\s+(i\s+)?(have\s+)?scanned|'
+        r'tell\s+me\s+which\s+domain|'
+        r'tell\s+me\s+what\s+domain|'
+        r'domains?\s+(i\s+)?(have\s+)?scanned|'
+        r'scanned\s+till\s+now|scanned\s+so\s+far|'
+        r'list\s+(all\s+)?(my\s+)?(scanned\s+)?(domain|website|site|url)s?|'
+        r'my\s+scan\s+history|scan\s+history|past\s+scans|previous\s+scans|'
+        r'show\s+(my\s+)?(scan\s+)?history|what\s+did\s+i\s+scan|'
+        r'have\s+i\s+scanned|websites?\s+i\s+scanned|'
+        r'all\s+(my\s+)?scans'
+        r')\b',
+        msg_clean
+    ))
+
+    if is_history_query:
+        if not merged_history:
+            return {
+                "reply": (
+                    "🗄️ **CyberCopilot Memory: No Previous Scans Recorded Yet**\n\n"
+                    "I don't have any recorded domain scans in your session memory yet.\n\n"
+                    "To start building your persistent threat intelligence memory:\n"
+                    "1. Enter any domain (e.g. `psit.ac.in` or `github.com`) into the scanner.\n"
+                    "2. Or ask me: *\"Audit psit.ac.in\"* right here in the chat!\n\n"
+                    "Once you scan a domain, I will remember its risk score, security grade, and findings across all chat sessions."
+                ),
+                "suggested_actions": [
+                    "Audit psit.ac.in",
+                    "Audit github.com",
+                    "How does CyberCopilot memory work?",
+                    "Check password breach"
+                ]
+            }
+
+        lines = [
+            f"🗄️ **CyberCopilot Memory Dossier: Domains Scanned Till Now**\n",
+            f"I have persistent memory of your audit activity. Here are all **{len(merged_history)}** domains you have scanned across your sessions:\n",
+            "| # | Target Domain | Threat Verdict | Risk Score | Audit Type / Grade | Recorded Time |",
+            "|:---:|:---|:---:|:---:|:---:|:---|"
+        ]
+
+        for idx, item in enumerate(merged_history, 1):
+            v = str(item['verdict']).upper()
+            v_badge = f"🔴 {v}" if v == "PHISHING" else f"🟠 {v}" if v == "SUSPICIOUS" else f"🔵 {v}" if v == "UNREGISTERED" else f"🟢 {v}"
+            score_val = item['risk_score']
+            score_str = f"{score_val:.1f}/100" if isinstance(score_val, (int, float)) else str(score_val)
+            date_clean = str(item['created_at'])[:19].replace('T', ' ')
+            lines.append(f"| {idx} | **`{item['domain']}`** | {v_badge} | `{score_str}` | {item.get('grade', 'Audited')} | {date_clean} |")
+
+        top_domain = merged_history[0]['domain']
+        lines.append(
+            f"\n🧠 **Persistent Memory Active:** Even in a brand new chat session, I remember every domain you have audited. "
+            f"You can ask me to re-audit any of these, compare two domains (e.g. *\"Compare `{top_domain}` with another domain\"*), "
+            f"or generate server hardening configs!"
+        )
+
+        reply_text = "\n".join(lines)
+        return {
+            "reply": reply_text,
+            "suggested_actions": [
+                f"Re-audit {top_domain}",
+                f"Show vulnerabilities for {top_domain}",
+                "Filter high-risk domains only",
+                "Audit a new domain"
+            ]
+        }
 
     report = report or {}
     raw_domain = (report.get("canonical_domain") or report.get("domain") or "").strip()
@@ -388,6 +506,18 @@ TONE & OUTPUT FORMAT:
 - Use clean Markdown headers, bullet points, technical tables, and production-ready code/config blocks.
 
 {context_summary}
+"""
+
+    history_bullets = "\n".join([
+        f"- `{item['domain']}`: Verdict={item['verdict']}, Risk={item['risk_score']}/100, Type/Grade={item.get('grade', 'Audited')}"
+        for item in merged_history[:20]
+    ]) if merged_history else "No previous domains scanned yet."
+
+    system_prompt += f"""
+USER'S PERSISTENT SCAN HISTORY MEMORY:
+The user has scanned and audited the following domains in CyberGuard AI:
+{history_bullets}
+You remember these scans across all chat sessions. If the user asks what domains they scanned, asks to compare domains, or references past targets, use this exact memory!
 """
 
     # 1. Try Google Gemini API if key is available
