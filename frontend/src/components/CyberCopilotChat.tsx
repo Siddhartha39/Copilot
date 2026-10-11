@@ -44,7 +44,8 @@ import {
   BookOpen,
   Cloud,
   Crown,
-  HardDrive
+  HardDrive,
+  User
 } from 'lucide-react';
 import type { RiskScoreReport, FreeScanResult, ChatMessage } from '../types';
 import {
