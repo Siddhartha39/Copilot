@@ -78,8 +78,8 @@ ${report.ai_insights?.remediation_recommendations.map((r, i) => `${i + 1}. ${r}`
         {/* Modal Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', borderBottom: '1px solid rgba(75, 85, 99, 0.4)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Shield size={20} color="#06b6d4" />
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#f3f4f6' }}>
+            <Shield size={20} color="var(--accent-cyan)" />
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)' }}>
               CyberGuard AI Forensic Intelligence Report
             </h3>
           </div>
@@ -90,9 +90,9 @@ ${report.ai_insights?.remediation_recommendations.map((r, i) => `${i + 1}. ${r}`
               style={{
                 padding: '6px 12px',
                 borderRadius: '6px',
-                border: '1px solid rgba(75, 85, 99, 0.5)',
-                background: 'rgba(31, 41, 55, 0.8)',
-                color: '#38bdf8',
+                border: '1px solid var(--border-color)',
+                background: 'var(--code-box-bg)',
+                color: 'var(--accent-cyan)',
                 fontSize: '0.8rem',
                 cursor: 'pointer',
                 display: 'flex',
@@ -125,7 +125,7 @@ ${report.ai_insights?.remediation_recommendations.map((r, i) => `${i + 1}. ${r}`
 
             <button
               onClick={onClose}
-              style={{ background: 'transparent', border: 'none', color: '#9ca3af', cursor: 'pointer' }}
+              style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer' }}
             >
               <X size={20} />
             </button>
@@ -135,20 +135,20 @@ ${report.ai_insights?.remediation_recommendations.map((r, i) => `${i + 1}. ${r}`
         {/* Modal Content */}
         <div style={{ padding: '24px', overflowY: 'auto', flex: 1 }}>
           <div style={{
-            background: 'rgba(17, 24, 39, 0.9)',
-            border: '1px solid rgba(75, 85, 99, 0.4)',
+            background: 'var(--code-box-bg)',
+            border: '1px solid var(--border-color)',
             borderRadius: '8px',
             padding: '24px',
-            color: '#f3f4f6',
+            color: 'var(--text-primary)',
             fontSize: '0.85rem',
             lineHeight: 1.6
           }}>
-            <div style={{ borderBottom: '2px solid #06b6d4', paddingBottom: '12px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div style={{ borderBottom: '2px solid var(--accent-cyan)', paddingBottom: '12px', marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#f3f4f6' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>
                   CYBERGUARD AI FORENSIC INTELLIGENCE REPORT
                 </h2>
-                <div style={{ fontSize: '0.8rem', color: '#9ca3af' }}>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                   Multi-Signal Risk Assessment, Brand Contradiction & Exploitability Audit
                 </div>
               </div>

@@ -98,7 +98,7 @@ const StickyCard_003: React.FC<{ card: CapabilityCardData }> = ({ card }) => {
               <div className="mono" style={{ fontSize: '0.8rem', color: card.color, fontWeight: 800 }}>
                 MODULE {card.step} // {card.subtitle.toUpperCase()}
               </div>
-              <h3 className="cyber-font" style={{ fontSize: '1.6rem', fontWeight: 900, color: '#f3f4f6', marginTop: '4px' }}>
+              <h3 className="cyber-font" style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px' }}>
                 {card.title}
               </h3>
             </div>
@@ -108,7 +108,7 @@ const StickyCard_003: React.FC<{ card: CapabilityCardData }> = ({ card }) => {
             fontSize: '0.75rem',
             fontWeight: 800,
             color: card.color,
-            background: 'rgba(0,0,0,0.5)',
+            background: 'var(--code-box-bg)',
             border: `1px solid ${card.borderColor}`,
             padding: '4px 14px',
             borderRadius: '14px'
@@ -118,7 +118,7 @@ const StickyCard_003: React.FC<{ card: CapabilityCardData }> = ({ card }) => {
         </div>
 
         {/* Card Description */}
-        <p style={{ fontSize: '1.05rem', color: '#d1d5db', lineHeight: 1.65, marginBottom: '24px' }}>
+        <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: '24px' }}>
           {card.description}
         </p>
 
@@ -127,11 +127,14 @@ const StickyCard_003: React.FC<{ card: CapabilityCardData }> = ({ card }) => {
           className="mono"
           style={{
             fontSize: '0.88rem',
-            color: '#f3f4f6',
-            background: 'rgba(0, 0, 0, 0.65)',
+            color: 'var(--text-primary)',
+            background: 'var(--code-box-bg)',
             padding: '14px 18px',
             borderRadius: '10px',
             borderLeft: `4px solid ${card.color}`,
+            borderTop: '1px solid var(--border-color)',
+            borderRight: '1px solid var(--border-color)',
+            borderBottom: '1px solid var(--border-color)',
             marginBottom: card.actionText ? '20px' : '0'
           }}
         >

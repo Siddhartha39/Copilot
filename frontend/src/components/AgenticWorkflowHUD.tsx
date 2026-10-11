@@ -95,14 +95,14 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
             <Bot size={22} color="#00f0ff" />
           </div>
           <div>
-            <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#f3f4f6', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span>Autonomous Cyber Intelligence Agent</span>
               <span className="badge-info" style={{ fontSize: '0.65rem', padding: '2px 8px', borderRadius: '10px' }}>
                 100% FREE & OPEN
               </span>
             </div>
-            <div className="mono" style={{ fontSize: '0.72rem', color: '#9ca3af' }}>
-              Target: <span style={{ color: '#38bdf8' }}>{targetUrl || 'Ready for URL analysis'}</span>
+            <div className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+              Target: <span style={{ color: 'var(--accent-cyan)' }}>{targetUrl || 'Ready for URL analysis'}</span>
             </div>
           </div>
         </div>
@@ -119,9 +119,9 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
       {/* Workflow Stage Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px' }}>
         {steps.map((step, idx) => {
-          let statusBorder = 'rgba(75, 85, 99, 0.3)';
-          let statusBg = 'rgba(17, 24, 39, 0.4)';
-          let statusColor = '#9ca3af';
+          let statusBorder = 'var(--border-color)';
+          let statusBg = 'var(--code-box-bg)';
+          let statusColor = 'var(--text-secondary)';
           let StatusIcon = Cpu;
 
           if (step.status === 'completed') {
@@ -132,7 +132,7 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
           } else if (step.status === 'running') {
             statusBorder = 'rgba(56, 189, 248, 0.6)';
             statusBg = 'rgba(56, 189, 248, 0.12)';
-            statusColor = '#38bdf8';
+            statusColor = 'var(--accent-cyan)';
             StatusIcon = Loader2;
           } else if (step.status === 'paused_for_payment') {
             statusBorder = 'rgba(245, 158, 11, 0.6)';
@@ -162,11 +162,11 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
                   </span>
                   <StatusIcon size={14} color={statusColor} className={step.status === 'running' ? 'animate-spin' : ''} />
                 </div>
-                <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#f3f4f6', marginBottom: '4px', lineHeight: 1.3 }}>
+                <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px', lineHeight: 1.3 }}>
                   {step.action}
                 </div>
               </div>
-              <div style={{ fontSize: '0.68rem', color: '#9ca3af', lineHeight: 1.4, marginTop: '6px' }}>
+              <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', lineHeight: 1.4, marginTop: '6px' }}>
                 {step.detail}
               </div>
             </div>

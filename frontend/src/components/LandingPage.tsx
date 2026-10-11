@@ -16,7 +16,8 @@ import {
   Cpu,
   Coins,
   Search,
-  LayoutGrid
+  LayoutGrid,
+  Sparkles
 } from 'lucide-react';
 import { InfoTooltip } from './InfoTooltip';
 
@@ -431,57 +432,130 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           />
         </motion.div>
 
-        {/* Main Headline with Animated Gradient Glow */}
+        {/* Main Headline with High-Impact Gradient Typography (Matches Image 2) */}
         <motion.h1
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="cyber-font cyber-gradient-text"
           style={{
-            fontSize: 'clamp(1.5rem, 4.2vw, 2.5rem)',
-            fontWeight: 900,
-            letterSpacing: '0.02em',
-            lineHeight: 1.22,
-            maxWidth: '960px',
-            margin: '0 auto 18px auto'
+            maxWidth: '1000px',
+            margin: '0 auto 16px auto',
+            lineHeight: 1.15
           }}
         >
-          AI-POWERED PHISHING INTELLIGENCE &amp; ATTACK-CHAIN FORENSICS
+          <span
+            className="hero-gradient-text"
+            style={{
+              display: 'block',
+              fontSize: 'clamp(2.4rem, 6.2vw, 4.4rem)',
+              fontWeight: 900,
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              lineHeight: 1.12,
+              marginBottom: '4px'
+            }}
+          >
+            NEXT EVOLUTION
+          </span>
+          <span
+            style={{
+              display: 'block',
+              fontSize: 'clamp(2.4rem, 6.2vw, 4.4rem)',
+              fontWeight: 900,
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              lineHeight: 1.12,
+              color: isLight ? '#0f172a' : '#f8fafc'
+            }}
+          >
+            OF CYBER DEFENSE.
+          </span>
         </motion.h1>
 
-        {/* Subtitle */}
+        {/* Subtitle (Matches Image 2) */}
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.28 }}
           style={{
-            fontSize: 'clamp(0.92rem, 2vw, 1.05rem)',
-            color: 'var(--text-secondary)',
-            maxWidth: '780px',
-            margin: '0 auto 28px auto',
-            lineHeight: 1.6
+            fontSize: 'clamp(1rem, 2.2vw, 1.2rem)',
+            color: isLight ? '#475569' : 'var(--text-secondary)',
+            maxWidth: '760px',
+            margin: '0 auto 30px auto',
+            lineHeight: 1.6,
+            fontWeight: 450
           }}
         >
-          Zero-trust cyber defense platform detecting brand-spoofing lookalikes, reconstructing step-by-step forensic attack paths, and auditing web infrastructure exploitability.
+          Where human intelligence meets machine speed. Discover next-generation zero-trust defense, real-time phishing forensics, and autonomous threat mitigation.
         </motion.p>
 
-        {/* Interactive Quick-Audit Search Bar */}
+        {/* Hero Pill Action Buttons (Matches Image 2) */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.35 }}
+          className="hero-action-buttons"
+          style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '34px' }}
+        >
+          <motion.button
+            whileHover={{ scale: 1.04, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={onLaunchScanner}
+            className="hero-pill-btn-primary"
+            style={{
+              borderRadius: '9999px',
+              padding: '14px 34px',
+              fontSize: '1rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px'
+            }}
+          >
+            <Zap size={19} color="#ffffff" />
+            <span>Explore Technology</span>
+            <ArrowRight size={19} color="#ffffff" />
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.04, y: -2 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={onOpenExtension}
+            className="hero-pill-btn-secondary"
+            style={{
+              borderRadius: '9999px',
+              padding: '14px 32px',
+              fontSize: '1rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px'
+            }}
+          >
+            <Sparkles size={19} color={isLight ? '#9333ea' : '#c084fc'} />
+            <span>Discover the Future</span>
+          </motion.button>
+        </motion.div>
+
+        {/* Interactive Quick-Audit Search Bar (Styled with sleek pill shape) */}
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.45, delay: 0.35 }}
+          transition={{ duration: 0.45, delay: 0.4 }}
           style={{
-            maxWidth: '680px',
+            maxWidth: '720px',
             margin: '0 auto 24px auto',
-            background: 'var(--bg-card)',
-            border: '1px solid rgba(56, 189, 248, 0.4)',
-            borderRadius: '14px',
-            padding: '8px',
-            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.12)'
+            background: isLight ? '#ffffff' : 'var(--bg-card)',
+            border: isLight ? '1.5px solid #cbd5e1' : '1px solid rgba(56, 189, 248, 0.4)',
+            borderRadius: '9999px',
+            padding: '7px 8px 7px 18px',
+            boxShadow: isLight ? '0 10px 30px -5px rgba(15, 23, 42, 0.08)' : '0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.12)'
           }}
         >
           <form onSubmit={handleQuickSubmit} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', paddingLeft: '12px', color: 'var(--accent-cyan)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--accent-cyan)' }}>
               <Search size={18} />
             </div>
             <input
@@ -495,7 +569,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 background: 'transparent',
                 border: 'none',
                 color: 'var(--text-primary)',
-                fontSize: '0.9rem',
+                fontSize: '0.92rem',
                 outline: 'none',
                 padding: '8px 4px'
               }}
@@ -504,29 +578,28 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               type="submit"
-              className="cyber-shimmer-btn"
               style={{
-                background: 'linear-gradient(135deg, #00f0ff 0%, #0284c7 100%)',
-                color: '#070a10',
+                background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)',
+                color: '#ffffff',
                 border: 'none',
-                borderRadius: '10px',
-                padding: '10px 20px',
-                fontWeight: 800,
-                fontSize: '0.85rem',
+                borderRadius: '9999px',
+                padding: '11px 24px',
+                fontWeight: 700,
+                fontSize: '0.86rem',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                boxShadow: '0 0 15px rgba(0, 240, 255, 0.4)'
+                boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)'
               }}
             >
               <Radar size={16} />
-              <span className="cyber-font">AUDIT TARGET</span>
+              <span>Audit Target</span>
             </motion.button>
           </form>
 
           {/* Quick-test Sample Chips */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px', padding: '0 6px', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '10px', padding: '0 6px', flexWrap: 'wrap', justifyContent: 'center' }}>
             <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>QUICK SAMPLES:</span>
             {sampleTargets.map((s) => (
               <motion.button
@@ -539,7 +612,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   background: 'var(--code-box-bg)',
                   border: '1px solid var(--border-color)',
                   borderRadius: '20px',
-                  padding: '4px 10px',
+                  padding: '4px 12px',
                   fontSize: '0.72rem',
                   cursor: 'pointer',
                   display: 'flex',
@@ -550,7 +623,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 }}
               >
                 <span className="mono" style={{ fontWeight: 600 }}>{s.url}</span>
-                <span className={`mono ${s.badgeClass}`} style={{ fontSize: '0.62rem', padding: '1px 5px', borderRadius: '6px', fontWeight: 800 }}>
+                <span className={`mono ${s.badgeClass}`} style={{ fontSize: '0.62rem', padding: '1px 6px', borderRadius: '10px', fontWeight: 800 }}>
                   {s.badge}
                 </span>
               </motion.button>
@@ -558,90 +631,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           {/* Scan Protocol Notice */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '12px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.05)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '12px', paddingTop: '8px', borderTop: '1px solid var(--border-color)' }}>
             <Zap size={12} color="var(--accent-cyan)" />
             <span className="mono" style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
               100% Free &amp; Open Access • Full Headless Sandbox, Brand pHash Vision &amp; CyberAI <span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>Unlocked (No Paywalls)</span>
             </span>
           </div>
-        </motion.div>
-
-        {/* Hero CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.45 }}
-          className="hero-action-buttons"
-          style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}
-        >
-          <motion.button
-            whileHover={{ scale: 1.04, y: -2 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={onLaunchScanner}
-            className="cyber-shimmer-btn"
-            style={{
-              background: 'linear-gradient(135deg, #00f0ff 0%, #0284c7 100%)',
-              color: '#070a10',
-              border: 'none',
-              borderRadius: '10px',
-              padding: '13px 26px',
-              fontWeight: 800,
-              fontSize: '0.92rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              boxShadow: '0 0 25px rgba(0, 240, 255, 0.4)'
-            }}
-          >
-            <Radar size={18} />
-            <span className="cyber-font" style={{ letterSpacing: '0.04em' }}>LAUNCH LIVE SCANNER</span>
-          </motion.button>
-
-          <motion.button
-            whileHover={{ scale: 1.04, y: -2 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={onOpenExtension}
-            style={{
-              background: 'var(--bg-card)',
-              color: 'var(--accent-cyan)',
-              border: '1px solid var(--border-color)',
-              borderRadius: '10px',
-              padding: '13px 24px',
-              fontWeight: 700,
-              fontSize: '0.92rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              boxShadow: 'var(--panel-shadow)'
-            }}
-          >
-            <Puzzle size={18} color="var(--accent-cyan)" />
-            <span className="cyber-font" style={{ letterSpacing: '0.04em' }}>BROWSER SHIELD EXTENSION</span>
-          </motion.button>
-
-          <motion.button
-            whileHover={{ scale: 1.04, y: -2 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={onOpenDiscovery}
-            style={{
-              background: 'rgba(249, 115, 22, 0.1)',
-              color: '#f97316',
-              border: '1px solid rgba(249, 115, 22, 0.35)',
-              borderRadius: '10px',
-              padding: '13px 22px',
-              fontWeight: 700,
-              fontSize: '0.92rem',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-          >
-            <Activity size={18} color="#f97316" />
-            <span className="cyber-font" style={{ letterSpacing: '0.04em' }}>LIVE NRD FEED</span>
-          </motion.button>
         </motion.div>
 
         {/* Telemetry Status Bar with Interactive Hover Glow */}

@@ -136,23 +136,28 @@ export const MatrixBackground: React.FC<MatrixBackgroundProps> = ({
 
   return (
     <>
-      {/* Background Canvas */}
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          pointerEvents: 'none',
-          zIndex: 0,
-          opacity: themeMode === 'light' ? 0.16 : opacity
-        }}
-      />
+      {/* Clean Tech Grid Pattern Overlay (Matches Image 2) */}
+      <div className="tech-grid-overlay" />
+
+      {/* Background Matrix Canvas (Dark Mode Only) */}
+      {themeMode === 'dark' && (
+        <canvas
+          ref={canvasRef}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            pointerEvents: 'none',
+            zIndex: 0,
+            opacity: opacity
+          }}
+        />
+      )}
 
       {/* Cyber Scanline Scan Overlay (Dark theme only) */}
-      <div className="cyber-scanlines" />
+      {themeMode === 'dark' && <div className="cyber-scanlines" />}
 
       {/* Subtle Hacker HUD Floating Switcher in bottom right */}
       {themeMode === 'dark' && (

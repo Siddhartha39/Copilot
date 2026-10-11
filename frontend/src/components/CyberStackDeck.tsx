@@ -197,7 +197,7 @@ export const CyberStackDeck: React.FC<CyberStackDeckProps> = ({
                   <div className="mono" style={{ fontSize: '0.75rem', color: activeCard.color, fontWeight: 800 }}>
                     MODULE {activeCard.step} // {activeCard.subtitle.toUpperCase()}
                   </div>
-                  <h3 className="cyber-font" style={{ fontSize: '1.35rem', fontWeight: 900, color: '#f3f4f6', marginTop: '2px' }}>
+                  <h3 className="cyber-font" style={{ fontSize: '1.35rem', fontWeight: 900, color: 'var(--text-primary)', marginTop: '2px' }}>
                     {activeCard.title}
                   </h3>
                 </div>
@@ -207,7 +207,7 @@ export const CyberStackDeck: React.FC<CyberStackDeckProps> = ({
                 fontSize: '0.7rem',
                 fontWeight: 800,
                 color: activeCard.color,
-                background: 'rgba(0,0,0,0.5)',
+                background: 'var(--code-box-bg)',
                 border: `1px solid ${activeCard.color}`,
                 padding: '4px 12px',
                 borderRadius: '12px'
@@ -216,7 +216,7 @@ export const CyberStackDeck: React.FC<CyberStackDeckProps> = ({
               </span>
             </div>
 
-            <p style={{ fontSize: '0.92rem', color: '#d1d5db', lineHeight: 1.6, marginBottom: '20px' }}>
+            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
               {activeCard.description}
             </p>
 
@@ -224,11 +224,14 @@ export const CyberStackDeck: React.FC<CyberStackDeckProps> = ({
               className="mono"
               style={{
                 fontSize: '0.82rem',
-                color: '#f3f4f6',
-                background: 'rgba(0, 0, 0, 0.6)',
+                color: 'var(--text-primary)',
+                background: 'var(--code-box-bg)',
                 padding: '12px 16px',
                 borderRadius: '8px',
                 borderLeft: `4px solid ${activeCard.color}`,
+                borderTop: '1px solid var(--border-color)',
+                borderRight: '1px solid var(--border-color)',
+                borderBottom: '1px solid var(--border-color)',
                 marginBottom: activeCard.actionText ? '16px' : '0'
               }}
             >

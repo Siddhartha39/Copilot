@@ -173,10 +173,10 @@ export const CyberFeatureCards: React.FC<CyberFeatureCardsProps> = ({
                   {card.icon}
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#f3f4f6', lineHeight: 1.3 }}>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.3 }}>
                     {card.title}
                   </h3>
-                  <div className="mono" style={{ fontSize: '0.7rem', color: '#9ca3af', marginTop: '2px' }}>
+                  <div className="mono" style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
                     {card.subtitle}
                   </div>
                 </div>
@@ -185,7 +185,7 @@ export const CyberFeatureCards: React.FC<CyberFeatureCardsProps> = ({
               <span className="mono" style={{
                 fontSize: '0.62rem',
                 fontWeight: 800,
-                color: '#38bdf8',
+                color: 'var(--accent-cyan)',
                 background: 'rgba(6, 182, 212, 0.12)',
                 border: '1px solid rgba(6, 182, 212, 0.3)',
                 padding: '2px 8px',
@@ -197,7 +197,7 @@ export const CyberFeatureCards: React.FC<CyberFeatureCardsProps> = ({
             </div>
 
             {/* Description */}
-            <p style={{ fontSize: '0.83rem', color: '#9ca3af', lineHeight: 1.55, marginBottom: '16px' }}>
+            <p style={{ fontSize: '0.83rem', color: 'var(--text-secondary)', lineHeight: 1.55, marginBottom: '16px' }}>
               {card.description}
             </p>
 
@@ -207,10 +207,13 @@ export const CyberFeatureCards: React.FC<CyberFeatureCardsProps> = ({
               style={{
                 fontSize: '0.73rem',
                 color: card.quoteColor,
-                background: 'rgba(0, 0, 0, 0.55)',
+                background: 'var(--code-box-bg)',
                 padding: '8px 12px',
                 borderRadius: '6px',
                 borderLeft: `3px solid ${card.quoteBorder}`,
+                borderTop: '1px solid var(--border-color)',
+                borderRight: '1px solid var(--border-color)',
+                borderBottom: '1px solid var(--border-color)',
                 marginBottom: card.actionText ? '14px' : '0'
               }}
             >

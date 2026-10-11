@@ -37,18 +37,19 @@ export const TechnicalInspector: React.FC<TechnicalInspectorProps> = ({ report, 
           <button
             onClick={() => setActiveTab('screenshot')}
             style={{
-              background: activeTab === 'screenshot' ? 'rgba(6, 182, 212, 0.2)' : 'transparent',
-              color: activeTab === 'screenshot' ? '#38bdf8' : 'var(--text-secondary)',
-              border: activeTab === 'screenshot' ? '1px solid #38bdf8' : '1px solid transparent',
-              borderRadius: '8px',
-              padding: '8px 14px',
-              fontSize: '0.85rem',
-              fontWeight: 600,
+              background: activeTab === 'screenshot' ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.2))' : 'var(--code-box-bg)',
+              color: activeTab === 'screenshot' ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+              border: activeTab === 'screenshot' ? '1.5px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+              borderRadius: '20px',
+              padding: '7px 16px',
+              fontSize: '0.84rem',
+              fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              transition: 'all 0.15s'
+              transition: 'all 0.2s',
+              boxShadow: activeTab === 'screenshot' ? '0 2px 10px rgba(6, 182, 212, 0.2)' : 'none'
             }}
           >
             <Camera size={15} /> Visual Sandbox Viewport
@@ -57,18 +58,19 @@ export const TechnicalInspector: React.FC<TechnicalInspectorProps> = ({ report, 
           <button
             onClick={() => setActiveTab('dns_tls')}
             style={{
-              background: activeTab === 'dns_tls' ? 'rgba(6, 182, 212, 0.2)' : 'transparent',
-              color: activeTab === 'dns_tls' ? '#38bdf8' : 'var(--text-secondary)',
-              border: activeTab === 'dns_tls' ? '1px solid #38bdf8' : '1px solid transparent',
-              borderRadius: '8px',
-              padding: '8px 14px',
-              fontSize: '0.85rem',
-              fontWeight: 600,
+              background: activeTab === 'dns_tls' ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.2))' : 'var(--code-box-bg)',
+              color: activeTab === 'dns_tls' ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+              border: activeTab === 'dns_tls' ? '1.5px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+              borderRadius: '20px',
+              padding: '7px 16px',
+              fontSize: '0.84rem',
+              fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              transition: 'all 0.15s'
+              transition: 'all 0.2s',
+              boxShadow: activeTab === 'dns_tls' ? '0 2px 10px rgba(6, 182, 212, 0.2)' : 'none'
             }}
           >
             <Globe size={15} /> DNS & TLS Intel
@@ -77,18 +79,19 @@ export const TechnicalInspector: React.FC<TechnicalInspectorProps> = ({ report, 
           <button
             onClick={() => setActiveTab('dom_forms')}
             style={{
-              background: activeTab === 'dom_forms' ? 'rgba(6, 182, 212, 0.2)' : 'transparent',
-              color: activeTab === 'dom_forms' ? '#38bdf8' : 'var(--text-secondary)',
-              border: activeTab === 'dom_forms' ? '1px solid #38bdf8' : '1px solid transparent',
-              borderRadius: '8px',
-              padding: '8px 14px',
-              fontSize: '0.85rem',
-              fontWeight: 600,
+              background: activeTab === 'dom_forms' ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.2))' : 'var(--code-box-bg)',
+              color: activeTab === 'dom_forms' ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+              border: activeTab === 'dom_forms' ? '1.5px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+              borderRadius: '20px',
+              padding: '7px 16px',
+              fontSize: '0.84rem',
+              fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              transition: 'all 0.15s'
+              transition: 'all 0.2s',
+              boxShadow: activeTab === 'dom_forms' ? '0 2px 10px rgba(6, 182, 212, 0.2)' : 'none'
             }}
           >
             <Code size={15} /> DOM & Form Signatures
@@ -97,18 +100,19 @@ export const TechnicalInspector: React.FC<TechnicalInspectorProps> = ({ report, 
           <button
             onClick={() => setActiveTab('raw_json')}
             style={{
-              background: activeTab === 'raw_json' ? 'rgba(6, 182, 212, 0.2)' : 'transparent',
-              color: activeTab === 'raw_json' ? '#38bdf8' : 'var(--text-secondary)',
-              border: activeTab === 'raw_json' ? '1px solid #38bdf8' : '1px solid transparent',
-              borderRadius: '8px',
-              padding: '8px 14px',
-              fontSize: '0.85rem',
-              fontWeight: 600,
+              background: activeTab === 'raw_json' ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.2))' : 'var(--code-box-bg)',
+              color: activeTab === 'raw_json' ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+              border: activeTab === 'raw_json' ? '1.5px solid var(--accent-cyan)' : '1px solid var(--border-color)',
+              borderRadius: '20px',
+              padding: '7px 16px',
+              fontSize: '0.84rem',
+              fontWeight: 700,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              transition: 'all 0.15s'
+              transition: 'all 0.2s',
+              boxShadow: activeTab === 'raw_json' ? '0 2px 10px rgba(6, 182, 212, 0.2)' : 'none'
             }}
           >
             <FileJson size={15} /> Raw Forensics Payload

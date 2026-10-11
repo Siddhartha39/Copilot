@@ -34,10 +34,10 @@ export const CaseHistory: React.FC<CaseHistoryProps> = ({ cases, onSelectCase, o
             <Database size={20} color="#3b82f6" />
           </div>
           <div>
-            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#f3f4f6' }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)' }}>
               Case Repository & Analyst Feedback Loop
             </h3>
-            <p style={{ fontSize: '0.78rem', color: '#9ca3af' }}>
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
               Audited investigations, evidence traces, and human-in-the-loop labels for continuous ML calibration
             </p>
           </div>
@@ -45,15 +45,15 @@ export const CaseHistory: React.FC<CaseHistoryProps> = ({ cases, onSelectCase, o
 
         {/* Search & Filter Bar */}
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(17, 24, 39, 0.8)', border: '1px solid rgba(75, 85, 99, 0.4)', borderRadius: '6px', padding: '4px 10px' }}>
-            <Search size={14} color="#9ca3af" />
+          <div style={{ display: 'flex', alignItems: 'center', background: 'var(--code-box-bg)', border: '1px solid var(--border-color)', borderRadius: '6px', padding: '4px 10px' }}>
+            <Search size={14} color="var(--text-secondary)" />
             <input
               type="text"
               placeholder="Search domains/cases..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="mono"
-              style={{ background: 'transparent', border: 'none', outline: 'none', color: '#f3f4f6', fontSize: '0.8rem', padding: '4px 8px' }}
+              style={{ background: 'transparent', border: 'none', outline: 'none', color: 'var(--text-primary)', fontSize: '0.8rem', padding: '4px 8px' }}
             />
           </div>
 
@@ -61,9 +61,9 @@ export const CaseHistory: React.FC<CaseHistoryProps> = ({ cases, onSelectCase, o
             value={filterVerdict}
             onChange={(e) => setFilterVerdict(e.target.value)}
             style={{
-              background: 'rgba(31, 41, 55, 0.8)',
-              border: '1px solid rgba(75, 85, 99, 0.5)',
-              color: '#f3f4f6',
+              background: 'var(--code-box-bg)',
+              border: '1px solid var(--border-color)',
+              color: 'var(--text-primary)',
               borderRadius: '6px',
               padding: '6px 10px',
               fontSize: '0.8rem',
@@ -80,15 +80,15 @@ export const CaseHistory: React.FC<CaseHistoryProps> = ({ cases, onSelectCase, o
       </div>
 
       {filteredCases.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '40px 20px', color: '#9ca3af' }}>
-          <Database size={32} color="#6b7280" style={{ marginBottom: '8px' }} />
+        <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-secondary)' }}>
+          <Database size={32} color="var(--border-color)" style={{ marginBottom: '8px' }} />
           <div>No cases found matching your criteria. Execute an inspection above to log cases.</div>
         </div>
       ) : (
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid rgba(75, 85, 99, 0.4)', textAlign: 'left', color: '#9ca3af' }}>
+              <tr style={{ borderBottom: '1px solid var(--border-color)', textAlign: 'left', color: 'var(--text-secondary)' }}>
                 <th style={{ padding: '10px 12px', fontWeight: 600 }}>Case ID</th>
                 <th style={{ padding: '10px 12px', fontWeight: 600 }}>Domain</th>
                 <th style={{ padding: '10px 12px', fontWeight: 600 }}>Risk Score</th>
@@ -112,20 +112,20 @@ export const CaseHistory: React.FC<CaseHistoryProps> = ({ cases, onSelectCase, o
                   <tr
                     key={c.case_id}
                     style={{
-                      borderBottom: '1px solid rgba(75, 85, 99, 0.2)',
+                      borderBottom: '1px solid var(--border-color)',
                       transition: 'background 0.15s'
                     }}
                   >
                     <td style={{ padding: '12px' }} className="mono">
                       <button
                         onClick={() => onSelectCase(c.case_id)}
-                        style={{ background: 'transparent', border: 'none', color: '#38bdf8', cursor: 'pointer', fontWeight: 600 }}
+                        style={{ background: 'transparent', border: 'none', color: 'var(--accent-cyan)', cursor: 'pointer', fontWeight: 600 }}
                       >
                         {c.case_id}
                       </button>
                     </td>
 
-                    <td style={{ padding: '12px', color: '#f3f4f6', fontWeight: 600 }} className="mono">
+                    <td style={{ padding: '12px', color: 'var(--text-primary)', fontWeight: 600 }} className="mono">
                       {c.canonical_domain}
                     </td>
 

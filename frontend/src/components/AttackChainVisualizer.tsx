@@ -31,7 +31,7 @@ export const AttackChainVisualizer: React.FC<AttackChainVisualizerProps> = ({ no
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#f3f4f6' }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
               Explainable Attack-Chain Reconstruction
             </h3>
             <InfoTooltip
@@ -41,7 +41,7 @@ export const AttackChainVisualizer: React.FC<AttackChainVisualizerProps> = ({ no
               goodVsBad="Click any node in the graph below to inspect the forensic telemetry collected at that stage."
             />
           </div>
-          <p style={{ fontSize: '0.78rem', color: '#9ca3af' }}>
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
             Forensic chronological path from ingress to credential exfiltration
           </p>
         </div>
@@ -80,10 +80,10 @@ export const AttackChainVisualizer: React.FC<AttackChainVisualizerProps> = ({ no
           const isSelected = selectedNode?.id === node.id;
           const isDanger = node.severity === 'danger';
 
-          let border = '1px solid rgba(75, 85, 99, 0.4)';
-          let bg = 'rgba(17, 24, 39, 0.7)';
+          let border = '1px solid var(--border-color)';
+          let bg = 'var(--code-box-bg)';
           if (isSelected) {
-            border = '2px solid #38bdf8';
+            border = '2px solid var(--accent-cyan)';
             bg = 'rgba(6, 182, 212, 0.15)';
           } else if (isDanger) {
             border = '1px solid rgba(239, 68, 68, 0.4)';
@@ -111,7 +111,7 @@ export const AttackChainVisualizer: React.FC<AttackChainVisualizerProps> = ({ no
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     {getCategoryIcon(node.category, node.severity)}
-                    <span className="mono" style={{ fontSize: '0.7rem', color: '#9ca3af', fontWeight: 600 }}>
+                    <span className="mono" style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
                       STEP 0{node.step_number}
                     </span>
                   </div>
@@ -125,13 +125,13 @@ export const AttackChainVisualizer: React.FC<AttackChainVisualizerProps> = ({ no
                   </span>
                 </div>
 
-                <div style={{ fontSize: '0.82rem', fontWeight: 600, color: '#f3f4f6', lineHeight: 1.2 }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.2 }}>
                   {node.title}
                 </div>
               </div>
 
               {index < nodes.length - 1 && (
-                <ArrowRight size={18} color="#4b5563" style={{ flexShrink: 0 }} />
+                <ArrowRight size={18} color="var(--border-color)" style={{ flexShrink: 0 }} />
               )}
             </React.Fragment>
           );
@@ -141,8 +141,8 @@ export const AttackChainVisualizer: React.FC<AttackChainVisualizerProps> = ({ no
       {/* Selected Node Detailed Forensic Inspector */}
       {selectedNode && (
         <div style={{
-          background: 'rgba(31, 41, 55, 0.5)',
-          border: '1px solid rgba(75, 85, 99, 0.4)',
+          background: 'var(--code-box-bg)',
+          border: '1px solid var(--border-color)',
           borderRadius: '10px',
           padding: '16px 20px',
           display: 'flex',
@@ -152,26 +152,26 @@ export const AttackChainVisualizer: React.FC<AttackChainVisualizerProps> = ({ no
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               {getCategoryIcon(selectedNode.category, selectedNode.severity)}
-              <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#f3f4f6' }}>
+              <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                 Stage 0{selectedNode.step_number}: {selectedNode.title}
               </h4>
             </div>
-            <span className="mono" style={{ fontSize: '0.75rem', color: '#9ca3af' }}>
+            <span className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
               Category: {selectedNode.category.toUpperCase()}
             </span>
           </div>
 
-          <p style={{ fontSize: '0.85rem', color: '#d1d5db', lineHeight: 1.5 }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
             {selectedNode.description}
           </p>
 
           {/* Node Metadata Inspector */}
           {selectedNode.metadata && Object.keys(selectedNode.metadata).length > 0 && (
-            <div style={{ background: 'rgba(17, 24, 39, 0.8)', padding: '10px 14px', borderRadius: '6px', marginTop: '4px' }}>
-              <div style={{ fontSize: '0.72rem', color: '#9ca3af', fontWeight: 600, marginBottom: '6px' }}>
+            <div style={{ background: 'var(--bg-primary)', padding: '10px 14px', borderRadius: '6px', marginTop: '4px', border: '1px solid var(--border-color)' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: 600, marginBottom: '6px' }}>
                 TELEMETRY & EVIDENCE PAYLOAD:
               </div>
-              <pre className="mono" style={{ fontSize: '0.75rem', color: '#38bdf8', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+              <pre className="mono" style={{ fontSize: '0.75rem', color: 'var(--accent-cyan)', whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
                 {JSON.stringify(selectedNode.metadata, null, 2)}
               </pre>
             </div>

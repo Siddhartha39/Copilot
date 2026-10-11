@@ -170,6 +170,107 @@ body.light-theme .cyber-scanlines {
   display: none;
 }
 
+/* Tech Grid Background Overlay (Image 2 style) */
+.tech-grid-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  background-size: 38px 38px;
+  background-position: center;
+}
+
+[data-theme="light"] .tech-grid-overlay,
+body.light-theme .tech-grid-overlay {
+  background-image: 
+    linear-gradient(to right, rgba(99, 102, 241, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(99, 102, 241, 0.08) 1px, transparent 1px);
+}
+
+[data-theme="dark"] .tech-grid-overlay,
+body:not(.light-theme) .tech-grid-overlay {
+  background-image: 
+    linear-gradient(to right, rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
+}
+
+/* Modern Gradient Typography (Image 2 style) */
+.hero-gradient-text {
+  background: linear-gradient(90deg, #2563eb 0%, #7c3aed 38%, #c026d3 72%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+/* Modern Pill Action Buttons (Image 2 style) */
+.hero-pill-btn-primary {
+  background: linear-gradient(135deg, #00d2ff 0%, #4f46e5 50%, #ec4899 100%);
+  color: #ffffff !important;
+  border: none;
+  border-radius: 9999px;
+  padding: 13px 30px;
+  font-weight: 700;
+  font-size: 0.96rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 25px -4px rgba(236, 72, 153, 0.42), 0 4px 14px rgba(79, 70, 229, 0.3);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+
+.hero-pill-btn-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 14px 32px -4px rgba(236, 72, 153, 0.55), 0 6px 18px rgba(79, 70, 229, 0.4);
+}
+
+.hero-pill-btn-secondary {
+  border-radius: 9999px;
+  padding: 13px 28px;
+  font-weight: 700;
+  font-size: 0.96rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+
+[data-theme="light"] .hero-pill-btn-secondary,
+body.light-theme .hero-pill-btn-secondary {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #d8b4fe !important;
+  box-shadow: 0 4px 18px rgba(168, 85, 247, 0.12) !important;
+}
+
+[data-theme="light"] .hero-pill-btn-secondary:hover,
+body.light-theme .hero-pill-btn-secondary:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: #a855f7 !important;
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.22) !important;
+}
+
+[data-theme="dark"] .hero-pill-btn-secondary,
+body:not(.light-theme) .hero-pill-btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
+  border: 1.5px solid rgba(168, 85, 247, 0.4);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .hero-pill-btn-secondary:hover,
+body:not(.light-theme) .hero-pill-btn-secondary:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: #c084fc;
+  box-shadow: 0 8px 25px rgba(168, 85, 247, 0.25);
+}
+
 .glow-danger {
   box-shadow: 0 0 25px rgba(239, 68, 68, 0.25);
   border-color: var(--threat-critical) !important;
