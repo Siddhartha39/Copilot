@@ -308,26 +308,49 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
   ];
 
+  const [inputError, setInputError] = useState<string | null>(null);
+
+  const validateAndCleanUrl = (raw: string): string | null => {
+    const cleaned = raw.trim();
+    if (!cleaned) return null;
+    try {
+      const toTest = cleaned.includes('://') ? cleaned : `https://${cleaned}`;
+      const parsed = new URL(toTest);
+      if (parsed.hostname && parsed.hostname.includes('.')) {
+        return cleaned;
+      }
+    } catch {
+      // Fallback check
+    }
+    if (cleaned.length >= 3 && cleaned.includes('.')) {
+      return cleaned;
+    }
+    return null;
+  };
+
   const handleQuickSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (quickUrl.trim()) {
+    setInputError(null);
+    const valid = validateAndCleanUrl(quickUrl);
+    if (!valid) {
+      setInputError('Please enter a valid domain or URL (e.g. campuskart.shop or https://...)');
+      return;
+    }
+    if (onScanUrl) {
+      onScanUrl(valid);
+    } else {
       onLaunchScanner();
-      setTimeout(() => {
-        if (onScanUrl) {
-          onScanUrl(quickUrl.trim());
-        }
-      }, 2900);
     }
   };
 
   const handleSampleClick = (url: string) => {
     setQuickUrl(url);
-    onLaunchScanner();
-    setTimeout(() => {
-      if (onScanUrl) {
-        onScanUrl(url);
-      }
-    }, 2900);
+    setInputError(null);
+    if (onScanUrl) {
+      onScanUrl(url);
+    } else {
+      onLaunchScanner();
+    }
   };
 
   return (
@@ -343,12 +366,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
-          background: 'rgba(13, 19, 31, 0.75)',
-          border: '1px solid rgba(56, 189, 248, 0.2)'
+          background: isLight ? '#ffffff' : 'rgba(13, 21, 34, 0.85)',
+          border: '1px solid var(--border-color)'
         }}
+        role="region"
+        aria-label="Live Threat Telemetry Feed"
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
-          <span className="cyber-beacon" style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444', display: 'inline-block' }}></span>
+          <span className="cyber-beacon" style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--threat-critical)', display: 'inline-block' }}></span>
           <span className="cyber-font mono" style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--accent-cyan)', letterSpacing: '0.05em' }}>
             LIVE THREAT TELEMETRY
           </span>
@@ -359,12 +384,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             {/* Ticker items loop */}
             {[1, 2].map((loopIdx) => (
               <div key={loopIdx} style={{ display: 'flex', alignItems: 'center', gap: '28px', paddingRight: '28px' }}>
-                <span className="mono" style={{ fontSize: '0.74rem', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span className="mono" style={{ fontSize: '0.74rem', color: 'var(--threat-critical)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <ShieldAlert size={13} />
                   <span>INTERCEPTED: login-paypal-security-verification.xyz (Risk: 94.8 | Phish)</span>
                 </span>
                 <span style={{ color: 'var(--border-color)' }}>•</span>
-                <span className="mono" style={{ fontSize: '0.74rem', color: '#00ff88', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span className="mono" style={{ fontSize: '0.74rem', color: 'var(--threat-safe)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <ShieldCheck size={13} />
                   <span>VERIFIED HARDENED: github.com (Score: 2.1 | A+ Posture)</span>
                 </span>
@@ -374,7 +399,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   <span>ZERO-TRUST SOC: Multi-Signal Deep Forensics &amp; Brand Vision Active (100% Free)</span>
                 </span>
                 <span style={{ color: 'var(--border-color)' }}>•</span>
-                <span className="mono" style={{ fontSize: '0.74rem', color: '#f59e0b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span className="mono" style={{ fontSize: '0.74rem', color: 'var(--threat-high)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <Activity size={13} />
                   <span>CERTSTREAM INGEST: 4,820 NRD candidates triaged in &lt;10ms</span>
                 </span>
@@ -410,7 +435,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            background: 'rgba(0, 240, 255, 0.12)',
+            background: isLight ? 'rgba(0, 169, 214, 0.08)' : 'rgba(0, 217, 255, 0.12)',
             border: '1px solid var(--border-color)',
             borderRadius: '24px',
             padding: '6px 18px',
@@ -423,7 +448,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             justifyContent: 'center'
           }}
         >
-          <span className="cyber-beacon" style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent-green)', display: 'inline-block' }}></span>
+          <span className="cyber-beacon" style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--threat-safe)', display: 'inline-block' }}></span>
           <span className="mono cyber-font">CYBER COMMAND TERMINAL // CORE V2.0</span>
           <InfoTooltip
             title="Cyber Command Core V2.0"
@@ -432,7 +457,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           />
         </motion.div>
 
-        {/* Main Headline with High-Impact Gradient Typography (Matches Image 2) */}
+        {/* Main Headline with High-Impact Gradient Typography */}
         <motion.h1
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -465,21 +490,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               letterSpacing: '-0.02em',
               textTransform: 'uppercase',
               lineHeight: 1.12,
-              color: isLight ? '#0f172a' : '#f8fafc'
+              color: 'var(--text-primary)'
             }}
           >
             OF CYBER DEFENSE.
           </span>
         </motion.h1>
 
-        {/* Subtitle (Matches Image 2) */}
+        {/* Subtitle */}
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.28 }}
           style={{
             fontSize: 'clamp(1rem, 2.2vw, 1.2rem)',
-            color: isLight ? '#475569' : 'var(--text-secondary)',
+            color: 'var(--text-secondary)',
             maxWidth: '760px',
             margin: '0 auto 30px auto',
             lineHeight: 1.6,
@@ -489,7 +514,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           Where human intelligence meets machine speed. Discover next-generation zero-trust defense, real-time phishing forensics, and autonomous threat mitigation.
         </motion.p>
 
-        {/* Hero Pill Action Buttons (Matches Image 2) */}
+        {/* Hero Pill Action Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -534,12 +559,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               gap: '10px'
             }}
           >
-            <Sparkles size={19} color={isLight ? '#9333ea' : '#c084fc'} />
+            <Sparkles size={19} color={isLight ? '#8748E8' : '#c084fc'} />
             <span>Discover the Future</span>
           </motion.button>
         </motion.div>
 
-        {/* Interactive Quick-Audit Search Bar (Styled with sleek standalone pill) */}
+        {/* Interactive Quick-Audit Search Bar (Primary Functional Focus) */}
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -553,16 +578,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             onSubmit={handleQuickSubmit}
             style={{
               background: isLight ? '#ffffff' : 'var(--bg-card)',
-              border: isLight ? '1.5px solid #cbd5e1' : '1px solid rgba(56, 189, 248, 0.4)',
+              border: inputError
+                ? '2px solid var(--threat-critical)'
+                : isLight
+                ? '1.5px solid var(--border-color)'
+                : '1.5px solid rgba(0, 217, 255, 0.4)',
               borderRadius: '9999px',
-              padding: '7px 8px 7px 20px',
+              padding: '6px 8px 6px 18px',
               boxShadow: isLight
-                ? '0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04)'
-                : '0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.12)',
+                ? '0 10px 25px -5px rgba(16, 27, 48, 0.08), 0 4px 10px -2px rgba(16, 27, 48, 0.04)'
+                : '0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 217, 255, 0.15)',
               display: 'flex',
               gap: '10px',
               alignItems: 'center'
             }}
+            role="search"
           >
             <div style={{ display: 'flex', alignItems: 'center', color: 'var(--accent-cyan)' }}>
               <Search size={19} />
@@ -570,9 +600,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <input
               type="text"
               value={quickUrl}
-              onChange={(e) => setQuickUrl(e.target.value)}
-              placeholder="Enter domain or link (e.g. login-paypal-security-verification.xyz)"
+              onChange={(e) => {
+                setQuickUrl(e.target.value);
+                if (inputError) setInputError(null);
+              }}
+              placeholder="Enter domain or URL to audit (e.g. campuskart.shop, login-paypal.xyz)..."
               className="mono"
+              aria-label="Target domain or URL to audit"
               style={{
                 flex: 1,
                 background: 'transparent',
@@ -588,7 +622,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               whileTap={{ scale: 0.97 }}
               type="submit"
               style={{
-                background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)',
+                background: 'linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-blue) 100%)',
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '9999px',
@@ -599,14 +633,38 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)',
+                boxShadow: isLight
+                  ? '0 4px 14px rgba(0, 169, 214, 0.35)'
+                  : '0 4px 14px rgba(0, 217, 255, 0.35)',
                 flexShrink: 0
               }}
+              aria-label="Audit Target URL"
             >
               <Radar size={16} />
               <span>Audit Target</span>
             </motion.button>
           </form>
+
+          {/* Inline Validation Error Message */}
+          {inputError && (
+            <motion.div
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{
+                marginTop: '8px',
+                fontSize: '0.78rem',
+                color: 'var(--threat-critical)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px',
+                fontWeight: 600
+              }}
+            >
+              <AlertTriangle size={14} />
+              <span>{inputError}</span>
+            </motion.div>
+          )}
 
           {/* Quick-test Sample Chips */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '14px', padding: '0 6px', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -631,6 +689,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   color: 'var(--text-primary)',
                   transition: 'all 0.2s'
                 }}
+                title={`Audit sample target: ${s.url}`}
               >
                 <span className="mono" style={{ fontWeight: 600 }}>{s.url}</span>
                 <span className={`mono ${s.badgeClass}`} style={{ fontSize: '0.62rem', padding: '1px 6px', borderRadius: '10px', fontWeight: 800 }}>
@@ -644,7 +703,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '12px' }}>
             <Zap size={13} color="var(--accent-cyan)" />
             <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-              100% Free &amp; Open Access • Full Headless Sandbox, Brand pHash Vision &amp; CyberAI <span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>Unlocked (No Paywalls)</span>
+              100% Free &amp; Open Access • Full Headless Sandbox, Brand pHash Vision &amp; CyberAI <span style={{ color: 'var(--threat-safe)', fontWeight: 700 }}>Unlocked (No Paywalls)</span>
             </span>
           </div>
         </motion.div>

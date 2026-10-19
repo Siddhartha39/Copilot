@@ -245,8 +245,8 @@ export const TechnicalInspector: React.FC<TechnicalInspectorProps> = ({ report, 
                 </span>
               </div>
 
-              <span style={{ fontSize: '0.65rem', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', padding: '2px 8px', borderRadius: '10px', fontWeight: 700 }}>
-                ● ISOLATED SANDBOX
+              <span style={{ fontSize: '0.65rem', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', padding: '3px 8px', borderRadius: '6px', fontWeight: 800, border: '1px solid rgba(239, 68, 68, 0.35)', letterSpacing: '0.04em' }}>
+                ⚠️ UNTRUSTED REMOTELY DETONATED VIEWPORT
               </span>
             </div>
 
@@ -261,11 +261,11 @@ export const TechnicalInspector: React.FC<TechnicalInspectorProps> = ({ report, 
               overflow: 'hidden'
             }}>
               {viewMode === 'live_iframe' ? (
-                /* Mode A: Live Isolated Iframe Viewport */
+                /* Mode A: Live Isolated Iframe Viewport (Strict Air-Gap: no same-origin) */
                 <iframe
                   src={report.target_url}
-                  title={`Live Sandbox of ${report.canonical_domain}`}
-                  sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
+                  title={`Isolated Sandbox of ${report.canonical_domain}`}
+                  sandbox="allow-scripts allow-forms"
                   style={{
                     width: '100%',
                     height: '480px',

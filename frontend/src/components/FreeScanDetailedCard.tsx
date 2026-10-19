@@ -467,7 +467,7 @@ app.use(helmet({
                   borderRadius: '10px',
                   padding: '16px',
                   fontSize: '0.78rem',
-                  color: '#38bdf8',
+                  color: 'var(--accent-cyan)',
                   overflowX: 'auto',
                   lineHeight: 1.6,
                   maxHeight: '260px'
