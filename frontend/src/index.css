@@ -1,69 +1,61 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Orbitron:wght@600;800;900&display=swap');
 
 :root {
-  /* Dark Theme (Default) - Security Operations Center Palette */
-  --bg-primary: #080D16;
-  --bg-secondary: #0D1522;
-  --bg-elevated: #111D2D;
-  --bg-input: #09121E;
-  --bg-card: rgba(13, 21, 34, 0.92);
-  --bg-card-hover: rgba(17, 29, 45, 0.96);
-  --border-color: #22364D;
-  --border-focus: #00D9FF;
+  /* Dark Theme (Default) */
+  --bg-primary: #070a10;
+  --bg-secondary: #0d131f;
+  --bg-card: rgba(13, 19, 31, 0.88);
+  --bg-card-hover: rgba(17, 24, 39, 0.94);
+  --border-color: rgba(56, 189, 248, 0.25);
+  --border-focus: #38bdf8;
   
-  --accent-cyan: #00D9FF;
-  --accent-blue: #238BFF;
-  --accent-purple: #9855FF;
-  --accent-green: #10D9A0;
+  --accent-cyan: #00f0ff;
+  --accent-green: #00ff88;
+  --accent-blue: #3b82f6;
+  --threat-critical: #ef4444;
+  --threat-high: #f97316;
+  --threat-medium: #eab308;
+  --threat-safe: #10b981;
   
-  --threat-critical: #FF5368;
-  --threat-high: #F97316;
-  --threat-medium: #FFB547;
-  --threat-safe: #10D9A0;
-  
-  --text-primary: #F1F5FC;
-  --text-secondary: #A5B4C7;
-  --text-muted: #64748B;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
 
-  --panel-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.55), inset 0 1px 1px 0 rgba(255, 255, 255, 0.05);
-  --panel-shadow-hover: 0 14px 40px 0 rgba(0, 0, 0, 0.65), 0 0 16px rgba(0, 217, 255, 0.18);
-  --hero-bg: radial-gradient(circle at 50% 15%, rgba(0, 217, 255, 0.10) 0%, rgba(13, 21, 34, 0.96) 75%);
-  --code-box-bg: #09121E;
-  --nav-bar-bg: rgba(13, 21, 34, 0.92);
+  --panel-shadow: 0 10px 35px 0 rgba(0, 0, 0, 0.6), inset 0 1px 1px 0 rgba(255, 255, 255, 0.05);
+  --panel-shadow-hover: 0 12px 40px 0 rgba(0, 0, 0, 0.7), 0 0 15px rgba(6, 182, 212, 0.15);
+  --hero-bg: radial-gradient(circle at 50% 20%, rgba(0, 240, 255, 0.12) 0%, rgba(13, 19, 31, 0.96) 80%);
+  --code-box-bg: rgba(0, 0, 0, 0.55);
+  --nav-bar-bg: rgba(13, 19, 31, 0.85);
 
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Light Theme - Clean Security Analytics Palette */
+/* Light Theme */
 [data-theme="light"], body.light-theme {
-  --bg-primary: #F3F7FC;
-  --bg-secondary: #FFFFFF;
-  --bg-elevated: #FFFFFF;
-  --bg-input: #F7FAFE;
-  --bg-card: #FFFFFF;
-  --bg-card-hover: #F8FAFD;
-  --border-color: #D8E3F0;
-  --border-focus: #00A9D6;
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #ffffff;
+  --border-color: #e2e8f0;
+  --border-focus: #0284c7;
 
-  --accent-cyan: #00A9D6;
-  --accent-blue: #176FE5;
-  --accent-purple: #8748E8;
-  --accent-green: #008C65;
+  --accent-cyan: #0284c7;
+  --accent-green: #16a34a;
+  --accent-blue: #2563eb;
+  --threat-critical: #dc2626;
+  --threat-high: #ea580c;
+  --threat-medium: #d97706;
+  --threat-safe: #16a34a;
 
-  --threat-critical: #D82F49;
-  --threat-high: #D96A00;
-  --threat-medium: #A95C00;
-  --threat-safe: #008C65;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
 
-  --text-primary: #101B30;
-  --text-secondary: #50617A;
-  --text-muted: #8292A6;
-
-  --panel-shadow: 0 4px 20px -2px rgba(16, 27, 48, 0.06), 0 1px 4px -1px rgba(16, 27, 48, 0.04);
-  --panel-shadow-hover: 0 10px 30px -4px rgba(0, 169, 214, 0.15), 0 0 0 1.5px rgba(0, 169, 214, 0.3);
-  --hero-bg: radial-gradient(circle at 50% 10%, rgba(224, 242, 254, 0.7) 0%, rgba(243, 247, 252, 0.95) 75%);
-  --code-box-bg: #F1F5FA;
-  --nav-bar-bg: rgba(255, 255, 255, 0.95);
+  --panel-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  --panel-shadow-hover: 0 12px 30px -4px rgba(2, 132, 199, 0.12), 0 0 0 1px rgba(2, 132, 199, 0.25);
+  --hero-bg: radial-gradient(circle at 50% 10%, rgba(224, 242, 254, 0.6) 0%, rgba(248, 250, 252, 0.9) 70%, #ffffff 100%);
+  --code-box-bg: #f8fafc;
+  --nav-bar-bg: rgba(255, 255, 255, 0.94);
 }
 
 * {
@@ -80,26 +72,6 @@ body {
   position: relative;
   transition: background-color 0.25s ease, color 0.25s ease;
   -webkit-tap-highlight-color: transparent;
-}
-
-/* Accessible Focus Indicators */
-:focus-visible {
-  outline: 2px solid var(--border-focus);
-  outline-offset: 2px;
-}
-
-/* Accessible Reduced Motion Support */
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-  .ticker-track {
-    animation: none !important;
-    transform: none !important;
-  }
 }
 
 .mono {
@@ -126,28 +98,6 @@ body {
 .glass-panel:hover {
   border-color: var(--border-focus);
   box-shadow: var(--panel-shadow-hover);
-}
-
-/* Single-row horizontal navigation bar */
-.nav-tabs-container {
-  display: flex !important;
-  align-items: center !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  overflow-x: auto !important;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.nav-tabs-container::-webkit-scrollbar {
-  display: none !important;
-}
-
-@media (max-width: 640px) {
-  header.glass-panel {
-    margin: 10px 12px !important;
-    padding: 10px 12px !important;
-  }
 }
 
 /* Cyber Glow Text Styles */
@@ -753,16 +703,6 @@ body.light-theme .copilot-chat-window {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 50%, rgba(240, 249, 255, 0.98) 100%) !important;
   border: 1.5px solid rgba(2, 132, 199, 0.35) !important;
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.15), 0 0 30px rgba(2, 132, 199, 0.18), 0 0 45px rgba(99, 102, 241, 0.12) !important;
-}
-
-@media (max-width: 640px) {
-  .copilot-chat-window {
-    width: calc(100vw - 20px) !important;
-    right: 10px !important;
-    bottom: 10px !important;
-    max-height: calc(100vh - 20px) !important;
-    border-radius: 14px !important;
-  }
 }
 
 /* Prismatic top rainbow light bar */

@@ -1,26 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import {
-  Shield,
-  Activity,
-  Radar,
-  Home,
-  Puzzle,
-  Sun,
-  Moon,
-  HelpCircle,
-  History,
-  LayoutDashboard,
-  Mail,
-  Link as LinkIcon,
-  BarChart2,
-  Key,
-  Globe,
-  Bell,
-  Bot,
-  User,
-  Crown
-} from 'lucide-react';
+import { Shield, Activity, Database, Radar, Home, Puzzle, Sun, Moon, HelpCircle, Coins, History, LayoutDashboard, Terminal, Wallet, Mail, Link, BarChart2, Key, Globe, Bell, Bot, User, Crown } from 'lucide-react';
+import { InfoTooltip } from './InfoTooltip';
+import { useAlgorandWallet } from '../context/AlgorandWalletContext';
 import type { UserProfile } from '../services/api';
 
 interface HeaderProps {
@@ -46,6 +28,7 @@ export const Header: React.FC<HeaderProps> = ({
   theme,
   toggleTheme,
   onOpenAbout,
+  onOpenWalletModal,
   onLaunchScanner,
   hasActiveReport = false,
   onOpenCopilot,
@@ -53,49 +36,33 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAuthModal,
   onOpenProfileModal
 }) => {
-  const isLight = theme === 'light';
-
-  const TabButton = ({
-    tab,
-    label,
-    icon: Icon,
-    onClick
-  }: {
-    tab: string;
-    label: string;
-    icon: any;
-    onClick?: () => void;
-  }) => {
+  const { isConnected, address, balanceAlgo } = useAlgorandWallet();
+  
+  const TabButton = ({ tab, label, icon: Icon, onClick }: any) => {
     const isActive = activeTab === tab;
     return (
       <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
         onClick={onClick || (() => setActiveTab(tab))}
         style={{
           padding: '7px 12px',
           borderRadius: '8px',
           border: isActive ? '1px solid var(--accent-cyan)' : '1px solid transparent',
           background: isActive
-            ? isLight
-              ? 'linear-gradient(135deg, rgba(0, 169, 214, 0.16) 0%, rgba(23, 111, 229, 0.12) 100%)'
-              : 'linear-gradient(135deg, rgba(0, 217, 255, 0.22) 0%, rgba(35, 139, 255, 0.18) 100%)'
+            ? 'linear-gradient(135deg, rgba(0, 240, 255, 0.22) 0%, rgba(59, 130, 246, 0.22) 100%)'
             : 'transparent',
           color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
           fontSize: '0.78rem',
           fontWeight: isActive ? 800 : 600,
           cursor: 'pointer',
-          display: 'inline-flex',
+          display: 'flex',
           alignItems: 'center',
           gap: '6px',
           whiteSpace: 'nowrap',
           flexShrink: 0,
-          boxShadow: isActive
-            ? isLight
-              ? '0 2px 8px rgba(0, 169, 214, 0.18)'
-              : '0 0 12px rgba(0, 217, 255, 0.35)'
-            : 'none',
-          transition: 'all 0.18s ease'
+          boxShadow: isActive ? '0 0 12px rgba(0, 240, 255, 0.35)' : 'none',
+          transition: 'all 0.2s ease',
         }}
       >
         <Icon size={14} color={isActive ? 'var(--accent-cyan)' : 'var(--text-secondary)'} />
@@ -105,89 +72,34 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header
-      className="glass-panel"
-      style={{
-        margin: '16px 24px',
-        padding: '12px 20px',
-        position: 'relative',
-        zIndex: 100,
-        borderRadius: '14px'
-      }}
-    >
+    <header className="glass-panel" style={{ margin: '16px 24px', padding: '14px 20px', position: 'relative', zIndex: 100 }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        
         {/* Top Row: Brand on Left, Global Controls pinned to Top-Right Corner */}
-        <div
-          className="header-top-row"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
-            gap: '12px',
-            flexWrap: 'wrap'
-          }}
-        >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '14px', flexWrap: 'wrap' }}>
           {/* Brand & Project Identity */}
-          <div
-            style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', minWidth: 0 }}
-            onClick={() => setActiveTab('overview')}
-          >
-            <div
-              style={{
-                background: 'linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-blue) 100%)',
-                padding: '8px',
-                borderRadius: '10px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: isLight
-                  ? '0 4px 14px rgba(0, 169, 214, 0.25)'
-                  : '0 0 16px rgba(0, 217, 255, 0.4)',
-                flexShrink: 0
-              }}
-            >
-              <Shield size={24} color={isLight ? '#ffffff' : '#080D16'} strokeWidth={2.5} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setActiveTab('overview')}>
+            <div style={{
+              background: 'linear-gradient(135deg, #00f0ff 0%, #3b82f6 100%)',
+              padding: '8px',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 0 16px rgba(0, 240, 255, 0.4)'
+            }}>
+              <Shield size={24} color="#070a10" strokeWidth={2.5} />
             </div>
-            <div style={{ minWidth: 0 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                <h1
-                  className="cyber-font neon-cyan-glow"
-                  style={{
-                    fontSize: '1.15rem',
-                    fontWeight: 900,
-                    letterSpacing: '0.04em',
-                    lineHeight: 1.1,
-                    margin: 0
-                  }}
-                >
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                <h1 className="cyber-font cyber-glitch neon-cyan-glow" style={{ fontSize: '1.15rem', fontWeight: 900, letterSpacing: '0.04em' }}>
                   CYBERGUARD AI
                 </h1>
-                <span
-                  className="badge-safe mono"
-                  style={{
-                    fontSize: '0.62rem',
-                    padding: '2px 8px',
-                    borderRadius: '9999px',
-                    fontWeight: 800,
-                    whiteSpace: 'nowrap'
-                  }}
-                >
+                <span className="badge-safe mono" style={{ fontSize: '0.65rem', padding: '2px 8px', borderRadius: '10px', fontWeight: 800 }}>
                   100% FREE &amp; OPEN ACCESS
                 </span>
               </div>
-              <p
-                className="mono"
-                style={{
-                  fontSize: '0.70rem',
-                  color: 'var(--text-secondary)',
-                  marginTop: '2px',
-                  lineHeight: 1.2,
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
-                }}
-              >
+              <p className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
                 [AI-POWERED WEBSITE SECURITY &amp; THREAT INTELLIGENCE]
               </p>
             </div>
@@ -202,12 +114,10 @@ export const Header: React.FC<HeaderProps> = ({
                 whileTap={{ scale: 0.95 }}
                 onClick={onOpenCopilot}
                 style={{
-                  padding: '7px 13px',
+                  padding: '8px 14px',
                   borderRadius: '10px',
-                  border: isLight ? '1px solid rgba(0, 169, 214, 0.35)' : '1px solid rgba(0, 217, 255, 0.4)',
-                  background: isLight
-                    ? 'linear-gradient(135deg, rgba(0, 169, 214, 0.12) 0%, rgba(23, 111, 229, 0.08) 100%)'
-                    : 'linear-gradient(135deg, rgba(0, 217, 255, 0.18) 0%, rgba(152, 85, 255, 0.14) 100%)',
+                  border: '1px solid rgba(0, 240, 255, 0.45)',
+                  background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.18) 0%, rgba(99, 102, 241, 0.18) 100%)',
                   color: 'var(--text-primary)',
                   fontSize: '0.78rem',
                   fontWeight: 800,
@@ -215,14 +125,12 @@ export const Header: React.FC<HeaderProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  boxShadow: isLight
-                    ? '0 2px 8px rgba(0, 169, 214, 0.15)'
-                    : '0 0 12px rgba(0, 217, 255, 0.25)',
+                  boxShadow: '0 0 12px rgba(0, 240, 255, 0.25)',
                   whiteSpace: 'nowrap'
                 }}
                 title="Open CyberGuard AI Copilot"
               >
-                <Bot size={15} color="var(--accent-cyan)" />
+                <Bot size={15} color="#00f0ff" />
                 <span>Copilot AI</span>
               </motion.button>
             )}
@@ -237,19 +145,19 @@ export const Header: React.FC<HeaderProps> = ({
                   padding: '7px 12px',
                   borderRadius: '10px',
                   border: currentUser?.plan === 'premium'
-                    ? '1px solid rgba(255, 181, 71, 0.6)'
+                    ? '1px solid rgba(234, 179, 8, 0.55)'
                     : currentUser
-                    ? '1px solid rgba(16, 217, 160, 0.45)'
+                    ? '1px solid rgba(16, 185, 129, 0.45)'
                     : '1px solid var(--border-color)',
                   background: currentUser?.plan === 'premium'
-                    ? 'rgba(255, 181, 71, 0.14)'
+                    ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.18) 0%, rgba(245, 158, 11, 0.1) 100%)'
                     : currentUser
-                    ? 'rgba(16, 217, 160, 0.12)'
+                    ? 'rgba(16, 185, 129, 0.12)'
                     : 'var(--code-box-bg)',
                   color: currentUser?.plan === 'premium'
-                    ? 'var(--threat-medium)'
+                    ? '#facc15'
                     : currentUser
-                    ? 'var(--threat-safe)'
+                    ? '#10b981'
                     : 'var(--text-primary)',
                   fontSize: '0.76rem',
                   fontWeight: 800,
@@ -257,25 +165,26 @@ export const Header: React.FC<HeaderProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
+                  boxShadow: currentUser?.plan === 'premium'
+                    ? '0 0 14px rgba(234, 179, 8, 0.3)'
+                    : currentUser
+                    ? '0 0 10px rgba(16, 185, 129, 0.25)'
+                    : 'none',
                   whiteSpace: 'nowrap'
                 }}
-                title={
-                  currentUser
-                    ? `Operator: ${currentUser.username} (${currentUser.plan === 'premium' ? 'Pro Plan' : 'Free Tier'} • ${currentUser.credits ?? 50} Credits)`
-                    : 'Profile, Credits & Subscription Plans'
-                }
+                title={currentUser ? `Operator: ${currentUser.username} (${currentUser.plan === 'premium' ? 'Pro Plan' : 'Free Tier'} • ${currentUser.credits ?? 50} Credits)` : "Profile, Credits & Subscription Plans"}
               >
                 {currentUser?.plan === 'premium' ? (
-                  <Crown size={14} color="var(--threat-medium)" />
+                  <Crown size={14} color="#facc15" />
                 ) : (
-                  <User size={14} color={currentUser ? 'var(--threat-safe)' : 'var(--accent-cyan)'} />
+                  <User size={14} color={currentUser ? "#10b981" : "var(--accent-cyan)"} />
                 )}
                 <span>
                   {currentUser && currentUser.email && currentUser.email !== 'operator@cyberguard.ai'
                     ? currentUser.username
                     : currentUser?.plan === 'premium'
                     ? 'Pro Pass'
-                    : 'Profile'}
+                    : 'Profile & Plans'}
                 </span>
                 {currentUser && (
                   <span
@@ -283,8 +192,8 @@ export const Header: React.FC<HeaderProps> = ({
                       fontSize: '0.62rem',
                       padding: '1px 5px',
                       borderRadius: '8px',
-                      background: currentUser.plan === 'premium' ? 'rgba(255, 181, 71, 0.25)' : 'rgba(0, 217, 255, 0.15)',
-                      color: currentUser.plan === 'premium' ? 'var(--threat-medium)' : 'var(--accent-cyan)',
+                      background: currentUser.plan === 'premium' ? 'rgba(234, 179, 8, 0.3)' : 'rgba(0, 240, 255, 0.15)',
+                      color: currentUser.plan === 'premium' ? '#facc15' : 'var(--accent-cyan)',
                       fontWeight: 900
                     }}
                   >
@@ -300,22 +209,22 @@ export const Header: React.FC<HeaderProps> = ({
               whileTap={{ scale: 0.96 }}
               onClick={() => setActiveTab('discovery')}
               style={{
-                padding: '7px 11px',
+                padding: '8px 13px',
                 borderRadius: '10px',
                 border: '1px solid rgba(249, 115, 22, 0.35)',
                 background: activeTab === 'discovery' ? 'rgba(249, 115, 22, 0.2)' : 'transparent',
-                color: 'var(--threat-high)',
+                color: '#f97316',
                 fontSize: '0.76rem',
                 fontWeight: 800,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '5px'
+                gap: '6px'
               }}
               title="Discovery Feed - Real-time Certificate Transparency stream"
             >
-              <Activity size={14} color="var(--threat-high)" />
-              <span>Feed</span>
+              <Activity size={14} color="#f97316" />
+              <span className="hidden md:inline">Feed</span>
             </motion.button>
 
             {/* Theme Toggle Button */}
@@ -324,7 +233,7 @@ export const Header: React.FC<HeaderProps> = ({
               whileTap={{ scale: 0.92 }}
               onClick={toggleTheme}
               style={{
-                padding: '7px',
+                padding: '8px',
                 borderRadius: '10px',
                 border: '1px solid var(--border-color)',
                 background: 'var(--code-box-bg)',
@@ -332,60 +241,44 @@ export const Header: React.FC<HeaderProps> = ({
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                minWidth: '34px',
-                minHeight: '34px'
+                justifyContent: 'center'
               }}
               title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
             >
-              {theme === 'dark' ? <Sun size={15} color="#FFB547" /> : <Moon size={15} color="#00A9D6" />}
+              {theme === 'dark' ? <Sun size={15} color="#f59e0b" /> : <Moon size={15} color="#00f0ff" />}
             </motion.button>
           </div>
         </div>
 
-        {/* Row 2: Full-Width Dedicated Horizontal Navigation Tabs */}
-        <div
-          className="nav-tabs-container"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '3px',
-            background: 'var(--nav-bar-bg)',
-            padding: '4px',
-            borderRadius: '10px',
-            border: '1px solid var(--border-color)',
-            flexWrap: 'nowrap',
-            overflowX: 'auto',
-            width: '100%',
-            scrollbarWidth: 'none'
-          }}
-        >
+        {/* Row 2: Full-Width Dedicated Navigation Tabs */}
+        <div className="nav-tabs-container" style={{ display: 'flex', alignItems: 'center', gap: '3px', background: 'var(--nav-bar-bg)', padding: '4px', borderRadius: '12px', border: '1px solid var(--border-color)', flexWrap: 'nowrap', overflowX: 'auto', width: '100%' }}>
           <TabButton tab="overview" label="Overview" icon={Home} />
-
-          <TabButton
-            tab="scanner"
-            label="Scanner"
-            icon={Radar}
+          
+          <TabButton 
+            tab="scanner" 
+            label="Scanner" 
+            icon={Radar} 
             onClick={() => {
               if (activeTab !== 'scanner' && onLaunchScanner) onLaunchScanner();
               else setActiveTab('scanner');
             }}
           />
-
+          
           <TabButton tab="email-scanner" label="Email Scan" icon={Mail} />
-          <TabButton tab="bulk-scanner" label="Bulk Scan" icon={LinkIcon} />
+          <TabButton tab="bulk-scanner" label="Bulk Scan" icon={Link} />
           <TabButton tab="threat-dashboard" label="Threat Intel" icon={BarChart2} />
           <TabButton tab="password-checker" label="Password" icon={Key} />
           <TabButton tab="ip-reputation" label="IP Lookup" icon={Globe} />
           <TabButton tab="watchlist" label="Watchlist" icon={Bell} />
-
+          
           <TabButton tab="history" label={`History (${caseCount})`} icon={History} />
-
+          
           {/* Grouped or secondary tabs */}
           {hasActiveReport && <TabButton tab="results" label="Results" icon={LayoutDashboard} />}
           <TabButton tab="extension" label="Ext" icon={Puzzle} />
           <TabButton tab="about" label="Info" icon={HelpCircle} />
         </div>
+
       </div>
     </header>
   );
