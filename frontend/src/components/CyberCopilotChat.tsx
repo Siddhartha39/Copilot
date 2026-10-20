@@ -1618,14 +1618,14 @@ Plan Tier | Quota Allocation
     );
   };
 
-  // Minimized Floating Widget Launcher Button
+  // Minimized Floating Widget Launcher Button -> Neo-Brutalism
   if (!isOpen) {
     return (
       <motion.button
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ translateY: -3, boxShadow: '8px 8px 0px 0px #000000' }}
+        whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '2px 2px 0px 0px #000000' }}
         onClick={onToggle}
         aria-label="Open CyberGuard AI Copilot"
         className="copilot-launcher-btn"
@@ -1634,58 +1634,62 @@ Plan Tier | Quota Allocation
           bottom: '24px',
           right: '24px',
           zIndex: 99995,
-          padding: '10px 18px',
+          padding: '12px 20px',
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
           cursor: 'pointer',
-          border: 'none'
+          background: '#FFD93D',
+          border: '4px solid #000000',
+          borderRadius: '0px',
+          boxShadow: '6px 6px 0px 0px #000000',
+          color: '#000000'
         }}
       >
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div
             style={{
-              background: 'linear-gradient(135deg, #00f0ff 0%, #6366f1 50%, #ec4899 100%)',
-              padding: '8px',
-              borderRadius: '50%',
+              background: '#FFFFFF',
+              border: '2.5px solid #000000',
+              padding: '7px',
+              borderRadius: '0px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 0 14px rgba(99, 102, 241, 0.6), 0 0 6px rgba(0, 240, 255, 0.8)'
+              boxShadow: '2px 2px 0px 0px #000000'
             }}
           >
-            <Bot size={18} color="#ffffff" />
+            <Bot size={20} color="#000000" strokeWidth={2.8} />
           </div>
           <span
             style={{
               position: 'absolute',
-              top: '-2px',
-              right: '-2px',
-              width: '9px',
-              height: '9px',
-              borderRadius: '50%',
-              backgroundColor: '#10b981',
-              boxShadow: '0 0 10px #10b981, 0 0 4px #ffffff'
+              top: '-3px',
+              right: '-3px',
+              width: '10px',
+              height: '10px',
+              borderRadius: '0px',
+              backgroundColor: '#FF6B6B',
+              border: '1.5px solid #000000'
             }}
           />
         </div>
 
         <div style={{ textAlign: 'left' }}>
           <div
-            className="cyber-font"
             style={{
-              fontSize: '0.84rem',
+              fontSize: '0.88rem',
               fontWeight: 900,
-              background: 'linear-gradient(135deg, #00f0ff 0%, #818cf8 50%, #f472b6 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: '0.05em'
+              color: '#000000',
+              fontFamily: "'Space Grotesk', sans-serif",
+              letterSpacing: '-0.01em',
+              textTransform: 'uppercase'
             }}
           >
             CYBER COPILOT
           </div>
-          <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span style={{ color: 'var(--accent-cyan)' }}>●</span>
+          <div style={{ fontSize: '0.72rem', color: '#000000', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '4px', textTransform: 'uppercase' }}>
+            <span>■</span>
             <span>{domain ? `Auditing: ${domain}` : 'CyberGuard AI Copilot'}</span>
           </div>
         </div>

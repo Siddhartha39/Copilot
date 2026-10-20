@@ -332,24 +332,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   return (
     <div style={{ padding: '0 24px 48px 24px', maxWidth: '1360px', margin: '0 auto' }}>
-      {/* 1. Live Threat Intelligence Marquee Ticker */}
+      {/* 1. Live Threat Intelligence Marquee Ticker -> Neo-Brutalist Marquee */}
       <div
-        className="glass-panel"
         style={{
           marginBottom: '24px',
-          padding: '10px 16px',
+          padding: '12px 18px',
           overflow: 'hidden',
-          borderRadius: '10px',
+          borderRadius: '0px',
           display: 'flex',
           alignItems: 'center',
-          gap: '12px',
-          background: 'rgba(13, 19, 31, 0.75)',
-          border: '1px solid rgba(56, 189, 248, 0.2)'
+          gap: '14px',
+          background: '#FFD93D',
+          border: '4px solid #000000',
+          boxShadow: '6px 6px 0px 0px #000000'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
-          <span className="cyber-beacon" style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444', display: 'inline-block' }}></span>
-          <span className="cyber-font mono" style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--accent-cyan)', letterSpacing: '0.05em' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, background: '#000000', color: '#FFD93D', padding: '4px 10px', border: '2px solid #000000' }}>
+          <span style={{ width: '8px', height: '8px', borderRadius: '0px', backgroundColor: '#FF6B6B', display: 'inline-block' }}></span>
+          <span style={{ fontSize: '0.76rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '0.06em', textTransform: 'uppercase' }}>
             LIVE THREAT TELEMETRY
           </span>
         </div>
@@ -359,72 +359,75 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             {/* Ticker items loop */}
             {[1, 2].map((loopIdx) => (
               <div key={loopIdx} style={{ display: 'flex', alignItems: 'center', gap: '28px', paddingRight: '28px' }}>
-                <span className="mono" style={{ fontSize: '0.74rem', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <ShieldAlert size={13} />
+                <span style={{ fontSize: '0.8rem', color: '#000000', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <ShieldAlert size={15} color="#000000" strokeWidth={2.6} />
                   <span>INTERCEPTED: login-paypal-security-verification.xyz (Risk: 94.8 | Phish)</span>
                 </span>
-                <span style={{ color: 'var(--border-color)' }}>•</span>
-                <span className="mono" style={{ fontSize: '0.74rem', color: '#00ff88', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <ShieldCheck size={13} />
+                <span style={{ color: '#000000', fontWeight: 900 }}>■</span>
+                <span style={{ fontSize: '0.8rem', color: '#000000', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <ShieldCheck size={15} color="#000000" strokeWidth={2.6} />
                   <span>VERIFIED HARDENED: github.com (Score: 2.1 | A+ Posture)</span>
                 </span>
-                <span style={{ color: 'var(--border-color)' }}>•</span>
-                <span className="mono" style={{ fontSize: '0.74rem', color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Zap size={13} />
+                <span style={{ color: '#000000', fontWeight: 900 }}>■</span>
+                <span style={{ fontSize: '0.8rem', color: '#000000', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Zap size={15} color="#000000" strokeWidth={2.6} />
                   <span>ZERO-TRUST SOC: Multi-Signal Deep Forensics &amp; Brand Vision Active (100% Free)</span>
                 </span>
-                <span style={{ color: 'var(--border-color)' }}>•</span>
-                <span className="mono" style={{ fontSize: '0.74rem', color: '#f59e0b', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Activity size={13} />
+                <span style={{ color: '#000000', fontWeight: 900 }}>■</span>
+                <span style={{ fontSize: '0.8rem', color: '#000000', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Activity size={15} color="#000000" strokeWidth={2.6} />
                   <span>CERTSTREAM INGEST: 4,820 NRD candidates triaged in &lt;10ms</span>
                 </span>
-                <span style={{ color: 'var(--border-color)' }}>•</span>
+                <span style={{ color: '#000000', fontWeight: 900 }}>■</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* 2. Hero Section with Staggered Framer Motion Animations */}
+      {/* 2. Hero Section with Neo-Brutalist Visual Weight */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="glass-panel"
+        transition={{ duration: 0.5, ease: 'easeOut' }}
         style={{
-          padding: '48px 32px 36px 32px',
-          marginBottom: '32px',
-          background: 'var(--hero-bg)',
-          border: '1px solid var(--border-color)',
+          padding: '52px 32px 40px 32px',
+          marginBottom: '36px',
+          background: '#FFFFFF',
+          border: '4px solid #000000',
+          borderRadius: '0px',
+          boxShadow: '12px 12px 0px 0px #000000',
           textAlign: 'center',
           position: 'relative',
           overflow: 'hidden'
         }}
       >
-        {/* Hacker Badge with Pulsing Ping */}
+        {/* Hacker Badge with Rotated Sticker Effect */}
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            background: 'rgba(0, 240, 255, 0.12)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '24px',
+            background: '#FFD93D',
+            border: '3px solid #000000',
+            boxShadow: '4px 4px 0px 0px #000000',
+            borderRadius: '0px',
             padding: '6px 18px',
-            fontSize: '0.76rem',
-            color: 'var(--accent-cyan)',
-            fontWeight: 800,
-            letterSpacing: '0.08em',
-            marginBottom: '20px',
+            fontSize: '0.78rem',
+            color: '#000000',
+            fontWeight: 900,
+            letterSpacing: '0.06em',
+            marginBottom: '24px',
             flexWrap: 'wrap',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            transform: 'rotate(-1.5deg)'
           }}
         >
-          <span className="cyber-beacon" style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent-green)', display: 'inline-block' }}></span>
-          <span className="mono cyber-font">CYBER COMMAND TERMINAL // CORE V2.0</span>
+          <span style={{ width: '8px', height: '8px', borderRadius: '0px', backgroundColor: '#000000', display: 'inline-block' }}></span>
+          <span style={{ fontFamily: "'Space Grotesk', sans-serif" }}>CYBER COMMAND TERMINAL // CORE V2.0</span>
           <InfoTooltip
             title="Cyber Command Core V2.0"
             description="Antigravity-engineered zero-trust cybersecurity operating environment running real-time ML pipelines, live WHOIS RDAP resolvers, and multi-modal brand vision."
@@ -432,27 +435,33 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           />
         </motion.div>
 
-        {/* Main Headline with High-Impact Gradient Typography (Matches Image 2) */}
+        {/* Main Headline with High-Impact Space Grotesk Typography */}
         <motion.h1
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
           style={{
             maxWidth: '1000px',
-            margin: '0 auto 16px auto',
-            lineHeight: 1.15
+            margin: '0 auto 18px auto',
+            lineHeight: 1.1
           }}
         >
           <span
-            className="hero-gradient-text"
             style={{
-              display: 'block',
-              fontSize: 'clamp(2.4rem, 6.2vw, 4.4rem)',
+              display: 'inline-block',
+              fontSize: 'clamp(2.6rem, 6.5vw, 4.8rem)',
               fontWeight: 900,
-              letterSpacing: '-0.02em',
+              fontFamily: "'Space Grotesk', sans-serif",
+              letterSpacing: '-0.03em',
               textTransform: 'uppercase',
-              lineHeight: 1.12,
-              marginBottom: '4px'
+              color: '#000000',
+              lineHeight: 1.08,
+              marginBottom: '6px',
+              background: '#FF6B6B',
+              padding: '2px 16px',
+              border: '4px solid #000000',
+              boxShadow: '6px 6px 0px 0px #000000',
+              transform: 'rotate(0.8deg)'
             }}
           >
             NEXT EVOLUTION
@@ -460,180 +469,208 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <span
             style={{
               display: 'block',
-              fontSize: 'clamp(2.4rem, 6.2vw, 4.4rem)',
+              fontSize: 'clamp(2.6rem, 6.5vw, 4.8rem)',
               fontWeight: 900,
-              letterSpacing: '-0.02em',
+              fontFamily: "'Space Grotesk', sans-serif",
+              letterSpacing: '-0.03em',
               textTransform: 'uppercase',
-              lineHeight: 1.12,
-              color: isLight ? '#0f172a' : '#f8fafc'
+              lineHeight: 1.08,
+              color: '#000000',
+              marginTop: '10px'
             }}
           >
             OF CYBER DEFENSE.
           </span>
         </motion.h1>
 
-        {/* Subtitle (Matches Image 2) */}
+        {/* Subtitle */}
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.28 }}
+          transition={{ duration: 0.4, delay: 0.26 }}
           style={{
-            fontSize: 'clamp(1rem, 2.2vw, 1.2rem)',
-            color: isLight ? '#475569' : 'var(--text-secondary)',
-            maxWidth: '760px',
-            margin: '0 auto 30px auto',
-            lineHeight: 1.6,
-            fontWeight: 450
+            fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)',
+            color: '#000000',
+            maxWidth: '780px',
+            margin: '0 auto 32px auto',
+            lineHeight: 1.55,
+            fontWeight: 700,
+            fontFamily: "'Space Grotesk', sans-serif"
           }}
         >
           Where human intelligence meets machine speed. Discover next-generation zero-trust defense, real-time phishing forensics, and autonomous threat mitigation.
         </motion.p>
 
-        {/* Hero Pill Action Buttons (Matches Image 2) */}
+        {/* Hero Action Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.35 }}
+          transition={{ duration: 0.4, delay: 0.32 }}
           className="hero-action-buttons"
-          style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '34px' }}
+          style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '36px' }}
         >
           <motion.button
-            whileHover={{ scale: 1.04, y: -2 }}
-            whileTap={{ scale: 0.97 }}
+            whileHover={{ translateY: -3, boxShadow: '8px 8px 0px 0px #000000' }}
+            whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '2px 2px 0px 0px #000000' }}
             onClick={onLaunchScanner}
             className="hero-pill-btn-primary"
             style={{
-              borderRadius: '9999px',
+              borderRadius: '0px',
               padding: '14px 34px',
               fontSize: '1rem',
-              fontWeight: 700,
+              fontWeight: 900,
+              fontFamily: "'Space Grotesk', sans-serif",
+              textTransform: 'uppercase',
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '10px'
+              gap: '10px',
+              border: '4px solid #000000',
+              background: '#FF6B6B',
+              color: '#000000',
+              boxShadow: '6px 6px 0px 0px #000000'
             }}
           >
-            <Zap size={19} color="#ffffff" />
+            <Zap size={20} color="#000000" strokeWidth={2.8} />
             <span>Explore Technology</span>
-            <ArrowRight size={19} color="#ffffff" />
+            <ArrowRight size={20} color="#000000" strokeWidth={2.8} />
           </motion.button>
 
           <motion.button
-            whileHover={{ scale: 1.04, y: -2 }}
-            whileTap={{ scale: 0.97 }}
+            whileHover={{ translateY: -3, boxShadow: '8px 8px 0px 0px #000000' }}
+            whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '2px 2px 0px 0px #000000' }}
             onClick={onOpenExtension}
             className="hero-pill-btn-secondary"
             style={{
-              borderRadius: '9999px',
+              borderRadius: '0px',
               padding: '14px 32px',
               fontSize: '1rem',
-              fontWeight: 700,
+              fontWeight: 900,
+              fontFamily: "'Space Grotesk', sans-serif",
+              textTransform: 'uppercase',
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '10px'
+              gap: '10px',
+              border: '4px solid #000000',
+              background: '#C4B5FD',
+              color: '#000000',
+              boxShadow: '6px 6px 0px 0px #000000'
             }}
           >
-            <Sparkles size={19} color={isLight ? '#9333ea' : '#c084fc'} />
+            <Sparkles size={20} color="#000000" strokeWidth={2.8} />
             <span>Discover the Future</span>
           </motion.button>
         </motion.div>
 
-        {/* Interactive Quick-Audit Search Bar (Styled with sleek standalone pill) */}
+        {/* Interactive Quick-Audit Search Bar (Styled with Neo-Brutalist Border & Hard Shadow) */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.45, delay: 0.4 }}
+          transition={{ duration: 0.4, delay: 0.38 }}
           style={{
-            maxWidth: '760px',
+            maxWidth: '780px',
             margin: '0 auto 28px auto'
           }}
         >
           <form
             onSubmit={handleQuickSubmit}
             style={{
-              background: isLight ? '#ffffff' : 'var(--bg-card)',
-              border: isLight ? '1.5px solid #cbd5e1' : '1px solid rgba(56, 189, 248, 0.4)',
-              borderRadius: '9999px',
-              padding: '7px 8px 7px 20px',
-              boxShadow: isLight
-                ? '0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04)'
-                : '0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.12)',
+              background: '#FFFFFF',
+              border: '4px solid #000000',
+              borderRadius: '0px',
+              padding: '8px 8px 8px 18px',
+              boxShadow: '8px 8px 0px 0px #000000',
               display: 'flex',
-              gap: '10px',
+              gap: '12px',
               alignItems: 'center'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--accent-cyan)' }}>
-              <Search size={19} />
+            <div style={{ display: 'flex', alignItems: 'center', color: '#000000' }}>
+              <Search size={22} strokeWidth={2.8} />
             </div>
             <input
               type="text"
               value={quickUrl}
               onChange={(e) => setQuickUrl(e.target.value)}
               placeholder="Enter domain or link (e.g. login-paypal-security-verification.xyz)"
-              className="mono"
               style={{
                 flex: 1,
                 background: 'transparent',
                 border: 'none',
-                color: 'var(--text-primary)',
-                fontSize: '0.92rem',
+                color: '#000000',
+                fontSize: '0.96rem',
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 700,
                 outline: 'none',
                 padding: '8px 4px'
               }}
             />
             <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileHover={{ translateY: -2, boxShadow: '4px 4px 0px 0px #000000' }}
+              whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '0px 0px 0px 0px #000000' }}
               type="submit"
               style={{
-                background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '9999px',
-                padding: '11px 24px',
-                fontWeight: 700,
-                fontSize: '0.86rem',
+                background: '#FFD93D',
+                color: '#000000',
+                border: '3px solid #000000',
+                borderRadius: '0px',
+                padding: '12px 26px',
+                fontWeight: 900,
+                fontSize: '0.9rem',
+                fontFamily: "'Space Grotesk', sans-serif",
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)',
+                gap: '8px',
+                boxShadow: '3px 3px 0px 0px #000000',
                 flexShrink: 0
               }}
             >
-              <Radar size={16} />
+              <Radar size={18} strokeWidth={2.8} />
               <span>Audit Target</span>
             </motion.button>
           </form>
 
           {/* Quick-test Sample Chips */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '14px', padding: '0 6px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <span className="mono" style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 600 }}>QUICK SAMPLES:</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px', padding: '0 6px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <span style={{ fontSize: '0.78rem', color: '#000000', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>QUICK SAMPLES:</span>
             {sampleTargets.map((s) => (
               <motion.button
                 key={s.url}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ translateY: -2, boxShadow: '3px 3px 0px 0px #000000' }}
+                whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '0px 0px 0px 0px #000000' }}
                 onClick={() => handleSampleClick(s.url)}
                 type="button"
                 style={{
-                  background: 'var(--code-box-bg)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '20px',
-                  padding: '4px 12px',
-                  fontSize: '0.72rem',
+                  background: '#FFFFFF',
+                  border: '2px solid #000000',
+                  borderRadius: '0px',
+                  padding: '5px 12px',
+                  fontSize: '0.76rem',
+                  fontFamily: "'Space Grotesk', sans-serif",
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
-                  color: 'var(--text-primary)',
-                  transition: 'all 0.2s'
+                  gap: '8px',
+                  color: '#000000',
+                  boxShadow: '2px 2px 0px 0px #000000'
                 }}
               >
-                <span className="mono" style={{ fontWeight: 600 }}>{s.url}</span>
-                <span className={`mono ${s.badgeClass}`} style={{ fontSize: '0.62rem', padding: '1px 6px', borderRadius: '10px', fontWeight: 800 }}>
+                <span style={{ fontWeight: 800 }}>{s.url}</span>
+                <span
+                  style={{
+                    fontSize: '0.66rem',
+                    padding: '2px 6px',
+                    borderRadius: '0px',
+                    fontWeight: 900,
+                    border: '1.5px solid #000000',
+                    background: s.type === 'phish' ? '#FF6B6B' : s.type === 'hardened' ? '#FFD93D' : '#C4B5FD',
+                    color: '#000000'
+                  }}
+                >
                   {s.badge}
                 </span>
               </motion.button>
@@ -641,18 +678,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           {/* Scan Protocol Notice */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '12px' }}>
-            <Zap size={13} color="var(--accent-cyan)" />
-            <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-              100% Free &amp; Open Access • Full Headless Sandbox, Brand pHash Vision &amp; CyberAI <span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>Unlocked (No Paywalls)</span>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '14px' }}>
+            <Zap size={15} color="#000000" strokeWidth={2.8} />
+            <span style={{ fontSize: '0.78rem', color: '#000000', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+              100% Free &amp; Open Access • Full Headless Sandbox, Brand pHash Vision &amp; CyberAI <span style={{ background: '#FFD93D', padding: '1px 6px', border: '1.5px solid #000000' }}>Unlocked (No Paywalls)</span>
             </span>
           </div>
         </motion.div>
 
-        {/* Telemetry Status Bar with Interactive Hover Glow */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '14px', maxWidth: '940px', margin: '36px auto 0 auto', borderTop: '1px solid var(--border-color)', paddingTop: '22px' }}>
-          <motion.div whileHover={{ y: -3, scale: 1.03 }} transition={{ duration: 0.2 }}>
-            <div className="mono cyber-font neon-cyan-glow" style={{ fontSize: '1.25rem', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+        {/* Telemetry Status Bar with Neo-Brutalist Sharp Metrics */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '14px', maxWidth: '980px', margin: '36px auto 0 auto', borderTop: '4px solid #000000', paddingTop: '24px' }}>
+          <motion.div
+            whileHover={{ translateY: -3, boxShadow: '6px 6px 0px 0px #000000' }}
+            style={{
+              background: '#FFFDF5',
+              border: '3px solid #000000',
+              padding: '12px 14px',
+              borderRadius: '0px',
+              boxShadow: '4px 4px 0px 0px #000000'
+            }}
+          >
+            <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span>0.0 – 100</span>
               <InfoTooltip
                 title="Calibrated Risk Index"
@@ -660,11 +706,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 position="top"
               />
             </div>
-            <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, letterSpacing: '0.05em' }}>CALIBRATED RISK INDEX</div>
+            <div style={{ fontSize: '0.72rem', color: '#000000', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '4px' }}>CALIBRATED RISK INDEX</div>
           </motion.div>
 
-          <motion.div whileHover={{ y: -3, scale: 1.03 }} transition={{ duration: 0.2 }}>
-            <div className="mono cyber-font neon-green-glow" style={{ fontSize: '1.25rem', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+          <motion.div
+            whileHover={{ translateY: -3, boxShadow: '6px 6px 0px 0px #000000' }}
+            style={{
+              background: '#FFFDF5',
+              border: '3px solid #000000',
+              padding: '12px 14px',
+              borderRadius: '0px',
+              boxShadow: '4px 4px 0px 0px #000000'
+            }}
+          >
+            <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span>7-STAGE</span>
               <InfoTooltip
                 title="7-Stage Attack Graph"
@@ -672,11 +727,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 position="top"
               />
             </div>
-            <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, letterSpacing: '0.05em' }}>ATTACK-CHAIN GRAPH</div>
+            <div style={{ fontSize: '0.72rem', color: '#000000', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '4px' }}>ATTACK-CHAIN GRAPH</div>
           </motion.div>
 
-          <motion.div whileHover={{ y: -3, scale: 1.03 }} transition={{ duration: 0.2 }}>
-            <div className="mono cyber-font" style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+          <motion.div
+            whileHover={{ translateY: -3, boxShadow: '6px 6px 0px 0px #000000' }}
+            style={{
+              background: '#FFFDF5',
+              border: '3px solid #000000',
+              padding: '12px 14px',
+              borderRadius: '0px',
+              boxShadow: '4px 4px 0px 0px #000000'
+            }}
+          >
+            <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span>&lt; 30 DAYS</span>
               <InfoTooltip
                 title="Newly Registered Domains (NRD)"
@@ -684,11 +748,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 position="top"
               />
             </div>
-            <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, letterSpacing: '0.05em' }}>NRD EARLY WARNING</div>
+            <div style={{ fontSize: '0.72rem', color: '#000000', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '4px' }}>NRD EARLY WARNING</div>
           </motion.div>
 
-          <motion.div whileHover={{ y: -3, scale: 1.03 }} transition={{ duration: 0.2 }}>
-            <div className="mono cyber-font" style={{ fontSize: '1.25rem', fontWeight: 900, color: '#00ff88', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+          <motion.div
+            whileHover={{ translateY: -3, boxShadow: '6px 6px 0px 0px #000000' }}
+            style={{
+              background: '#FFFDF5',
+              border: '3px solid #000000',
+              padding: '12px 14px',
+              borderRadius: '0px',
+              boxShadow: '4px 4px 0px 0px #000000'
+            }}
+          >
+            <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span>ZERO PAYWALL</span>
               <InfoTooltip
                 title="100% Free & Open Access"
@@ -696,29 +769,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 position="top"
               />
             </div>
-            <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, letterSpacing: '0.05em' }}>COMMUNITY ACCESS</div>
+            <div style={{ fontSize: '0.72rem', color: '#000000', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '4px' }}>COMMUNITY ACCESS</div>
           </motion.div>
         </div>
       </motion.div>
 
-      {/* 3. Interactive 6-Stage Defense Pipeline Visualizer */}
+      {/* 3. Interactive 6-Stage Defense Pipeline Visualizer -> Neo-Brutalist Layout */}
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
-        transition={{ duration: 0.5 }}
-        className="glass-panel"
+        transition={{ duration: 0.4 }}
         style={{
           padding: '28px',
-          marginBottom: '32px',
-          borderRadius: '14px',
-          border: '1px solid rgba(56, 189, 248, 0.3)'
+          marginBottom: '36px',
+          background: '#FFFFFF',
+          border: '4px solid #000000',
+          borderRadius: '0px',
+          boxShadow: '10px 10px 0px 0px #000000'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Cpu size={22} color="var(--accent-cyan)" />
-            <h2 className="cyber-font neon-cyan-glow" style={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '0.04em' }}>
+            <Cpu size={24} color="#000000" strokeWidth={2.8} />
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: '#000000', letterSpacing: '-0.01em' }}>
               AUTONOMOUS 6-STAGE INSPECTION PIPELINE
             </h2>
             <InfoTooltip
@@ -727,43 +801,66 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               position="bottom"
             />
           </div>
-          <span className="mono badge-info" style={{ fontSize: '0.68rem', padding: '3px 10px', borderRadius: '12px' }}>
+          <span
+            style={{
+              fontSize: '0.74rem',
+              padding: '4px 12px',
+              borderRadius: '0px',
+              background: '#FFD93D',
+              border: '2px solid #000000',
+              boxShadow: '2px 2px 0px 0px #000000',
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              color: '#000000'
+            }}
+          >
             CLICK ANY STAGE TO INSPECT
           </span>
         </div>
 
         {/* Pipeline Stage Buttons Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '10px', marginBottom: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', marginBottom: '22px' }}>
           {pipelineStages.map((stage, idx) => {
             const isSelected = activePipelineStep === idx;
             return (
               <motion.button
                 key={stage.step}
-                whileHover={{ y: -3, scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ translateY: -3, boxShadow: '5px 5px 0px 0px #000000' }}
+                whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '1px 1px 0px 0px #000000' }}
                 onClick={() => setActivePipelineStep(idx)}
                 style={{
-                  background: isSelected ? 'rgba(0, 240, 255, 0.16)' : 'var(--bg-card)',
-                  border: isSelected ? `2px solid ${stage.color}` : '1px solid var(--border-color)',
-                  borderRadius: '10px',
-                  padding: '12px 14px',
+                  background: isSelected ? '#FFD93D' : '#FFFDF5',
+                  border: isSelected ? '4px solid #000000' : '3px solid #000000',
+                  borderRadius: '0px',
+                  padding: '14px 14px',
                   cursor: 'pointer',
                   textAlign: 'left',
                   position: 'relative',
                   overflow: 'hidden',
-                  boxShadow: isSelected ? `0 0 16px ${stage.color}33` : 'none',
-                  transition: 'all 0.2s'
+                  boxShadow: isSelected ? '6px 6px 0px 0px #000000' : '3px 3px 0px 0px #000000',
+                  transition: 'background-color 0.1s ease'
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <span className="mono cyber-font" style={{ fontSize: '0.72rem', fontWeight: 800, color: stage.color }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 900, color: '#000000', fontFamily: "'Space Grotesk', sans-serif" }}>
                     STAGE 0{stage.step}
                   </span>
-                  <span className="mono" style={{ fontSize: '0.6rem', color: stage.color, background: `${stage.color}1a`, padding: '1px 5px', borderRadius: '4px', fontWeight: 700 }}>
+                  <span
+                    style={{
+                      fontSize: '0.64rem',
+                      color: '#000000',
+                      background: '#FFFFFF',
+                      border: '1.5px solid #000000',
+                      padding: '2px 6px',
+                      borderRadius: '0px',
+                      fontWeight: 900,
+                      textTransform: 'uppercase'
+                    }}
+                  >
                     {stage.badge}
                   </span>
                 </div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 800, color: isSelected ? '#ffffff' : 'var(--text-primary)' }}>
+                <div style={{ fontSize: '0.88rem', fontWeight: 900, color: '#000000', fontFamily: "'Space Grotesk', sans-serif" }}>
                   {stage.name}
                 </div>
               </motion.button>
@@ -778,107 +875,109 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.2 }}
             style={{
-              background: 'var(--code-box-bg)',
-              border: `1px solid ${pipelineStages[activePipelineStep].color}55`,
-              borderRadius: '10px',
-              padding: '18px 22px',
+              background: '#FFFDF5',
+              border: '3px solid #000000',
+              borderRadius: '0px',
+              boxShadow: '4px 4px 0px 0px #000000',
+              padding: '20px 24px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '10px'
+              gap: '12px'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Zap size={18} color={pipelineStages[activePipelineStep].color} />
-              <span className="cyber-font" style={{ fontSize: '0.95rem', fontWeight: 800, color: pipelineStages[activePipelineStep].color }}>
+              <Zap size={20} color="#000000" strokeWidth={2.8} />
+              <span style={{ fontSize: '1.05rem', fontWeight: 900, color: '#000000', fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase' }}>
                 Stage 0{pipelineStages[activePipelineStep].step}: {pipelineStages[activePipelineStep].name}
               </span>
             </div>
-            <p style={{ fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.5, fontWeight: 600 }}>
+            <p style={{ fontSize: '0.92rem', color: '#000000', lineHeight: 1.55, fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>
               {pipelineStages[activePipelineStep].summary}
             </p>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+            <p style={{ fontSize: '0.85rem', color: '#000000', lineHeight: 1.6, fontWeight: 500, fontFamily: "'Space Grotesk', sans-serif" }}>
               {pipelineStages[activePipelineStep].detail}
             </p>
           </motion.div>
         </AnimatePresence>
       </motion.div>
 
-      {/* 4. Brand Contradiction Live Simulation Showcase */}
+      {/* 4. Brand Contradiction Live Simulation Showcase -> Neo-Brutalism */}
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
-        transition={{ duration: 0.5 }}
-        className="glass-panel"
+        transition={{ duration: 0.4 }}
         style={{
           padding: '28px',
-          marginBottom: '32px',
-          borderRadius: '14px',
-          border: '1px solid rgba(239, 68, 68, 0.3)'
+          marginBottom: '36px',
+          background: '#FFFFFF',
+          border: '4px solid #000000',
+          borderRadius: '0px',
+          boxShadow: '10px 10px 0px 0px #000000'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-          <AlertTriangle size={22} color="#ef4444" />
-          <h2 className="cyber-font neon-red-glow" style={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '0.04em' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
+          <AlertTriangle size={24} color="#000000" strokeWidth={2.8} />
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: '#000000', letterSpacing: '-0.01em' }}>
             WHY TRADITIONAL SECURITY FAILS: BRAND CONTRADICTION
           </h2>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '18px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
           {/* Legitimate Brand Card */}
           <div style={{
-            background: isLight ? '#f0fdf4' : 'rgba(0, 255, 136, 0.08)',
-            border: `1.5px solid ${isLight ? '#86efac' : 'rgba(0, 255, 136, 0.35)'}`,
-            borderRadius: '12px',
-            padding: '20px',
-            boxShadow: isLight ? '0 2px 8px rgba(15, 23, 42, 0.04)' : 'none'
+            background: '#FFFDF5',
+            border: '3px solid #000000',
+            borderRadius: '0px',
+            padding: '22px',
+            boxShadow: '6px 6px 0px 0px #000000'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-              <span className="mono cyber-font" style={{ fontSize: '0.78rem', color: isLight ? '#15803d' : '#00ff88', fontWeight: 900 }}>AUTHORIZED OFFICIAL SITE</span>
-              <span className="mono badge-safe" style={{ fontSize: '0.64rem', padding: '2px 8px', borderRadius: '6px', fontWeight: 800 }}>100% MATCH</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <span style={{ fontSize: '0.82rem', color: '#000000', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase' }}>AUTHORIZED OFFICIAL SITE</span>
+              <span style={{ fontSize: '0.68rem', padding: '3px 8px', borderRadius: '0px', background: '#C4B5FD', border: '2px solid #000000', fontWeight: 900, color: '#000000', textTransform: 'uppercase' }}>100% MATCH</span>
             </div>
-            <div className="mono" style={{ fontSize: '0.92rem', color: isLight ? '#0f172a' : 'var(--text-primary)', fontWeight: 800, marginBottom: '8px' }}>
+            <div style={{ fontSize: '0.96rem', color: '#000000', fontWeight: 900, marginBottom: '10px', fontFamily: "'Space Grotesk', sans-serif" }}>
               https://www.paypal.com/signin
             </div>
-            <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6, fontWeight: 500 }}>
-              • Rendered Visual: <strong style={{ color: 'var(--text-primary)' }}>PayPal</strong> logo verified<br />
-              • Domain Match: <strong style={{ color: 'var(--text-primary)' }}>paypal.com</strong> (Officially Authorized)<br />
-              • Verdict: <strong style={{ color: isLight ? '#15803d' : '#00ff88', fontWeight: 800 }}>SAFE (Risk: 2.4/100)</strong>
+            <div style={{ fontSize: '0.85rem', color: '#000000', lineHeight: 1.6, fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
+              • Rendered Visual: <strong style={{ color: '#000000', fontWeight: 900 }}>PayPal</strong> logo verified<br />
+              • Domain Match: <strong style={{ color: '#000000', fontWeight: 900 }}>paypal.com</strong> (Officially Authorized)<br />
+              • Verdict: <strong style={{ background: '#C4B5FD', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>SAFE (Risk: 2.4/100)</strong>
             </div>
           </div>
 
           {/* Adversary Impersonator Card */}
           <div style={{
-            background: isLight ? '#fef2f2' : 'rgba(239, 68, 68, 0.1)',
-            border: `1.5px solid ${isLight ? '#fca5a5' : 'rgba(239, 68, 68, 0.45)'}`,
-            borderRadius: '12px',
-            padding: '20px',
-            boxShadow: isLight ? '0 2px 8px rgba(15, 23, 42, 0.04)' : 'none'
+            background: '#FFFDF5',
+            border: '3px solid #000000',
+            borderRadius: '0px',
+            padding: '22px',
+            boxShadow: '6px 6px 0px 0px #000000'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-              <span className="mono cyber-font" style={{ fontSize: '0.78rem', color: isLight ? '#b91c1c' : '#f87171', fontWeight: 900 }}>ADVERSARY PHISHING HARVESTER</span>
-              <span className="mono badge-critical" style={{ fontSize: '0.64rem', padding: '2px 8px', borderRadius: '6px', fontWeight: 800 }}>CRITICAL CONTRADICTION</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <span style={{ fontSize: '0.82rem', color: '#000000', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase' }}>ADVERSARY PHISHING HARVESTER</span>
+              <span style={{ fontSize: '0.68rem', padding: '3px 8px', borderRadius: '0px', background: '#FF6B6B', border: '2px solid #000000', fontWeight: 900, color: '#000000', textTransform: 'uppercase' }}>CRITICAL CONTRADICTION</span>
             </div>
-            <div className="mono" style={{ fontSize: '0.92rem', color: isLight ? '#b91c1c' : '#f87171', fontWeight: 800, marginBottom: '8px' }}>
+            <div style={{ fontSize: '0.96rem', color: '#000000', fontWeight: 900, marginBottom: '10px', fontFamily: "'Space Grotesk', sans-serif" }}>
               https://login-paypal-security-verify.xyz
             </div>
-            <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6, fontWeight: 500 }}>
-              • Rendered Visual: <strong style={{ color: 'var(--text-primary)' }}>PayPal</strong> logo matched via pHash (99.4%)<br />
-              • Domain Match: <strong style={{ color: isLight ? '#b91c1c' : '#f87171' }}>login-paypal-security-verify.xyz</strong> (UNAUTHORIZED)<br />
-              • Verdict: <strong style={{ color: isLight ? '#b91c1c' : '#f87171', fontWeight: 800 }}>BLOCKED (Risk: 96.2/100 | Phish)</strong>
+            <div style={{ fontSize: '0.85rem', color: '#000000', lineHeight: 1.6, fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
+              • Rendered Visual: <strong style={{ color: '#000000', fontWeight: 900 }}>PayPal</strong> logo matched via pHash (99.4%)<br />
+              • Domain Match: <strong style={{ color: '#000000', fontWeight: 900 }}>login-paypal-security-verify.xyz</strong> (UNAUTHORIZED)<br />
+              • Verdict: <strong style={{ background: '#FF6B6B', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>BLOCKED (Risk: 96.2/100 | Phish)</strong>
             </div>
           </div>
         </div>
       </motion.div>
 
-      {/* 5. Cyber Defense Capabilities Header with Card View Mode Switcher */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
+      {/* 5. Cyber Defense Capabilities Header with Card View Mode Switcher -> Neo-Brutalism */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '22px', flexWrap: 'wrap', gap: '14px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Terminal size={22} color="var(--accent-cyan)" />
-            <h2 className="cyber-font neon-cyan-glow" style={{ fontSize: '1.2rem', fontWeight: 900, letterSpacing: '0.04em' }}>
+            <Terminal size={24} color="#000000" strokeWidth={2.8} />
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: '#000000', letterSpacing: '-0.01em' }}>
               CYBER DEFENSE CAPABILITY STACK
             </h2>
             <InfoTooltip
@@ -887,59 +986,61 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               position="right"
             />
           </div>
-          <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+          <p style={{ fontSize: '0.84rem', color: '#000000', marginTop: '4px', fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>
             Scroll through the 6 defensive modules or select any layer to inspect technical forensics
           </p>
         </div>
 
         {/* View Mode Toggle Switcher */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--code-box-bg)', border: '1px solid var(--border-color)', padding: '4px', borderRadius: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FFFDF5', border: '3px solid #000000', padding: '4px', borderRadius: '0px', boxShadow: '4px 4px 0px 0px #000000' }}>
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ translateY: -2 }}
+            whileTap={{ transform: 'translate(2px, 2px)' }}
             onClick={() => setCardViewMode('stack')}
             style={{
-              background: cardViewMode === 'stack' ? 'linear-gradient(135deg, #00f0ff 0%, #0284c7 100%)' : 'transparent',
-              color: cardViewMode === 'stack' ? '#070a10' : 'var(--text-secondary)',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '7px 16px',
-              fontSize: '0.78rem',
-              fontWeight: 800,
+              background: cardViewMode === 'stack' ? '#FFD93D' : 'transparent',
+              color: '#000000',
+              border: cardViewMode === 'stack' ? '2px solid #000000' : 'none',
+              borderRadius: '0px',
+              padding: '8px 16px',
+              fontSize: '0.8rem',
+              fontWeight: 900,
+              fontFamily: "'Space Grotesk', sans-serif",
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              boxShadow: cardViewMode === 'stack' ? '0 0 16px rgba(0, 240, 255, 0.4)' : 'none',
-              transition: 'all 0.2s'
+              boxShadow: cardViewMode === 'stack' ? '2px 2px 0px 0px #000000' : 'none',
+              transition: 'background-color 0.1s ease'
             }}
           >
-            <Layers size={15} />
-            <span className="cyber-font">STACKED SCROLL DECK</span>
+            <Layers size={16} color="#000000" strokeWidth={2.6} />
+            <span>STACKED SCROLL DECK</span>
           </motion.button>
 
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ translateY: -2 }}
+            whileTap={{ transform: 'translate(2px, 2px)' }}
             onClick={() => setCardViewMode('grid')}
             style={{
-              background: cardViewMode === 'grid' ? 'linear-gradient(135deg, #00f0ff 0%, #0284c7 100%)' : 'transparent',
-              color: cardViewMode === 'grid' ? '#070a10' : 'var(--text-secondary)',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '7px 16px',
-              fontSize: '0.78rem',
-              fontWeight: 800,
+              background: cardViewMode === 'grid' ? '#FFD93D' : 'transparent',
+              color: '#000000',
+              border: cardViewMode === 'grid' ? '2px solid #000000' : 'none',
+              borderRadius: '0px',
+              padding: '8px 16px',
+              fontSize: '0.8rem',
+              fontWeight: 900,
+              fontFamily: "'Space Grotesk', sans-serif",
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              boxShadow: cardViewMode === 'grid' ? '0 0 16px rgba(0, 240, 255, 0.4)' : 'none',
-              transition: 'all 0.2s'
+              boxShadow: cardViewMode === 'grid' ? '2px 2px 0px 0px #000000' : 'none',
+              transition: 'background-color 0.1s ease'
             }}
           >
-            <LayoutGrid size={15} />
-            <span className="cyber-font">EXPANDED 3D GRID</span>
+            <LayoutGrid size={16} color="#000000" strokeWidth={2.6} />
+            <span>EXPANDED 3D GRID</span>
           </motion.button>
         </div>
       </div>
@@ -947,64 +1048,53 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {/* Quick Jump Navigator Pills */}
       {cardViewMode === 'stack' && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflowX: 'auto', paddingBottom: '14px', marginBottom: '24px', flexWrap: 'nowrap' }}>
-          <span className="mono" style={{ fontSize: '0.72rem', color: isLight ? '#475569' : '#94a3b8', fontWeight: 800, flexShrink: 0 }}>
+          <span style={{ fontSize: '0.76rem', color: '#000000', fontWeight: 900, textTransform: 'uppercase', flexShrink: 0, letterSpacing: '0.04em' }}>
             QUICK SCROLL JUMP:
           </span>
           {capabilityCards.map((c, idx) => (
             <motion.button
               key={c.id}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ translateY: -2, boxShadow: '3px 3px 0px 0px #000000' }}
+              whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '0px 0px 0px 0px #000000' }}
               onClick={() => {
                 const el = document.getElementById(`stack-card-${c.id}`);
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }}
               style={{
-                background: isLight ? '#ffffff' : 'var(--code-box-bg)',
-                border: `1.5px solid ${isLight ? c.iconBorderLight : c.iconBorderDark}`,
-                color: isLight ? c.quoteColorLight : c.quoteColorDark,
-                borderRadius: '16px',
+                background: '#FFFFFF',
+                border: '2px solid #000000',
+                color: '#000000',
+                borderRadius: '0px',
                 padding: '6px 14px',
-                fontSize: '0.76rem',
-                fontWeight: 800,
+                fontSize: '0.78rem',
+                fontFamily: "'Space Grotesk', sans-serif",
+                fontWeight: 900,
+                textTransform: 'uppercase',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
                 flexShrink: 0,
-                boxShadow: isLight ? '0 2px 8px rgba(15, 23, 42, 0.06)' : `0 0 10px ${c.glowColorDark}`,
-                transition: 'all 0.2s'
+                boxShadow: '2px 2px 0px 0px #000000',
+                transition: 'transform 0.1s ease'
               }}
             >
-              <span className="mono">0{idx + 1} {c.title.split(' ')[0]}</span>
+              <span>0{idx + 1} {c.title.split(' ')[0]}</span>
             </motion.button>
           ))}
         </div>
       )}
 
-      {/* 6. Card Scroll Animation Stacking Deck or Grid */}
+      {/* 6. Card Scroll Animation Stacking Deck or Grid -> Neo-Brutalism */}
       {cardViewMode === 'stack' ? (
         <div className="card-stack-container" style={{ position: 'relative', marginTop: '10px' }}>
           {capabilityCards.map((card, index) => {
-            const cardBg = isLight
-              ? '#ffffff'
-              : `radial-gradient(circle at 50% 0%, ${card.glowColorDark} 0%, rgba(13, 19, 31, 0.98) 85%)`;
-            const cardBorder = isLight
-              ? card.iconBorderLight
-              : card.iconBorderDark;
-            const cardShadow = isLight
-              ? '0 10px 30px rgba(15, 23, 42, 0.08), 0 1px 4px rgba(15, 23, 42, 0.04)'
-              : `0 20px 50px rgba(0, 0, 0, 0.85), 0 0 25px ${card.glowColorDark}`;
-            const iconBg = isLight ? card.iconBgLight : card.iconBgDark;
-            const iconBorder = isLight ? card.iconBorderLight : card.iconBorderDark;
-            const iconElement = isLight ? card.iconLight : card.iconDark;
-            const subtitleColor = isLight ? card.subtitleColorLight : card.subtitleColorDark;
-            const quoteColor = isLight ? card.quoteColorLight : card.quoteColorDark;
-            const quoteBg = isLight ? card.quoteBgLight : 'rgba(0, 0, 0, 0.65)';
-            const quoteBorder = isLight ? card.quoteBorderLight : card.quoteBorderDark;
-            const rightBoxBg = isLight ? '#f8fafc' : 'rgba(7, 10, 16, 0.75)';
-            const rightBoxBorder = isLight ? '1px solid #e2e8f0' : '1px solid var(--border-color)';
-            const tagBg = isLight ? '#f1f5f9' : 'rgba(255, 255, 255, 0.08)';
-            const tagBorder = isLight ? '1px solid #cbd5e1' : '1px solid rgba(255, 255, 255, 0.16)';
-            const labelColor = isLight ? '#475569' : '#94a3b8';
+            const subtitleColor = '#000000';
+            const quoteColor = '#000000';
+            const quoteBg = '#FFD93D';
+            const rightBoxBg = '#FFFDF5';
+            const rightBoxBorder = '3px solid #000000';
+            const tagBg = '#FFFDF5';
+            const tagBorder = '2px solid #000000';
+            const labelColor = '#000000';
 
             return (
               <motion.div
@@ -1013,44 +1103,44 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.5, delay: index * 0.04 }}
+                transition={{ duration: 0.4, delay: index * 0.04 }}
                 className="glass-panel card-stack-item"
                 style={{
                   top: `${90 + index * 24}px`,
                   zIndex: 10 + index,
-                  background: cardBg,
-                  border: `1.5px solid ${cardBorder}`,
-                  borderRadius: '20px',
-                  padding: '30px 28px',
+                  background: '#FFFFFF',
+                  border: '4px solid #000000',
+                  borderRadius: '0px',
+                  padding: '32px 28px',
                   marginBottom: index === capabilityCards.length - 1 ? '70px' : '45px',
-                  boxShadow: cardShadow
+                  boxShadow: '10px 10px 0px 0px #000000'
                 }}
               >
                 {/* Card Header Row */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: isLight ? '1px solid #e2e8f0' : '1px solid var(--border-color)', paddingBottom: '16px', marginBottom: '22px', flexWrap: 'wrap', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px solid #000000', paddingBottom: '16px', marginBottom: '22px', flexWrap: 'wrap', gap: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <div style={{
-                      background: iconBg,
-                      border: `1.5px solid ${iconBorder}`,
+                      background: '#FFD93D',
+                      border: '3px solid #000000',
                       padding: '12px',
-                      borderRadius: '14px',
+                      borderRadius: '0px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      boxShadow: isLight ? '0 2px 8px rgba(15, 23, 42, 0.06)' : `0 0 16px ${card.glowColorDark}`
+                      boxShadow: '3px 3px 0px 0px #000000'
                     }}>
-                      {iconElement}
+                      {card.iconLight}
                     </div>
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className="mono cyber-font" style={{ fontSize: '0.8rem', color: subtitleColor, fontWeight: 900 }}>
+                        <span style={{ fontSize: '0.82rem', color: subtitleColor, fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif" }}>
                           MODULE // 0{index + 1} OF 06
                         </span>
-                        <span className="mono badge-info" style={{ fontSize: '0.64rem', padding: '2px 8px', borderRadius: '8px', fontWeight: 800 }}>
+                        <span style={{ fontSize: '0.66rem', padding: '2px 8px', borderRadius: '0px', fontWeight: 900, background: '#C4B5FD', border: '1.5px solid #000000', color: '#000000' }}>
                           {card.badge}
                         </span>
                       </div>
-                      <h3 className="cyber-font" style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px' }}>
+                      <h3 style={{ fontSize: '1.35rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: '#000000', marginTop: '4px', letterSpacing: '-0.01em' }}>
                         {card.title}
                       </h3>
                     </div>
@@ -1069,49 +1159,50 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', alignItems: 'start' }}>
                   {/* Left Side: Subtitle, Description & Tags */}
                   <div>
-                    <div className="mono" style={{ fontSize: '0.8rem', color: subtitleColor, fontWeight: 800, marginBottom: '10px' }}>
+                    <div style={{ fontSize: '0.82rem', color: subtitleColor, fontWeight: 900, marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                       // {card.subtitle.toUpperCase()}
                     </div>
-                    <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: '18px', fontWeight: 500 }}>
+                    <p style={{ fontSize: '0.94rem', color: '#000000', lineHeight: 1.6, marginBottom: '18px', fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
                       {card.description}
                     </p>
 
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
                       {card.tags?.map((tag, tIdx) => (
-                        <span key={tIdx} className="mono" style={{
+                        <span key={tIdx} style={{
                           background: tagBg,
                           border: tagBorder,
-                          borderRadius: '6px',
+                          borderRadius: '0px',
                           padding: '4px 10px',
-                          fontSize: '0.72rem',
-                          fontWeight: 700,
-                          color: 'var(--text-primary)'
+                          fontSize: '0.74rem',
+                          fontWeight: 900,
+                          color: '#000000',
+                          boxShadow: '2px 2px 0px 0px #000000'
                         }}>
                           #{tag}
                         </span>
                       ))}
                     </div>
 
-                    <div className="mono" style={{ fontSize: '0.74rem', color: labelColor, fontWeight: 600 }}>
-                      • Status: <span style={{ color: isLight ? '#15803d' : '#00ff88', fontWeight: 800 }}>ACTIVE FORENSIC LAYER</span> // Latency: <span style={{ color: isLight ? '#0284c7' : 'var(--accent-cyan)', fontWeight: 800 }}>Sub-second</span>
+                    <div style={{ fontSize: '0.76rem', color: labelColor, fontWeight: 800, textTransform: 'uppercase' }}>
+                      • Status: <span style={{ background: '#FFD93D', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>ACTIVE FORENSIC LAYER</span> // Latency: <span style={{ background: '#C4B5FD', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>Sub-second</span>
                     </div>
                   </div>
 
                   {/* Right Side: Adversary Quote, Impact & Action */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', background: rightBoxBg, padding: '20px', borderRadius: '14px', border: rightBoxBorder }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', background: rightBoxBg, padding: '20px', borderRadius: '0px', border: rightBoxBorder, boxShadow: '4px 4px 0px 0px #000000' }}>
                     <div>
-                      <div className="mono" style={{ fontSize: '0.72rem', color: labelColor, fontWeight: 800, marginBottom: '6px', letterSpacing: '0.04em' }}>
+                      <div style={{ fontSize: '0.74rem', color: labelColor, fontWeight: 900, marginBottom: '6px', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
                         THREAT INTERCEPTION CRITERIA:
                       </div>
-                      <div className="mono" style={{
-                        fontSize: '0.84rem',
-                        fontWeight: 700,
+                      <div style={{
+                        fontSize: '0.86rem',
+                        fontWeight: 900,
                         color: quoteColor,
                         padding: '12px 16px',
                         background: quoteBg,
-                        borderRadius: '10px',
-                        borderLeft: `4px solid ${quoteBorder}`,
-                        border: isLight ? `1px solid ${quoteBorder}` : '1px solid rgba(255, 255, 255, 0.08)',
+                        borderRadius: '0px',
+                        border: '2px solid #000000',
+                        boxShadow: '2px 2px 0px 0px #000000',
                         lineHeight: 1.55
                       }}>
                         {card.quote}
@@ -1119,41 +1210,39 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     </div>
 
                     <div>
-                      <div className="mono" style={{ fontSize: '0.72rem', color: labelColor, fontWeight: 800, marginBottom: '4px', letterSpacing: '0.04em' }}>
+                      <div style={{ fontSize: '0.74rem', color: labelColor, fontWeight: 900, marginBottom: '4px', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
                         SECURITY IMPACT:
                       </div>
-                      <div style={{ fontSize: '0.86rem', color: 'var(--text-primary)', lineHeight: 1.55, fontWeight: 500 }}>
+                      <div style={{ fontSize: '0.88rem', color: '#000000', lineHeight: 1.55, fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
                         {card.tooltip.securityImpact}
                       </div>
                     </div>
 
                     {card.actionText && (
                       <motion.button
-                        whileHover={{ scale: 1.02, x: 4 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={{ translateY: -2, boxShadow: '6px 6px 0px 0px #000000' }}
+                        whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '1px 1px 0px 0px #000000' }}
                         onClick={() => card.onAction && card.onAction()}
                         style={{
-                          background: isLight
-                            ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)'
-                            : 'linear-gradient(135deg, rgba(0, 240, 255, 0.2) 0%, rgba(2, 132, 199, 0.2) 100%)',
-                          border: isLight ? 'none' : '1px solid var(--accent-cyan)',
-                          color: isLight ? '#ffffff' : 'var(--accent-cyan)',
-                          borderRadius: '10px',
-                          padding: '11px 18px',
-                          fontSize: '0.84rem',
-                          fontWeight: 800,
+                          background: '#FF6B6B',
+                          border: '3px solid #000000',
+                          color: '#000000',
+                          borderRadius: '0px',
+                          padding: '12px 20px',
+                          fontSize: '0.86rem',
+                          fontFamily: "'Space Grotesk', sans-serif",
+                          fontWeight: 900,
+                          textTransform: 'uppercase',
                           cursor: 'pointer',
                           display: 'inline-flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          marginTop: '4px',
-                          boxShadow: isLight
-                            ? '0 4px 14px rgba(2, 132, 199, 0.25)'
-                            : '0 0 14px rgba(0, 240, 255, 0.2)'
+                          marginTop: '6px',
+                          boxShadow: '4px 4px 0px 0px #000000'
                         }}
                       >
-                        <span className="cyber-font">{card.actionText}</span>
-                        <ArrowRight size={15} />
+                        <span>{card.actionText}</span>
+                        <ArrowRight size={17} strokeWidth={2.8} />
                       </motion.button>
                     )}
                   </div>
@@ -1163,32 +1252,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           })}
         </div>
       ) : (
-        /* Expanded 3D Grid View */
-        <div className="feature-cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+        /* Expanded 3D Grid View -> Neo-Brutalism */
+        <div className="feature-cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '22px' }}>
           {capabilityCards.map((card, index) => {
-            const iconBg = isLight ? card.iconBgLight : card.iconBgDark;
-            const iconBorder = isLight ? card.iconBorderLight : card.iconBorderDark;
-            const iconElement = isLight ? card.iconLight : card.iconDark;
-            const subtitleColor = isLight ? card.subtitleColorLight : card.subtitleColorDark;
-            const quoteColor = isLight ? card.quoteColorLight : card.quoteColorDark;
-            const quoteBg = isLight ? card.quoteBgLight : 'var(--code-box-bg)';
-            const quoteBorder = isLight ? card.quoteBorderLight : card.quoteBorderDark;
-
             return (
               <motion.div
                 key={card.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.45, delay: index * 0.08 }}
-                whileHover={{ y: -6, scale: 1.02, transition: { duration: 0.2 } }}
-                className="glass-panel cyber-card-hover"
+                transition={{ duration: 0.4, delay: index * 0.08 }}
+                whileHover={{ translateY: -4, boxShadow: '12px 12px 0px 0px #000000' }}
                 style={{
-                  background: isLight ? '#ffffff' : undefined,
-                  border: isLight ? `1.5px solid ${card.iconBorderLight}` : undefined,
-                  boxShadow: isLight ? '0 8px 24px rgba(15, 23, 42, 0.06)' : undefined,
+                  background: '#FFFFFF',
+                  border: '4px solid #000000',
+                  boxShadow: '8px 8px 0px 0px #000000',
                   padding: '24px',
-                  borderRadius: '16px',
+                  borderRadius: '0px',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
@@ -1200,20 +1280,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '14px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <div style={{
-                        background: iconBg,
-                        border: `1.5px solid ${iconBorder}`,
+                        background: '#FFD93D',
+                        border: '3px solid #000000',
                         padding: '10px',
-                        borderRadius: '12px',
+                        borderRadius: '0px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: isLight ? '0 2px 8px rgba(15, 23, 42, 0.06)' : `0 0 10px ${card.glowColorDark}`
+                        boxShadow: '3px 3px 0px 0px #000000'
                       }}>
-                        {iconElement}
+                        {card.iconLight}
                       </div>
                       <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
-                          <h3 style={{ fontSize: '1.04rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.3 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                          <h3 style={{ fontSize: '1.1rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: '#000000', lineHeight: 1.25 }}>
                             {card.title}
                           </h3>
                           <InfoTooltip
@@ -1224,17 +1304,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                             position="bottom"
                           />
                         </div>
-                        <div className="mono" style={{ fontSize: '0.72rem', color: subtitleColor, fontWeight: 700, marginTop: '2px' }}>
+                        <div style={{ fontSize: '0.74rem', color: '#000000', fontWeight: 800, marginTop: '2px', textTransform: 'uppercase' }}>
                           {card.subtitle}
                         </div>
                       </div>
                     </div>
 
-                    <span className="mono badge-info" style={{
-                      fontSize: '0.62rem',
-                      fontWeight: 800,
+                    <span style={{
+                      fontSize: '0.64rem',
+                      fontWeight: 900,
                       padding: '2px 8px',
-                      borderRadius: '10px',
+                      borderRadius: '0px',
+                      background: '#C4B5FD',
+                      border: '1.5px solid #000000',
+                      color: '#000000',
+                      textTransform: 'uppercase',
                       letterSpacing: '0.04em'
                     }}>
                       {card.badge}
@@ -1242,7 +1326,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   </div>
 
                   {/* Description */}
-                  <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '16px', fontWeight: 500 }}>
+                  <p style={{ fontSize: '0.88rem', color: '#000000', lineHeight: 1.6, marginBottom: '16px', fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
                     {card.description}
                   </p>
                 </div>
@@ -1250,16 +1334,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <div>
                   {/* Quote */}
                   <div
-                    className="mono"
                     style={{
-                      fontSize: '0.76rem',
-                      fontWeight: 700,
-                      color: quoteColor,
-                      background: quoteBg,
+                      fontSize: '0.8rem',
+                      fontWeight: 900,
+                      color: '#000000',
+                      background: '#FFD93D',
                       padding: '10px 14px',
-                      borderRadius: '8px',
-                      borderLeft: `4px solid ${quoteBorder}`,
-                      border: isLight ? `1px solid ${quoteBorder}` : undefined,
+                      borderRadius: '0px',
+                      border: '2px solid #000000',
+                      boxShadow: '2px 2px 0px 0px #000000',
                       marginBottom: card.actionText ? '12px' : '0'
                     }}
                   >
@@ -1275,15 +1358,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '6px',
-                        color: isLight ? '#0284c7' : 'var(--accent-cyan)',
-                        fontSize: '0.8rem',
-                        fontWeight: 800,
+                        color: '#000000',
+                        fontSize: '0.84rem',
+                        fontFamily: "'Space Grotesk', sans-serif",
+                        fontWeight: 900,
+                        textTransform: 'uppercase',
                         cursor: 'pointer',
-                        marginTop: '10px'
+                        marginTop: '12px',
+                        background: '#FF6B6B',
+                        padding: '6px 14px',
+                        border: '2px solid #000000',
+                        boxShadow: '2px 2px 0px 0px #000000'
                       }}
                     >
                       <span>{card.actionText}</span>
-                      <ArrowRight size={14} />
+                      <ArrowRight size={15} strokeWidth={2.8} />
                     </motion.div>
                   )}
                 </div>

@@ -81,7 +81,7 @@ const DEFAULT_PIPELINE_STEPS: PipelineStep[] = [
 export function App() {
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    return (localStorage.getItem('cyberguard_theme') as 'dark' | 'light') || 'dark';
+    return (localStorage.getItem('cyberguard_theme') as 'dark' | 'light') || 'light';
   });
 
   const [report, setReport] = useState<RiskScoreReport | null>(null);
