@@ -42,10 +42,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'overview', label: 'Overview', icon: Home },
     {
       id: 'scanner',
-      label: 'Scanner (Soft UI)',
+      label: 'Security Scanner',
       icon: Radar,
-      badge: 'NEU',
-      badgeBg: '#C4B5FD',
+      badge: 'LIVE',
+      badgeBg: '#6BCB77',
       onClick: () => {
         if (activeTab !== 'scanner' && onLaunchScanner) onLaunchScanner();
         else setActiveTab('scanner');

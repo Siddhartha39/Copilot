@@ -64,129 +64,184 @@ export const Scanner: React.FC<ScannerProps> = ({
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
+      transition={{ duration: 0.3 }}
       style={{
-        background: 'var(--neu-bg, #E0E5EC)',
-        borderRadius: '28px',
-        boxShadow: 'var(--neu-extruded)',
+        background: 'var(--bg-card, #FFFFFF)',
+        borderRadius: '0px',
+        boxShadow: '8px 8px 0px 0px #000000',
+        border: '4px solid #000000',
         padding: '28px 24px',
         margin: '0 0 24px 0',
         position: 'relative',
         overflow: 'hidden',
-        border: 'none',
-        fontFamily: "'DM Sans', sans-serif"
+        fontFamily: "'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif"
       }}
     >
       <form onSubmit={handleSubmit}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {/* Dual-Feature Persona Mode Selector -> Neumorphic Extruded & Inset Tabs */}
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <button
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          {/* Dual-Feature Persona Mode Selector -> Neo-Brutalist High-Contrast Buttons */}
+          <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+            <motion.button
+              whileHover={{ translateY: -2, boxShadow: '6px 6px 0px 0px #000000' }}
+              whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '2px 2px 0px 0px #000000' }}
               type="button"
               onClick={() => handleSelectFocus('developer')}
               style={{
-                background: 'var(--neu-bg, #E0E5EC)',
-                color: activeFocus === 'developer' ? '#3B82F6' : 'var(--neu-muted, #6B7280)',
-                border: 'none',
-                borderRadius: '16px',
-                padding: '12px 18px',
-                fontSize: '0.84rem',
+                background: activeFocus === 'developer' ? '#4D96FF' : 'var(--bg-secondary, #FFFFFF)',
+                color: activeFocus === 'developer' ? '#FFFFFF' : '#000000',
+                border: '3px solid #000000',
+                borderRadius: '0px',
+                padding: '12px 20px',
+                fontSize: '0.86rem',
                 fontWeight: 800,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                boxShadow: activeFocus === 'developer' ? 'var(--neu-inset)' : 'var(--neu-extruded-sm)',
-                transition: 'all 0.2s ease',
-                fontFamily: "'Plus Jakarta Sans', sans-serif"
+                gap: '10px',
+                boxShadow: activeFocus === 'developer' ? '4px 4px 0px 0px #000000' : '3px 3px 0px 0px #000000',
+                transition: 'background 0.15s ease, color 0.15s ease',
+                fontFamily: "'Space Grotesk', sans-serif"
               }}
             >
-              <Shield size={17} color={activeFocus === 'developer' ? '#3B82F6' : 'var(--neu-muted, #6B7280)'} />
+              <div
+                style={{
+                  background: activeFocus === 'developer' ? '#FFFFFF' : '#4D96FF',
+                  padding: '4px',
+                  borderRadius: '0px',
+                  border: '2px solid #000000',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <Shield size={16} color={activeFocus === 'developer' ? '#4D96FF' : '#FFFFFF'} />
+              </div>
               <span>Feature 1: Developer Website Security &amp; Anti-Hacking Audit</span>
-            </button>
+            </motion.button>
 
-            <button
+            <motion.button
+              whileHover={{ translateY: -2, boxShadow: '6px 6px 0px 0px #000000' }}
+              whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '2px 2px 0px 0px #000000' }}
               type="button"
               onClick={() => handleSelectFocus('phishing')}
               style={{
-                background: 'var(--neu-bg, #E0E5EC)',
-                color: activeFocus === 'phishing' ? '#EF4444' : 'var(--neu-muted, #6B7280)',
-                border: 'none',
-                borderRadius: '16px',
-                padding: '12px 18px',
-                fontSize: '0.84rem',
+                background: activeFocus === 'phishing' ? '#FF6B6B' : 'var(--bg-secondary, #FFFFFF)',
+                color: activeFocus === 'phishing' ? '#FFFFFF' : '#000000',
+                border: '3px solid #000000',
+                borderRadius: '0px',
+                padding: '12px 20px',
+                fontSize: '0.86rem',
                 fontWeight: 800,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                boxShadow: activeFocus === 'phishing' ? 'var(--neu-inset)' : 'var(--neu-extruded-sm)',
-                transition: 'all 0.2s ease',
-                fontFamily: "'Plus Jakarta Sans', sans-serif"
+                gap: '10px',
+                boxShadow: activeFocus === 'phishing' ? '4px 4px 0px 0px #000000' : '3px 3px 0px 0px #000000',
+                transition: 'background 0.15s ease, color 0.15s ease',
+                fontFamily: "'Space Grotesk', sans-serif"
               }}
             >
-              <Zap size={17} color={activeFocus === 'phishing' ? '#EF4444' : 'var(--neu-muted, #6B7280)'} />
+              <div
+                style={{
+                  background: activeFocus === 'phishing' ? '#FFFFFF' : '#FF6B6B',
+                  padding: '4px',
+                  borderRadius: '0px',
+                  border: '2px solid #000000',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <Zap size={16} color={activeFocus === 'phishing' ? '#FF6B6B' : '#FFFFFF'} />
+              </div>
               <span>Feature 2: Phishing &amp; Fraud Intelligence Scanner</span>
-            </button>
+            </motion.button>
           </div>
 
-          {/* Persona Explainer Callout -> Inset Well */}
+          {/* Persona Explainer Callout -> Neo-Brutalist Sticker Box */}
           <div
             style={{
-              padding: '12px 16px',
-              borderRadius: '16px',
-              fontSize: '0.8rem',
+              padding: '14px 18px',
+              borderRadius: '0px',
+              fontSize: '0.82rem',
               display: 'flex',
               alignItems: 'center',
               gap: '12px',
-              background: 'var(--neu-bg, #E0E5EC)',
-              boxShadow: 'var(--neu-inset-sm)',
-              border: 'none',
-              color: 'var(--neu-foreground, #3D4852)',
-              lineHeight: 1.55
+              background: activeFocus === 'developer' ? '#EBF4FF' : '#FFF1F2',
+              boxShadow: '4px 4px 0px 0px #000000',
+              border: '3px solid #000000',
+              color: '#000000',
+              lineHeight: 1.55,
+              fontWeight: 500
             }}
           >
             {activeFocus === 'developer' ? (
               <>
-                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--neu-bg)', boxShadow: 'var(--neu-inset-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Shield size={16} color="#3B82F6" />
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '0px',
+                    background: '#4D96FF',
+                    border: '2px solid #000000',
+                    boxShadow: '2px 2px 0px 0px #000000',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}
+                >
+                  <Shield size={16} color="#FFFFFF" />
                 </div>
                 <span>
-                  <strong style={{ color: '#3B82F6' }}>Feature 1 Active (Webmaster &amp; Developer Mode):</strong> Audits your website's defensive HTTP headers (CSP, HSTS, X-Frame-Options), tests anti-code injection &amp; clickjacking immunity, evaluates TLS/DNS, and generates drop-in server hardening configurations (Nginx, Apache, Next.js, Node.js Helmet, Cloudflare).
+                  <strong style={{ color: '#000000', fontWeight: 800 }}>Feature 1 Active (Webmaster &amp; Developer Mode):</strong> Audits your website's defensive HTTP headers (CSP, HSTS, X-Frame-Options), tests anti-code injection &amp; clickjacking immunity, evaluates TLS/DNS, and generates drop-in server hardening configurations (Nginx, Apache, Next.js, Node.js Helmet, Cloudflare).
                 </span>
               </>
             ) : (
               <>
-                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--neu-bg)', boxShadow: 'var(--neu-inset-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <Zap size={16} color="#EF4444" />
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '0px',
+                    background: '#FF6B6B',
+                    border: '2px solid #000000',
+                    boxShadow: '2px 2px 0px 0px #000000',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}
+                >
+                  <Zap size={16} color="#FFFFFF" />
                 </div>
                 <span>
-                  <strong style={{ color: '#EF4444' }}>Feature 2 Active (SOC &amp; Threat Intelligence Mode):</strong> Inspects suspicious URLs for brand impersonation, visual logo contradiction (64-bit pHash), 24-dimensional lexical URL ML, newly registered domain (NRD) risk, and credential-harvesting traps.
+                  <strong style={{ color: '#000000', fontWeight: 800 }}>Feature 2 Active (SOC &amp; Threat Intelligence Mode):</strong> Inspects suspicious URLs for brand impersonation, visual logo contradiction (64-bit pHash), 24-dimensional lexical URL ML, newly registered domain (NRD) risk, and credential-harvesting traps.
                 </span>
               </>
             )}
           </div>
 
-          {/* Main Input Row -> Neumorphic Deep Inset Input Well */}
-          <div className="scanner-input-row" style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
+          {/* Main Input Row -> Neo-Brutalist Solid Input + Hard Action Button */}
+          <div className="scanner-input-row" style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
             <div
               style={{
-                flex: 1,
+                flex: '1 1 320px',
                 display: 'flex',
                 alignItems: 'center',
-                background: 'var(--neu-bg, #E0E5EC)',
-                boxShadow: 'var(--neu-inset-deep)',
-                border: 'none',
-                borderRadius: '20px',
-                padding: '0 18px',
-                height: '52px'
+                background: '#FFFFFF',
+                boxShadow: '4px 4px 0px 0px #000000',
+                border: '3px solid #000000',
+                borderRadius: '0px',
+                padding: '0 16px',
+                height: '54px'
               }}
             >
-              <Search size={18} color={activeFocus === 'developer' ? '#3B82F6' : '#EF4444'} />
+              <Search size={20} color={activeFocus === 'developer' ? '#4D96FF' : '#FF6B6B'} />
               <input
                 type="text"
                 placeholder={activeFocus === 'developer'
-                  ? "Enter your website domain to audit defensive headers & server hardening (e.g. psit.ac.in, github.com)"
+                  ? "Enter website domain to audit defensive headers & server hardening (e.g. psit.ac.in, github.com)"
                   : "Enter suspicious URL to inspect phishing brand spoofing & credential harvesting (e.g. login-paypal-verify.xyz)"}
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
@@ -196,10 +251,10 @@ export const Scanner: React.FC<ScannerProps> = ({
                   background: 'transparent',
                   border: 'none',
                   outline: 'none',
-                  color: 'var(--neu-foreground, #3D4852)',
-                  fontSize: '0.92rem',
+                  color: '#000000',
+                  fontSize: '0.94rem',
                   padding: '12px 14px',
-                  fontFamily: "'DM Sans', sans-serif",
+                  fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 600
                 }}
               />
@@ -208,63 +263,63 @@ export const Scanner: React.FC<ScannerProps> = ({
                   type="button"
                   onClick={() => setUrl('')}
                   style={{
-                    background: 'var(--neu-bg, #E0E5EC)',
-                    boxShadow: 'var(--neu-extruded-sm)',
-                    border: 'none',
-                    color: 'var(--neu-muted, #6B7280)',
+                    background: '#FFD93D',
+                    boxShadow: '2px 2px 0px 0px #000000',
+                    border: '2px solid #000000',
+                    color: '#000000',
                     cursor: 'pointer',
                     fontSize: '0.72rem',
                     padding: '4px 10px',
-                    borderRadius: '9999px',
-                    fontWeight: 700
+                    borderRadius: '0px',
+                    fontWeight: 800,
+                    fontFamily: "'Space Grotesk', sans-serif"
                   }}
                 >
-                  Clear
+                  CLEAR
                 </button>
               )}
             </div>
 
             <motion.button
-              whileHover={{ scale: isLoading || !url.trim() ? 1 : 1.02 }}
-              whileTap={{ scale: isLoading || !url.trim() ? 1 : 0.98 }}
+              whileHover={{ translateY: isLoading || !url.trim() ? 0 : -2, boxShadow: isLoading || !url.trim() ? 'none' : '6px 6px 0px 0px #000000' }}
+              whileTap={{ transform: isLoading || !url.trim() ? 'none' : 'translate(2px, 2px)', boxShadow: isLoading || !url.trim() ? 'none' : '2px 2px 0px 0px #000000' }}
               type="submit"
               disabled={isLoading || !url.trim()}
               style={{
                 background: isLoading
-                  ? 'var(--neu-bg, #E0E5EC)'
+                  ? '#CBD5E1'
                   : activeFocus === 'developer'
-                    ? 'linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)'
-                    : 'linear-gradient(135deg, #6C63FF 0%, #8B84FF 100%)',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '18px',
+                    ? '#4D96FF'
+                    : '#FF6B6B',
+                color: '#FFFFFF',
+                border: '3px solid #000000',
+                borderRadius: '0px',
                 padding: '0 26px',
-                height: '52px',
-                fontWeight: 800,
-                fontSize: '0.88rem',
+                height: '54px',
+                fontWeight: 900,
+                fontSize: '0.92rem',
                 cursor: isLoading || !url.trim() ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                boxShadow: isLoading || !url.trim()
-                  ? 'none'
-                  : '4px 4px 14px rgba(108, 99, 255, 0.4)',
-                transition: 'all 0.2s',
+                gap: '10px',
+                boxShadow: isLoading || !url.trim() ? 'none' : '4px 4px 0px 0px #000000',
+                transition: 'all 0.15s ease',
                 whiteSpace: 'nowrap',
                 flexShrink: 0,
-                fontFamily: "'Plus Jakarta Sans', sans-serif"
+                fontFamily: "'Space Grotesk', sans-serif",
+                letterSpacing: '0.02em'
               }}
             >
               {isLoading ? (
                 <>
-                  <RefreshCw size={17} className="animate-spin" />
+                  <RefreshCw size={18} className="animate-spin" />
                   <span>
                     {activeFocus === 'developer' ? 'AUDITING DEFENSE...' : 'ANALYZING THREAT...'}
                   </span>
                 </>
               ) : (
                 <>
-                  {activeFocus === 'developer' ? <Shield size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
+                  {activeFocus === 'developer' ? <Shield size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
                   <span>
                     {activeFocus === 'developer'
                       ? 'RUN AUDIT & HARDENING'
@@ -280,17 +335,18 @@ export const Scanner: React.FC<ScannerProps> = ({
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div
                 style={{
-                  background: 'var(--neu-bg, #E0E5EC)',
-                  boxShadow: 'var(--neu-inset-sm)',
-                  borderRadius: '9999px',
+                  background: activeFocus === 'developer' ? '#4D96FF' : '#FF6B6B',
+                  boxShadow: '3px 3px 0px 0px #000000',
+                  border: '2px solid #000000',
+                  borderRadius: '0px',
                   padding: '6px 14px',
                   fontSize: '0.78rem',
                   fontWeight: 800,
-                  color: activeFocus === 'developer' ? '#3B82F6' : '#EF4444',
+                  color: '#FFFFFF',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
-                  fontFamily: "'Plus Jakarta Sans', sans-serif"
+                  gap: '8px',
+                  fontFamily: "'Space Grotesk', sans-serif"
                 }}
               >
                 {activeFocus === 'developer' ? <Shield size={14} /> : <Zap size={14} />}
@@ -302,25 +358,25 @@ export const Scanner: React.FC<ScannerProps> = ({
 
             {/* Benchmark Samples Selector */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '0.76rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 700 }}>
-                Demo Target:
+              <span style={{ fontSize: '0.78rem', color: '#000000', fontWeight: 800, fontFamily: "'Space Grotesk', sans-serif" }}>
+                DEMO TARGET:
               </span>
               <select
                 value={selectedSample}
                 onChange={(e) => handleSelectSample(e.target.value)}
                 disabled={isLoading}
                 style={{
-                  background: 'var(--neu-bg, #E0E5EC)',
-                  boxShadow: 'var(--neu-inset-sm)',
-                  border: 'none',
-                  borderRadius: '12px',
-                  color: 'var(--neu-foreground, #3D4852)',
-                  padding: '7px 14px',
-                  fontSize: '0.78rem',
+                  background: '#FFFFFF',
+                  boxShadow: '3px 3px 0px 0px #000000',
+                  border: '2px solid #000000',
+                  borderRadius: '0px',
+                  color: '#000000',
+                  padding: '8px 14px',
+                  fontSize: '0.8rem',
                   outline: 'none',
                   cursor: 'pointer',
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontWeight: 600
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 700
                 }}
               >
                 <option value="">Select a Benchmark Case...</option>
@@ -333,32 +389,32 @@ export const Scanner: React.FC<ScannerProps> = ({
             </div>
           </div>
 
-          {/* Quick 1-Tap Target Benchmark Pills -> Soft Extruded Pills */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', paddingTop: '4px' }}>
-            <span style={{ fontSize: '0.72rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, textTransform: 'uppercase', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              {activeFocus === 'developer' ? 'DEVELOPER AUDIT TARGETS:' : 'PHISHING DETECTION TARGETS:'}
+          {/* Quick 1-Tap Target Benchmark Buttons -> Neo-Brutalist Sticker Chips */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
+            <span style={{ fontSize: '0.74rem', color: '#000000', fontWeight: 900, textTransform: 'uppercase', fontFamily: "'Space Grotesk', sans-serif" }}>
+              {activeFocus === 'developer' ? 'QUICK TARGETS:' : 'PHISHING SAMPLES:'}
             </span>
             {activeQuickTargets.map((tgt, idx) => (
               <motion.button
                 key={idx}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ translateY: -1, boxShadow: '4px 4px 0px 0px #000000' }}
+                whileTap={{ transform: 'translate(1px, 1px)', boxShadow: '1px 1px 0px 0px #000000' }}
                 type="button"
                 onClick={() => { setUrl(tgt.url); }}
                 style={{
-                  background: 'var(--neu-bg, #E0E5EC)',
-                  boxShadow: url === tgt.url ? 'var(--neu-inset)' : 'var(--neu-extruded-sm)',
-                  color: url === tgt.url
-                    ? (activeFocus === 'developer' ? '#3B82F6' : '#EF4444')
-                    : 'var(--neu-foreground, #3D4852)',
-                  borderRadius: '9999px',
-                  padding: '5px 14px',
-                  fontSize: '0.74rem',
+                  background: url === tgt.url
+                    ? (activeFocus === 'developer' ? '#4D96FF' : '#FF6B6B')
+                    : '#FFFDF5',
+                  boxShadow: '2px 2px 0px 0px #000000',
+                  color: url === tgt.url ? '#FFFFFF' : '#000000',
+                  borderRadius: '0px',
+                  padding: '6px 14px',
+                  fontSize: '0.76rem',
                   cursor: 'pointer',
-                  border: 'none',
-                  transition: 'all 0.15s ease',
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontWeight: url === tgt.url ? 800 : 600
+                  border: '2px solid #000000',
+                  transition: 'background 0.15s ease, color 0.15s ease',
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontWeight: 800
                 }}
               >
                 <span>{tgt.label}</span>

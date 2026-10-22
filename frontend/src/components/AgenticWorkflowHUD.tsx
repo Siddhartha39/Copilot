@@ -80,151 +80,164 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
   return (
     <div
       style={{
-        background: 'var(--neu-bg, #E0E5EC)',
-        borderRadius: '28px',
-        boxShadow: 'var(--neu-extruded)',
-        border: 'none',
+        background: 'var(--bg-card, #FFFFFF)',
+        borderRadius: '0px',
+        boxShadow: '8px 8px 0px 0px #000000',
+        border: '4px solid #000000',
         padding: '24px 26px',
         margin: '0 0 24px 0',
-        fontFamily: "'DM Sans', sans-serif"
+        fontFamily: "'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif"
       }}
     >
-      {/* Header Row -> Molded Icon Well & Soft Badges */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
+      {/* Header Row -> Neo-Brutalist Sticker Badges & Header Bar */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px solid #000000', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          {/* Neumorphic Inset Robot Icon Well */}
+          {/* Square Bot Icon Box */}
           <div
             style={{
               width: '46px',
               height: '46px',
-              borderRadius: '16px',
-              background: 'var(--neu-bg, #E0E5EC)',
-              boxShadow: 'var(--neu-inset)',
+              borderRadius: '0px',
+              background: '#FFD93D',
+              border: '3px solid #000000',
+              boxShadow: '3px 3px 0px 0px #000000',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0
             }}
           >
-            <Bot size={24} color="#6C63FF" />
+            <Bot size={24} color="#000000" />
           </div>
 
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
               <span
                 style={{
-                  fontSize: '1.02rem',
-                  fontWeight: 800,
-                  color: 'var(--neu-foreground, #3D4852)',
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  letterSpacing: '-0.02em'
+                  fontSize: '1.08rem',
+                  fontWeight: 900,
+                  color: '#000000',
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  letterSpacing: '-0.01em'
                 }}
               >
                 Autonomous Cyber Intelligence Agent
               </span>
               <span
                 style={{
-                  fontSize: '0.64rem',
+                  fontSize: '0.68rem',
                   padding: '3px 10px',
-                  borderRadius: '9999px',
-                  background: 'var(--neu-bg, #E0E5EC)',
-                  boxShadow: 'var(--neu-inset-sm)',
-                  fontWeight: 800,
-                  color: '#10B981',
-                  fontFamily: "'Plus Jakarta Sans', sans-serif"
+                  borderRadius: '0px',
+                  background: '#6BCB77',
+                  border: '2px solid #000000',
+                  boxShadow: '2px 2px 0px 0px #000000',
+                  fontWeight: 900,
+                  color: '#000000',
+                  fontFamily: "'Space Grotesk', sans-serif"
                 }}
               >
                 100% FREE &amp; OPEN
               </span>
             </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--neu-muted, #6B7280)', marginTop: '2px', fontWeight: 600 }}>
-              Target: <span style={{ color: '#6C63FF', fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{targetUrl || 'Ready for URL analysis'}</span>
+            <div style={{ fontSize: '0.8rem', color: '#334155', marginTop: '4px', fontWeight: 600 }}>
+              Target: <span style={{ color: '#000000', fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", background: '#FFD93D', padding: '2px 8px', border: '1.5px solid #000000' }}>{targetUrl || 'Ready for URL analysis'}</span>
             </div>
           </div>
         </div>
 
-        {/* Status Indicator -> Soft Raised Pill */}
+        {/* Status Indicator -> Neo-Brutalist Sticker Pill */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              fontSize: '0.74rem',
-              color: '#10B981',
-              background: 'var(--neu-bg, #E0E5EC)',
-              boxShadow: 'var(--neu-extruded-sm)',
-              padding: '7px 16px',
-              borderRadius: '9999px',
+              fontSize: '0.76rem',
+              color: '#000000',
+              background: '#FFFFFF',
+              border: '2px solid #000000',
+              boxShadow: '3px 3px 0px 0px #000000',
+              padding: '6px 14px',
+              borderRadius: '0px',
               fontWeight: 800,
-              fontFamily: "'Plus Jakarta Sans', sans-serif"
+              fontFamily: "'Space Grotesk', sans-serif"
             }}
           >
-            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 8px rgba(16, 185, 129, 0.6)' }} />
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 6px #10B981' }} />
             <span>AGENT ACTIVE &amp; UNRESTRICTED</span>
           </div>
         </div>
       </div>
 
-      {/* Workflow Stage Grid -> Soft Molded Neumorphic Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '14px' }}>
+      {/* Workflow Stage Grid -> Neo-Brutalist Stage Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px' }}>
         {steps.map((step, idx) => {
           const isCompleted = step.status === 'completed';
           const isRunning = step.status === 'running';
 
-          let stageColor = '#10B981';
           let StatusIcon = CheckCircle2;
+          let iconColor = '#000000';
+          let iconBg = '#6BCB77';
 
           if (isRunning) {
-            stageColor = '#6C63FF';
             StatusIcon = Loader2;
+            iconColor = '#FFD93D';
+            iconBg = '#000000';
           } else if (step.status === 'paused_for_payment') {
-            stageColor = '#F59E0B';
             StatusIcon = Coins;
+            iconColor = '#000000';
+            iconBg = '#FFD93D';
           } else if (!isCompleted) {
-            stageColor = '#9CA3AF';
             StatusIcon = Cpu;
+            iconColor = '#64748B';
+            iconBg = '#F1F5F9';
           }
 
           return (
             <div
               key={step.id}
               style={{
-                background: 'var(--neu-bg, #E0E5EC)',
-                boxShadow: isRunning ? 'var(--neu-inset)' : 'var(--neu-extruded-sm)',
-                borderRadius: '20px',
-                border: 'none',
+                background: isRunning ? '#FFFBEB' : (isCompleted ? '#F0FDF4' : '#FFFFFF'),
+                boxShadow: isRunning ? '5px 5px 0px 0px #000000' : '4px 4px 0px 0px #000000',
+                borderRadius: '0px',
+                border: '3px solid #000000',
                 padding: '16px 18px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                transition: 'all 0.25s ease'
+                transition: 'all 0.2s ease'
               }}
             >
               <div>
-                {/* Stage Header with Inset Icon Circle */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                {/* Stage Header with Icon */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
                   <span
                     style={{
-                      fontSize: '0.68rem',
-                      fontWeight: 800,
-                      color: stageColor,
+                      fontSize: '0.7rem',
+                      fontWeight: 900,
+                      color: isRunning ? '#000000' : (isCompleted ? '#000000' : '#FFFFFF'),
+                      background: isRunning ? '#FFD93D' : (isCompleted ? '#6BCB77' : '#000000'),
+                      border: '1.5px solid #000000',
+                      boxShadow: '2px 2px 0px 0px #000000',
+                      padding: '2px 8px',
+                      borderRadius: '0px',
                       letterSpacing: '0.04em',
-                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      fontFamily: "'Space Grotesk', sans-serif",
                       textTransform: 'uppercase'
                     }}
                   >
                     STAGE {idx + 1}: {step.stage}
                   </span>
 
-                  {/* Neumorphic Inset Circle Icon Well */}
+                  {/* Square Status Icon */}
                   <div
                     style={{
                       width: '28px',
                       height: '28px',
-                      borderRadius: '50%',
-                      background: 'var(--neu-bg, #E0E5EC)',
-                      boxShadow: isRunning ? 'var(--neu-extruded-xs)' : 'var(--neu-inset-sm)',
+                      borderRadius: '0px',
+                      background: iconBg,
+                      border: '2px solid #000000',
+                      boxShadow: '2px 2px 0px 0px #000000',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -233,7 +246,7 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
                   >
                     <StatusIcon
                       size={15}
-                      color={stageColor}
+                      color={iconColor}
                       className={isRunning ? 'animate-spin' : ''}
                     />
                   </div>
@@ -241,12 +254,12 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
 
                 <div
                   style={{
-                    fontSize: '0.84rem',
+                    fontSize: '0.86rem',
                     fontWeight: 800,
-                    color: isRunning ? '#6C63FF' : 'var(--neu-foreground, #3D4852)',
+                    color: isRunning ? '#B45309' : '#000000',
                     marginBottom: '6px',
                     lineHeight: 1.35,
-                    fontFamily: "'Plus Jakarta Sans', sans-serif"
+                    fontFamily: "'Space Grotesk', sans-serif"
                   }}
                 >
                   {step.action}
@@ -256,9 +269,9 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
               <div
                 style={{
                   fontSize: '0.74rem',
-                  color: 'var(--neu-muted, #6B7280)',
-                  lineHeight: 1.5,
-                  marginTop: '8px',
+                  color: '#334155',
+                  lineHeight: 1.45,
+                  marginTop: '10px',
                   fontWeight: 500
                 }}
               >

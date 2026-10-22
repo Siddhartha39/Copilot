@@ -521,7 +521,7 @@ export function App() {
 
         {/* Page 2: Live Security Scanner & Embedded Results */}
         {activeTab === 'scanner' && (
-          <div className="neomorphic-scanner-zone" data-theme={theme}>
+          <div className="neo-scanner-zone" data-theme={theme}>
             <Scanner
               onScan={handleScan}
               isLoading={isLoading}

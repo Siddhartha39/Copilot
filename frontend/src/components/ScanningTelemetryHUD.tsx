@@ -135,13 +135,13 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
       style={{
         padding: '28px 24px',
         margin: '0 0 24px 0',
-        background: 'var(--neu-bg, #E0E5EC)',
-        border: 'none',
-        boxShadow: 'var(--neu-extruded)',
-        borderRadius: '28px',
+        background: 'var(--bg-card, #FFFFFF)',
+        border: '4px solid #000000',
+        boxShadow: '8px 8px 0px 0px #000000',
+        borderRadius: '0px',
         position: 'relative',
         overflow: 'hidden',
-        fontFamily: "'DM Sans', sans-serif"
+        fontFamily: "'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif"
       }}
     >
       {/* Top Background Animated Scanner Beam */}
@@ -158,16 +158,16 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
       />
 
       {/* Header Row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px solid #000000', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           {/* Animated Pulsing Radar Spinner */}
           <div style={{
-            background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.2))',
-            border: '1.5px solid var(--accent-cyan)',
+            background: '#FFD93D',
+            border: '2.5px solid #000000',
             padding: '10px',
-            borderRadius: '12px',
-            color: 'var(--accent-cyan)',
-            boxShadow: '0 0 16px rgba(6, 182, 212, 0.35)',
+            borderRadius: '0px',
+            color: '#000000',
+            boxShadow: '3px 3px 0px 0px #000000',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
@@ -177,42 +177,43 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
 
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              <h3 className="cyber-font" style={{ fontSize: '1.15rem', fontWeight: 900, letterSpacing: '0.03em', color: 'var(--text-primary)' }}>
+              <h3 className="cyber-font" style={{ fontSize: '1.15rem', fontWeight: 900, letterSpacing: '0.02em', color: '#000000', margin: 0 }}>
                 ACTIVE CYBER THREAT TELEMETRY ENGINE
               </h3>
               <span className="mono" style={{
-                fontSize: '0.68rem',
-                background: isDeep ? 'rgba(192, 132, 252, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                border: isDeep ? '1px solid rgba(192, 132, 252, 0.45)' : '1px solid rgba(245, 158, 11, 0.45)',
-                color: isDeep ? '#9333ea' : '#d97706',
+                fontSize: '0.7rem',
+                background: isDeep ? '#C4B5FD' : '#FFD93D',
+                border: '2px solid #000000',
+                color: '#000000',
                 padding: '3px 10px',
-                borderRadius: '12px',
-                fontWeight: 800,
+                borderRadius: '0px',
+                boxShadow: '2px 2px 0px 0px #000000',
+                fontWeight: 900,
                 letterSpacing: '0.04em'
               }}>
                 {isDeep ? 'DEEP FORENSIC AUDIT (FREE)' : 'FAST TRIAGE SCAN'}
               </span>
             </div>
 
-            <div className="mono" style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-              INSPECTING TARGET: <span style={{ color: 'var(--accent-cyan)', fontWeight: 800 }}>{targetUrl}</span>
+            <div className="mono" style={{ fontSize: '0.8rem', color: '#334155', marginTop: '4px' }}>
+              INSPECTING TARGET: <span style={{ color: '#000000', background: '#FFD93D', padding: '1px 6px', border: '1px solid #000000', fontWeight: 800 }}>{targetUrl}</span>
             </div>
           </div>
         </div>
 
         {/* Live Counters */}
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
-          <div className="mono" style={{ background: 'var(--code-box-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '6px 12px', fontSize: '0.74rem' }}>
-            <span style={{ color: 'var(--text-secondary)' }}>TIME: </span>
-            <span style={{ color: 'var(--accent-cyan)', fontWeight: 800 }}>{(elapsedMs / 1000).toFixed(1)}s</span>
+          <div className="mono" style={{ background: '#FFFFFF', border: '2px solid #000000', boxShadow: '2px 2px 0px 0px #000000', borderRadius: '0px', padding: '6px 12px', fontSize: '0.74rem' }}>
+            <span style={{ color: '#64748B' }}>TIME: </span>
+            <span style={{ color: '#000000', fontWeight: 800 }}>{(elapsedMs / 1000).toFixed(1)}s</span>
           </div>
-          <div className="mono" style={{ background: 'var(--code-box-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '6px 12px', fontSize: '0.74rem' }}>
-            <span style={{ color: 'var(--text-secondary)' }}>STAGE: </span>
-            <span style={{ color: '#10b981', fontWeight: 800 }}>{currentStep + 1} / {steps.length}</span>
+          <div className="mono" style={{ background: '#FFFFFF', border: '2px solid #000000', boxShadow: '2px 2px 0px 0px #000000', borderRadius: '0px', padding: '6px 12px', fontSize: '0.74rem' }}>
+            <span style={{ color: '#64748B' }}>STAGE: </span>
+            <span style={{ color: '#16A34A', fontWeight: 900 }}>{currentStep + 1} / {steps.length}</span>
           </div>
-          <div className="mono" style={{ background: 'var(--code-box-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '6px 12px', fontSize: '0.74rem' }}>
-            <span style={{ color: 'var(--text-secondary)' }}>ADDR: </span>
-            <span style={{ color: '#9333ea', fontWeight: 700 }}>{activeHex}</span>
+          <div className="mono" style={{ background: '#FFFFFF', border: '2px solid #000000', boxShadow: '2px 2px 0px 0px #000000', borderRadius: '0px', padding: '6px 12px', fontSize: '0.74rem' }}>
+            <span style={{ color: '#64748B' }}>ADDR: </span>
+            <span style={{ color: '#7C3AED', fontWeight: 800 }}>{activeHex}</span>
           </div>
         </div>
       </div>
@@ -222,9 +223,10 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
         {/* Radar Sonar Visualizer Card */}
         <div
           style={{
-            background: 'var(--code-box-bg)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '12px',
+            background: '#FFFFFF',
+            border: '3px solid #000000',
+            boxShadow: '4px 4px 0px 0px #000000',
+            borderRadius: '0px',
             padding: '16px',
             display: 'flex',
             flexDirection: 'column',
@@ -239,21 +241,21 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
           <div style={{ position: 'relative', width: '160px', height: '160px' }}>
             <svg width="160" height="160" viewBox="0 0 160 160">
               {/* Concentric Circles */}
-              <circle cx="80" cy="80" r="70" stroke="var(--border-color)" strokeWidth="1" fill="none" />
-              <circle cx="80" cy="80" r="50" stroke="var(--border-color)" strokeWidth="1" fill="none" />
-              <circle cx="80" cy="80" r="30" stroke="var(--border-color)" strokeWidth="1" fill="none" />
-              <circle cx="80" cy="80" r="10" stroke="var(--border-color)" strokeWidth="1" fill="none" />
+              <circle cx="80" cy="80" r="70" stroke="#000000" strokeWidth="1.5" fill="none" />
+              <circle cx="80" cy="80" r="50" stroke="#000000" strokeWidth="1.5" fill="none" />
+              <circle cx="80" cy="80" r="30" stroke="#000000" strokeWidth="1.5" fill="none" />
+              <circle cx="80" cy="80" r="10" stroke="#000000" strokeWidth="1.5" fill="none" />
               
               {/* Crosshairs */}
-              <line x1="10" y1="80" x2="150" y2="80" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="3 3" />
-              <line x1="80" y1="10" x2="80" y2="150" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="3 3" />
+              <line x1="10" y1="80" x2="150" y2="80" stroke="#000000" strokeWidth="1.5" strokeDasharray="3 3" />
+              <line x1="80" y1="10" x2="80" y2="150" stroke="#000000" strokeWidth="1.5" strokeDasharray="3 3" />
               
               {/* Target Blip 1 */}
               <circle cx="115" cy="55" r="4" fill="#ef4444" className="cyber-beacon" />
               {/* Target Blip 2 */}
               <circle cx="45" cy="110" r="3" fill="#10b981" className="cyber-beacon" />
               {/* Target Blip 3 */}
-              <circle cx="95" cy="120" r="3" fill="var(--accent-cyan)" className="cyber-beacon" />
+              <circle cx="95" cy="120" r="3" fill="#4D96FF" className="cyber-beacon" />
               
               {/* Rotating Radar Sweep Line */}
               <line
@@ -261,8 +263,8 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
                 y1="80"
                 x2="80"
                 y2="10"
-                stroke="var(--accent-cyan)"
-                strokeWidth="2"
+                stroke="#000000"
+                strokeWidth="2.5"
                 style={{
                   transformOrigin: '80px 80px',
                   animation: 'radar-sweep 2.2s linear infinite'
@@ -271,8 +273,8 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
             </svg>
           </div>
 
-          <div className="mono" style={{ fontSize: '0.74rem', color: 'var(--accent-cyan)', marginTop: '10px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700 }}>
-            <span className="cyber-beacon" style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }} />
+          <div className="mono" style={{ fontSize: '0.74rem', color: '#000000', marginTop: '10px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 800 }}>
+            <span className="cyber-beacon" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', border: '1px solid #000000' }} />
             <span>INTERCEPTOR ENCLAVE // LIVE SONAR SWEEP</span>
           </div>
         </div>
@@ -281,9 +283,10 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
         <div
           className="mono"
           style={{
-            background: 'var(--code-box-bg)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '12px',
+            background: '#1A1A1A',
+            border: '3px solid #000000',
+            boxShadow: '4px 4px 0px 0px #000000',
+            borderRadius: '0px',
             padding: '14px 16px',
             display: 'flex',
             flexDirection: 'column',
@@ -293,11 +296,11 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
             minHeight: '200px'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '6px', marginBottom: '8px' }}>
-            <span style={{ color: 'var(--accent-cyan)', fontWeight: 800, fontSize: '0.72rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #333333', paddingBottom: '6px', marginBottom: '8px' }}>
+            <span style={{ color: '#FFD93D', fontWeight: 800, fontSize: '0.74rem' }}>
               &gt; CYBERGUARD EXECUTION LOG
             </span>
-            <span style={{ color: '#10b981', fontSize: '0.68rem', fontWeight: 700 }}>STREAM ACTIVE</span>
+            <span style={{ color: '#10b981', fontSize: '0.7rem', fontWeight: 800 }}>STREAM ACTIVE</span>
           </div>
 
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px', overflowY: 'auto' }}>
@@ -308,8 +311,8 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.15 }}
                 style={{
-                  color: idx === activeLogIndex ? '#10b981' : idx > activeLogIndex - 3 ? 'var(--accent-cyan)' : 'var(--text-secondary)',
-                  fontWeight: idx === activeLogIndex ? 700 : 500
+                  color: idx === activeLogIndex ? '#10b981' : idx > activeLogIndex - 3 ? '#00f0ff' : '#94A3B8',
+                  fontWeight: idx === activeLogIndex ? 800 : 500
                 }}
               >
                 {log}
@@ -317,7 +320,7 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
             ))}
           </div>
 
-          <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '6px', marginTop: '6px', display: 'flex', justifyContent: 'space-between', color: 'var(--text-secondary)', fontSize: '0.68rem' }}>
+          <div style={{ borderTop: '1px solid #333333', paddingTop: '6px', marginTop: '6px', display: 'flex', justifyContent: 'space-between', color: '#94A3B8', fontSize: '0.7rem' }}>
             <span>ENTROPY: {entropySim} BITS</span>
             <span>STATUS: LIVE STREAMING</span>
           </div>
@@ -325,14 +328,14 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
       </div>
 
       {/* Progress Bar */}
-      <div style={{ width: '100%', background: 'var(--code-box-bg)', border: '1px solid var(--border-color)', height: '8px', borderRadius: '4px', overflow: 'hidden', position: 'relative', marginBottom: '18px' }}>
+      <div style={{ width: '100%', background: '#E2E8F0', border: '2px solid #000000', boxShadow: '2px 2px 0px 0px #000000', height: '12px', borderRadius: '0px', overflow: 'hidden', position: 'relative', marginBottom: '18px' }}>
         <motion.div
           animate={{ width: `${progressPercent}%` }}
           transition={{ duration: 0.2, ease: 'easeOut' }}
           style={{
             height: '100%',
-            background: 'linear-gradient(90deg, #0284c7 0%, #38bdf8 40%, #10b981 100%)',
-            boxShadow: '0 0 10px rgba(2, 132, 199, 0.35)'
+            background: 'linear-gradient(90deg, #4D96FF 0%, #FFD93D 50%, #6BCB77 100%)',
+            borderRight: '2px solid #000000'
           }}
         />
       </div>
@@ -344,20 +347,20 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
           const isCurrent = currentStep === idx;
           const IconComponent = st.icon;
 
-          let cardBorder = '1px solid var(--border-color)';
-          let cardBg = 'var(--code-box-bg)';
-          let iconColor = 'var(--text-secondary)';
+          let cardBorder = '2px solid #000000';
+          let cardBg = '#FFFFFF';
+          let iconColor = '#64748B';
           let statusText = 'QUEUED';
 
           if (isDone) {
-            cardBorder = '1.5px solid #10b981';
-            cardBg = 'rgba(16, 185, 129, 0.08)';
-            iconColor = '#10b981';
+            cardBorder = '2.5px solid #000000';
+            cardBg = '#F0FDF4';
+            iconColor = '#16A34A';
             statusText = `DONE (${st.latency})`;
           } else if (isCurrent) {
-            cardBorder = '1.5px solid var(--accent-cyan)';
-            cardBg = 'rgba(6, 182, 212, 0.08)';
-            iconColor = 'var(--accent-cyan)';
+            cardBorder = '2.5px solid #000000';
+            cardBg = '#FFFBEB';
+            iconColor = '#000000';
             statusText = 'INSPECTION ACTIVE...';
           }
 
@@ -365,26 +368,25 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
             <motion.div
               key={st.id}
               animate={{
-                scale: isCurrent ? 1.02 : 1,
-                borderColor: isCurrent ? 'var(--accent-cyan)' : undefined
+                scale: isCurrent ? 1.02 : 1
               }}
               transition={{ duration: 0.2 }}
               style={{
                 background: cardBg,
                 border: cardBorder,
-                borderRadius: '12px',
+                borderRadius: '0px',
                 padding: '14px',
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '12px',
-                boxShadow: isCurrent ? '0 0 16px rgba(6, 182, 212, 0.2)' : 'none'
+                boxShadow: isCurrent ? '4px 4px 0px 0px #000000' : '2px 2px 0px 0px #000000'
               }}
             >
               <div style={{ marginTop: '2px', color: iconColor }}>
                 {isCurrent ? (
                   <Loader2 size={17} className="animate-spin" />
                 ) : isDone ? (
-                  <CheckCircle2 size={17} color="#00ff88" />
+                  <CheckCircle2 size={17} color="#16A34A" />
                 ) : (
                   <IconComponent size={17} />
                 )}
@@ -392,17 +394,17 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
 
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
-                  <span className="mono" style={{ fontSize: '0.68rem', fontWeight: 800, color: iconColor, letterSpacing: '0.04em' }}>
+                  <span className="mono" style={{ fontSize: '0.7rem', fontWeight: 900, color: '#000000', letterSpacing: '0.04em' }}>
                     PHASE 0{idx + 1}
                   </span>
-                  <span className="mono" style={{ fontSize: '0.62rem', color: iconColor, fontWeight: 700 }}>
+                  <span className="mono" style={{ fontSize: '0.64rem', color: isDone ? '#16A34A' : '#000000', fontWeight: 800 }}>
                     {statusText}
                   </span>
                 </div>
-                <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '3px' }}>
+                <div style={{ fontSize: '0.84rem', fontWeight: 800, color: '#000000', marginBottom: '3px' }}>
                   {st.title}
                 </div>
-                <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+                <div style={{ fontSize: '0.72rem', color: '#475569', lineHeight: 1.35, fontWeight: 500 }}>
                   {st.detail}
                 </div>
               </div>

@@ -49,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ({
       case 'overview':
         return 'Autonomous SOC Overview';
       case 'scanner':
-        return 'Live Security Scanner (Soft UI)';
+        return 'Live Security Scanner';
       case 'email-scanner':
         return 'Email Phishing & Link Extraction';
       case 'bulk-scanner':
