@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
-import { Download, Sparkles, Terminal, Puzzle, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Download, Sparkles, Terminal, Puzzle, ShieldCheck, CheckCircle2, ArrowRight, ExternalLink, Zap, Lock, Globe } from 'lucide-react';
 
-export const ChromeExtensionPage: React.FC = () => {
+interface ChromeExtensionPageProps {
+  onLaunchScanner?: (domain: string) => void;
+  theme?: 'dark' | 'light';
+}
+
+export const ChromeExtensionPage: React.FC<ChromeExtensionPageProps> = ({ onLaunchScanner }) => {
   const [downloading, setDownloading] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState(false);
 
   const handleDownload = () => {
     setDownloading(true);
@@ -15,133 +21,517 @@ export const ChromeExtensionPage: React.FC = () => {
     setTimeout(() => setDownloading(false), 1500);
   };
 
+  const handleCopyChromeUrl = () => {
+    navigator.clipboard.writeText('chrome://extensions');
+    setCopiedUrl(true);
+    setTimeout(() => setCopiedUrl(false), 2000);
+  };
+
   return (
-    <div className="glass-panel" style={{ padding: '32px', margin: '0 24px 20px 24px' }}>
-      {/* Hero Banner */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '32px', alignItems: 'center', marginBottom: '36px' }}>
+    <div
+      style={{
+        padding: '36px',
+        margin: '0 24px 28px 24px',
+        background: '#FFFFFF',
+        border: '4px solid #000000',
+        boxShadow: '12px 12px 0px 0px #000000',
+        borderRadius: '0px',
+        fontFamily: "'Space Grotesk', sans-serif"
+      }}
+    >
+      {/* Top Banner & Hero Section */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1.2fr 1fr',
+          gap: '36px',
+          alignItems: 'center',
+          marginBottom: '40px'
+        }}
+      >
         <div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(6, 182, 212, 0.15)', border: '1px solid rgba(6, 182, 212, 0.4)', borderRadius: '20px', padding: '4px 12px', fontSize: '0.75rem', color: '#38bdf8', fontWeight: 700, marginBottom: '14px' }}>
-            <Sparkles size={14} />
-            <span>REAL-TIME BROWSER DEFENSE (MANIFEST V3)</span>
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: '#FFD93D',
+              border: '2.5px solid #000000',
+              boxShadow: '2.5px 2.5px 0px 0px #000000',
+              borderRadius: '0px',
+              padding: '6px 14px',
+              fontSize: '0.78rem',
+              color: '#000000',
+              fontWeight: 900,
+              letterSpacing: '0.04em',
+              marginBottom: '16px',
+              textTransform: 'uppercase'
+            }}
+          >
+            <Sparkles size={15} color="#000000" />
+            <span>Real-Time Browser Defense (Manifest V3)</span>
           </div>
 
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.25, marginBottom: '12px' }}>
+          <h1
+            style={{
+              fontSize: '2.3rem',
+              fontWeight: 900,
+              color: '#000000',
+              lineHeight: 1.15,
+              marginBottom: '14px',
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase'
+            }}
+          >
             CyberGuard AI Chrome Extension
-          </h2>
+          </h1>
 
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '24px' }}>
-            Install the lightweight browser extension to get instant early-warning alerts whenever you visit suspect lookalike domains, credential phishing traps, or unsecured web servers.
+          <p
+            style={{
+              fontSize: '0.94rem',
+              color: '#000000',
+              lineHeight: 1.6,
+              marginBottom: '26px',
+              fontWeight: 600
+            }}
+          >
+            Install the high-precision browser shield to get instant early-warning protection whenever you visit lookalike domains, credential phishing traps, or misconfigured servers in real time.
           </p>
 
           <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
             <button
               onClick={handleDownload}
               style={{
-                background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '10px',
-                padding: '12px 24px',
-                fontWeight: 700,
+                background: '#4D96FF',
+                color: '#000000',
+                border: '3px solid #000000',
+                borderRadius: '0px',
+                padding: '14px 26px',
+                fontWeight: 900,
                 fontSize: '0.95rem',
                 cursor: 'pointer',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 0 20px rgba(2, 132, 199, 0.5)',
-                transition: 'all 0.15s'
+                gap: '10px',
+                boxShadow: '5px 5px 0px 0px #000000',
+                transition: 'transform 0.1s ease, box-shadow 0.1s ease',
+                textTransform: 'uppercase'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translate(-2px, -2px)';
+                e.currentTarget.style.boxShadow = '7px 7px 0px 0px #000000';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'none';
+                e.currentTarget.style.boxShadow = '5px 5px 0px 0px #000000';
               }}
             >
-              <Download size={18} />
-              <span>{downloading ? 'Downloading Package...' : 'Download Chrome Extension (.ZIP)'}</span>
+              <Download size={20} strokeWidth={2.8} />
+              <span>{downloading ? 'Downloading Package...' : 'Download Extension (.ZIP)'}</span>
             </button>
+
+            {onLaunchScanner && (
+              <button
+                onClick={() => onLaunchScanner('campuskart.shop')}
+                style={{
+                  background: '#FFD93D',
+                  color: '#000000',
+                  border: '3px solid #000000',
+                  borderRadius: '0px',
+                  padding: '14px 22px',
+                  fontWeight: 900,
+                  fontSize: '0.95rem',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  boxShadow: '4px 4px 0px 0px #000000',
+                  transition: 'transform 0.1s ease, box-shadow 0.1s ease',
+                  textTransform: 'uppercase'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translate(-2px, -2px)';
+                  e.currentTarget.style.boxShadow = '6px 6px 0px 0px #000000';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'none';
+                  e.currentTarget.style.boxShadow = '4px 4px 0px 0px #000000';
+                }}
+              >
+                <span>Test Live Scan</span>
+                <ArrowRight size={18} strokeWidth={2.8} />
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Live Extension Mockup Box */}
-        <div style={{
-          background: 'var(--code-box-bg)',
-          border: '1px solid var(--border-color)',
-          borderRadius: '12px',
-          padding: '18px',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.6)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px', marginBottom: '14px' }}>
+        {/* Live Extension Mockup Box (Neo-Brutalism Style) */}
+        <div
+          style={{
+            background: '#FFFDF5',
+            border: '3.5px solid #000000',
+            borderRadius: '0px',
+            boxShadow: '8px 8px 0px 0px #000000',
+            overflow: 'hidden'
+          }}
+        >
+          {/* Top Browser Bar Mockup */}
+          <div
+            style={{
+              background: '#FFD93D',
+              borderBottom: '3px solid #000000',
+              padding: '10px 14px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ background: '#0284c7', padding: '6px', borderRadius: '6px', color: '#ffffff' }}>
-                <Puzzle size={16} />
+              <div
+                style={{
+                  background: '#FFFFFF',
+                  border: '2px solid #000000',
+                  padding: '5px',
+                  boxShadow: '1.5px 1.5px 0px 0px #000000',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <Puzzle size={16} color="#000000" strokeWidth={2.8} />
               </div>
               <div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>CyberGuard AI</div>
-                <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>v2.0 Active Shield</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 900, color: '#000000', letterSpacing: '-0.01em' }}>
+                  CYBERGUARD AI
+                </div>
+                <div style={{ fontSize: '0.62rem', color: '#000000', fontWeight: 700 }}>
+                  v2.0 ACTIVE THREAT SHIELD
+                </div>
               </div>
             </div>
-            <span style={{ fontSize: '0.7rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.15)', padding: '2px 8px', borderRadius: '12px', fontWeight: 700 }}>
+
+            <span
+              style={{
+                fontSize: '0.72rem',
+                color: '#000000',
+                background: '#6BCB77',
+                border: '2px solid #000000',
+                boxShadow: '2px 2px 0px 0px #000000',
+                padding: '3px 10px',
+                borderRadius: '0px',
+                fontWeight: 900
+              }}
+            >
               ● SHIELD ACTIVE
             </span>
           </div>
 
-          <div style={{ background: 'rgba(0, 0, 0, 0.4)', borderRadius: '8px', padding: '12px', marginBottom: '12px', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>Active Tab Evaluated</div>
-            <div className="mono" style={{ fontSize: '0.8rem', color: 'var(--text-primary)', fontWeight: 600 }}>
-              https://campuskart.shop
+          <div style={{ padding: '16px' }}>
+            {/* Active Tab Card */}
+            <div
+              style={{
+                background: '#FFFFFF',
+                border: '2.5px solid #000000',
+                boxShadow: '3px 3px 0px 0px #000000',
+                padding: '10px 12px',
+                marginBottom: '12px'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                <span style={{ fontSize: '0.65rem', color: '#000000', fontWeight: 900, textTransform: 'uppercase' }}>
+                  Current Active Tab Target
+                </span>
+                <span
+                  style={{
+                    fontSize: '0.62rem',
+                    fontWeight: 900,
+                    background: '#6BCB77',
+                    border: '1.5px solid #000000',
+                    color: '#000000',
+                    padding: '1px 6px',
+                    boxShadow: '1px 1px 0px 0px #000000'
+                  }}
+                >
+                  HTTPS
+                </span>
+              </div>
+              <div className="mono" style={{ fontSize: '0.88rem', color: '#000000', fontWeight: 800 }}>
+                https://campuskart.shop
+              </div>
             </div>
-          </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px' }}>
-            <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '6px', padding: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.65rem', color: '#10b981', fontWeight: 600 }}>RISK SCORE</div>
-              <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#10b981' }}>15.6 / 100</div>
+            {/* Metrics Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '14px' }}>
+              <div
+                style={{
+                  background: '#FFFFFF',
+                  border: '2.5px solid #000000',
+                  boxShadow: '3px 3px 0px 0px #000000',
+                  padding: '10px 8px',
+                  textAlign: 'center'
+                }}
+              >
+                <div style={{ fontSize: '0.66rem', color: '#000000', fontWeight: 900, textTransform: 'uppercase', marginBottom: '3px' }}>
+                  Risk Score
+                </div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#6BCB77' }}>
+                  15.6 / 100
+                </div>
+              </div>
+              <div
+                style={{
+                  background: '#FFFFFF',
+                  border: '2.5px solid #000000',
+                  boxShadow: '3px 3px 0px 0px #000000',
+                  padding: '10px 8px',
+                  textAlign: 'center'
+                }}
+              >
+                <div style={{ fontSize: '0.66rem', color: '#000000', fontWeight: 900, textTransform: 'uppercase', marginBottom: '3px' }}>
+                  Threat Verdict
+                </div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#4D96FF' }}>
+                  BENIGN
+                </div>
+              </div>
             </div>
-            <div style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: '6px', padding: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.65rem', color: '#38bdf8', fontWeight: 600 }}>VERDICT</div>
-              <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#38bdf8' }}>BENIGN</div>
-            </div>
-          </div>
 
-          <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <CheckCircle2 size={13} color="#10b981" />
-            <span>Passive background scanner monitoring tab navigation</span>
+            {/* Live Indicator Banner */}
+            <div
+              style={{
+                fontSize: '0.74rem',
+                color: '#000000',
+                fontWeight: 700,
+                background: '#FFFFFF',
+                border: '2px solid #000000',
+                boxShadow: '2px 2px 0px 0px #000000',
+                padding: '8px 10px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <CheckCircle2 size={16} color="#6BCB77" strokeWidth={3} />
+              <span>Passive background scanner monitoring active tab navigation</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* 3-Step Setup Instructions */}
-      <div>
-        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Terminal size={18} color="#38bdf8" />
-          <span>3-Step Installation Guide</span>
-        </h3>
+      <div style={{ marginTop: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+          <div style={{ background: '#FFD93D', border: '2.5px solid #000000', padding: '6px', display: 'flex' }}>
+            <Terminal size={18} color="#000000" strokeWidth={2.8} />
+          </div>
+          <h2 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#000000', textTransform: 'uppercase', margin: 0 }}>
+            3-Step Quick Installation Guide
+          </h2>
+        </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
-          <div style={{ background: 'var(--code-box-bg)', padding: '20px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(6, 182, 212, 0.2)', color: '#38bdf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.85rem', marginBottom: '12px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+          {/* Step 1 */}
+          <div
+            style={{
+              background: '#FFFDF5',
+              padding: '24px',
+              border: '3px solid #000000',
+              boxShadow: '6px 6px 0px 0px #000000',
+              borderRadius: '0px'
+            }}
+          >
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '0px',
+                background: '#FFD93D',
+                border: '2.5px solid #000000',
+                boxShadow: '2.5px 2.5px 0px 0px #000000',
+                color: '#000000',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 900,
+                fontSize: '1.1rem',
+                marginBottom: '16px'
+              }}
+            >
               1
             </div>
-            <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>Download & Unzip</h4>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-              Click the download button above and extract the downloaded <code className="mono" style={{ color: '#38bdf8' }}>CyberGuard-AI-Chrome-Extension.zip</code> file onto your computer.
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 900, color: '#000000', marginBottom: '8px', textTransform: 'uppercase' }}>
+              Download &amp; Unzip
+            </h3>
+            <p style={{ fontSize: '0.85rem', color: '#000000', lineHeight: 1.55, fontWeight: 500, margin: 0 }}>
+              Click the download button above to retrieve the package, and extract <code className="mono" style={{ background: '#FFD93D', border: '1px solid #000000', padding: '1px 5px', fontWeight: 700 }}>CyberGuard-AI-Chrome-Extension.zip</code> into an accessible folder.
             </p>
           </div>
 
-          <div style={{ background: 'var(--code-box-bg)', padding: '20px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(6, 182, 212, 0.2)', color: '#38bdf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.85rem', marginBottom: '12px' }}>
+          {/* Step 2 */}
+          <div
+            style={{
+              background: '#FFFDF5',
+              padding: '24px',
+              border: '3px solid #000000',
+              boxShadow: '6px 6px 0px 0px #000000',
+              borderRadius: '0px'
+            }}
+          >
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '0px',
+                background: '#4D96FF',
+                border: '2.5px solid #000000',
+                boxShadow: '2.5px 2.5px 0px 0px #000000',
+                color: '#000000',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 900,
+                fontSize: '1.1rem',
+                marginBottom: '16px'
+              }}
+            >
               2
             </div>
-            <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>Open Extensions Page</h4>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-              Open Chrome and navigate to <code className="mono" style={{ color: '#38bdf8' }}>chrome://extensions</code>, then toggle on <strong>Developer mode</strong> in the top-right corner.
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 900, color: '#000000', marginBottom: '8px', textTransform: 'uppercase' }}>
+              Open Extensions Page
+            </h3>
+            <p style={{ fontSize: '0.85rem', color: '#000000', lineHeight: 1.55, fontWeight: 500, marginBottom: '10px' }}>
+              Open Google Chrome and navigate to <code className="mono" style={{ background: '#FFD93D', border: '1px solid #000000', padding: '1px 5px', fontWeight: 700 }}>chrome://extensions</code>, then toggle on <strong>Developer mode</strong> in the top-right corner.
             </p>
+            <button
+              onClick={handleCopyChromeUrl}
+              style={{
+                background: '#FFFFFF',
+                border: '2px solid #000000',
+                boxShadow: '2px 2px 0px 0px #000000',
+                borderRadius: '0px',
+                padding: '4px 10px',
+                fontSize: '0.74rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                color: '#000000'
+              }}
+            >
+              {copiedUrl ? 'Copied URL!' : 'Copy chrome://extensions'}
+            </button>
           </div>
 
-          <div style={{ background: 'var(--code-box-bg)', padding: '20px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(6, 182, 212, 0.2)', color: '#38bdf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.85rem', marginBottom: '12px' }}>
+          {/* Step 3 */}
+          <div
+            style={{
+              background: '#FFFDF5',
+              padding: '24px',
+              border: '3px solid #000000',
+              boxShadow: '6px 6px 0px 0px #000000',
+              borderRadius: '0px'
+            }}
+          >
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '0px',
+                background: '#6BCB77',
+                border: '2.5px solid #000000',
+                boxShadow: '2.5px 2.5px 0px 0px #000000',
+                color: '#000000',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 900,
+                fontSize: '1.1rem',
+                marginBottom: '16px'
+              }}
+            >
               3
             </div>
-            <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '6px' }}>Load Unpacked</h4>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-              Click <strong>"Load unpacked"</strong> in the top-left and select the unzipped <code className="mono" style={{ color: '#38bdf8' }}>extension</code> directory. CyberGuard is now protecting your browser!
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 900, color: '#000000', marginBottom: '8px', textTransform: 'uppercase' }}>
+              Load Unpacked
+            </h3>
+            <p style={{ fontSize: '0.85rem', color: '#000000', lineHeight: 1.55, fontWeight: 500, margin: 0 }}>
+              Click <strong>"Load unpacked"</strong> in the top-left and select the extracted folder. CyberGuard is now actively protecting your browser in real time!
             </p>
+          </div>
+        </div>
+      </div>
+
+      {/* 4 Core Extension Features Banner */}
+      <div style={{ marginTop: '36px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
+          <div
+            style={{
+              background: '#FFFFFF',
+              border: '2.5px solid #000000',
+              boxShadow: '4px 4px 0px 0px #000000',
+              padding: '16px',
+              borderRadius: '0px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+              <Zap size={16} color="#000000" strokeWidth={2.8} />
+              <div style={{ fontSize: '0.85rem', fontWeight: 900, color: '#000000' }}>Real-Time Intercept</div>
+            </div>
+            <div style={{ fontSize: '0.76rem', color: '#000000', lineHeight: 1.45, fontWeight: 500 }}>
+              Evaluates tab transitions instantly before credentials can be submitted to hostile sites.
+            </div>
+          </div>
+
+          <div
+            style={{
+              background: '#FFFFFF',
+              border: '2.5px solid #000000',
+              boxShadow: '4px 4px 0px 0px #000000',
+              padding: '16px',
+              borderRadius: '0px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+              <Globe size={16} color="#000000" strokeWidth={2.8} />
+              <div style={{ fontSize: '0.85rem', fontWeight: 900, color: '#000000' }}>Autonomous Edge DNS</div>
+            </div>
+            <div style={{ fontSize: '0.76rem', color: '#000000', lineHeight: 1.45, fontWeight: 500 }}>
+              Built-in heuristic fallback inspects lookalike domains offline without requiring backend reachability.
+            </div>
+          </div>
+
+          <div
+            style={{
+              background: '#FFFFFF',
+              border: '2.5px solid #000000',
+              boxShadow: '4px 4px 0px 0px #000000',
+              padding: '16px',
+              borderRadius: '0px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+              <Lock size={16} color="#000000" strokeWidth={2.8} />
+              <div style={{ fontSize: '0.85rem', fontWeight: 900, color: '#000000' }}>Zero Data Tracking</div>
+            </div>
+            <div style={{ fontSize: '0.76rem', color: '#000000', lineHeight: 1.45, fontWeight: 500 }}>
+              Operates under strict privacy boundaries. Your browsing history is never recorded or exfiltrated.
+            </div>
+          </div>
+
+          <div
+            style={{
+              background: '#FFFFFF',
+              border: '2.5px solid #000000',
+              boxShadow: '4px 4px 0px 0px #000000',
+              padding: '16px',
+              borderRadius: '0px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+              <ShieldCheck size={16} color="#000000" strokeWidth={2.8} />
+              <div style={{ fontSize: '0.85rem', fontWeight: 900, color: '#000000' }}>Deep Web App Sync</div>
+            </div>
+            <div style={{ fontSize: '0.76rem', color: '#000000', lineHeight: 1.45, fontWeight: 500 }}>
+              One-click jump from any flagged browser tab directly into CyberGuard's full forensic audit console.
+            </div>
           </div>
         </div>
       </div>
