@@ -115,7 +115,7 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, current
               style={{
                 padding: '14px 14px',
                 borderRadius: '16px',
-                border: isRunning ? '2.5px solid #6C63FF' : '2px solid rgba(0, 0, 0, 0.12)',
+                border: 'none',
                 background: 'var(--neu-bg, #E0E5EC)',
                 boxShadow: isRunning ? 'var(--neu-inset)' : 'var(--neu-extruded-sm)',
                 display: 'flex',

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Activity, Shield, ShieldAlert, AlertTriangle, ShieldCheck, RefreshCw, ExternalLink, ArrowUpRight, Flame, Database, Blocks } from 'lucide-react';
+import { Activity, Shield, ShieldAlert, AlertTriangle, ShieldCheck, RefreshCw, ExternalLink, ArrowUpRight, Flame, Database } from 'lucide-react';
 import { fetchThreatStats } from '../services/api';
 import type { CaseSummary, FeedItem } from '../types';
 
@@ -14,7 +14,6 @@ interface ThreatDashboardProps {
 export const ThreatDashboard: React.FC<ThreatDashboardProps> = ({ theme, cases = [], feed = [], onScanUrl }) => {
   const [lastUpdated, setLastUpdated] = useState(new Date().toLocaleTimeString());
   const [isLoading, setIsLoading] = useState(false);
-  const [blockchainRound, setBlockchainRound] = useState<number | null>(null);
 
   const [stats, setStats] = useState({
     total: 0,
@@ -26,21 +25,6 @@ export const ThreatDashboard: React.FC<ThreatDashboardProps> = ({ theme, cases =
   const [topBrands, setTopBrands] = useState<{ name: string; count: number; percent: number; color: string }[]>([]);
   const [riskyTlds, setRiskyTlds] = useState<{ name: string; count: number; percent: number; riskLevel: string }[]>([]);
   const [recentThreats, setRecentThreats] = useState<any[]>([]);
-
-  // Query live Algorand Testnet round
-  const fetchLiveBlockRound = async () => {
-    try {
-      const res = await fetch('https://testnet-api.algonode.cloud/v2/status');
-      if (res.ok) {
-        const json = await res.json();
-        if (json['last-round']) {
-          setBlockchainRound(json['last-round']);
-        }
-      }
-    } catch (e) {
-      console.warn('Could not query Algorand node status:', e);
-    }
-  };
 
   const computeFromLocalTelemetry = () => {
     // Get cases from props or localStorage
@@ -131,7 +115,6 @@ export const ThreatDashboard: React.FC<ThreatDashboardProps> = ({ theme, cases =
 
   const loadLiveStats = async () => {
     setIsLoading(true);
-    fetchLiveBlockRound();
 
     try {
       const data = await fetchThreatStats();
@@ -220,29 +203,13 @@ export const ThreatDashboard: React.FC<ThreatDashboardProps> = ({ theme, cases =
               Threat Intelligence Center
             </h1>
             <p style={{ margin: '4px 0 0 0', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-              Real telemetry, brand impersonation velocity, and active adversary infrastructure verified on Algorand Testnet
+              Real telemetry, brand impersonation velocity, and active adversary infrastructure verified live
             </p>
           </div>
         </div>
 
         {/* Live Status Pill & Refresh */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          {blockchainRound && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: 'rgba(0, 240, 255, 0.08)',
-              border: '1px solid rgba(0, 240, 255, 0.3)',
-              padding: '6px 12px',
-              borderRadius: '20px',
-              fontSize: '0.72rem',
-              color: 'var(--accent-cyan)'
-            }}>
-              <Blocks size={14} />
-              <span>Algorand Testnet Round: <strong>#{blockchainRound.toLocaleString()}</strong></span>
-            </div>
-          )}
 
           <div style={{
             display: 'flex',

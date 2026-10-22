@@ -5,7 +5,6 @@ import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { LandingPage } from './components/LandingPage';
 import { Scanner } from './components/Scanner';
-import { ScannerTelemetryMetrics } from './components/ScannerTelemetryMetrics';
 import { PipelineStepper } from './components/PipelineStepper';
 import type { PipelineStep } from './components/PipelineStepper';
 import { RiskSummaryCard } from './components/RiskSummaryCard';
@@ -24,13 +23,10 @@ import { AboutPage } from './components/AboutPage';
 import { AgenticWorkflowHUD } from './components/AgenticWorkflowHUD';
 import { ScanningTelemetryHUD } from './components/ScanningTelemetryHUD';
 import { FreeScanDetailedCard } from './components/FreeScanDetailedCard';
-import { X402PaymentModal } from './components/X402PaymentModal';
 import { ReportExportModal } from './components/ReportExportModal';
 import { AboutModal } from './components/AboutModal';
-import { WalletModal } from './components/WalletModal';
 import { HackerTransitionOverlay } from './components/HackerTransitionOverlay';
 import { CyberCopilotChat } from './components/CyberCopilotChat';
-import { AlgorandWalletProvider } from './context/AlgorandWalletContext';
 import { EmailPhishingScanner } from './components/EmailPhishingScanner';
 import { BulkScanner } from './components/BulkScanner';
 import { ThreatDashboard } from './components/ThreatDashboard';
@@ -95,8 +91,10 @@ export function App() {
   const [benchmarkSamples, setBenchmarkSamples] = useState<BenchmarkSample[]>([]);
   
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [pipelineSteps, setPipelineSteps] = useState<PipelineStep[]>(DEFAULT_PIPELINE_STEPS);
-  const [currentAgentStage, setCurrentAgentStage] = useState<number>(-1);
+  const [pipelineSteps, setPipelineSteps] = useState<PipelineStep[]>(() =>
+    DEFAULT_PIPELINE_STEPS.map((s) => ({ ...s, status: 'completed' }))
+  );
+  const [currentAgentStage, setCurrentAgentStage] = useState<number>(7);
   const [agentIsPaid, setAgentIsPaid] = useState<boolean>(true);
 
   // Cinematic hacker transition overlay state
@@ -462,9 +460,8 @@ export function App() {
   };
 
   return (
-    <AlgorandWalletProvider>
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--neo-bg, #FFFDF5)', position: 'relative' }}>
-        {/* Subtle Background Matrix Canvas */}
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--neo-bg, #FFFDF5)', position: 'relative' }}>
+      {/* Subtle Background Matrix Canvas */}
         <MatrixBackground opacity={theme === 'dark' ? 0.15 : 0.03} themeMode={theme} />
 
         {/* Ambient Floating Cyber Orbs */}
@@ -492,7 +489,6 @@ export function App() {
             theme={theme}
             toggleTheme={toggleTheme}
             onOpenAbout={() => setShowAboutModal(true)}
-            onOpenWalletModal={() => setShowWalletModal(true)}
             onLaunchScanner={handleLaunchScanner}
             hasActiveReport={!!report}
             onOpenCopilot={() => setShowCopilotChat(true)}
@@ -526,13 +522,6 @@ export function App() {
         {/* Page 2: Live Security Scanner & Embedded Results */}
         {activeTab === 'scanner' && (
           <div className="neomorphic-scanner-zone" data-theme={theme}>
-            {/* Live Threat Intelligence & Stat Metric Boxes */}
-            <ScannerTelemetryMetrics
-              theme={theme}
-              cases={cases}
-              onSelectFocus={(focus) => setScannerFocus(focus)}
-            />
-
             <Scanner
               onScan={handleScan}
               isLoading={isLoading}
@@ -548,25 +537,23 @@ export function App() {
               )}
             </AnimatePresence>
 
-            {/* Pipeline Stepper (Active during scan or when target URL is entered) */}
-            {!isLoading && currentScanningUrl && (
+            {/* Pipeline Stepper (Always visible UI matching user reference) */}
+            {!isLoading && (
               <PipelineStepper
                 steps={pipelineSteps}
-                currentStepIndex={currentAgentStage}
+                currentStepIndex={currentScanningUrl && currentAgentStage >= 0 ? currentAgentStage : pipelineSteps.length}
                 onUnlock={handleOpenPaymentForFreeScan}
               />
             )}
 
-            {/* Agentic Workflow HUD */}
-            {currentScanningUrl && (
-              <AgenticWorkflowHUD
-                currentStage={currentAgentStage}
-                targetUrl={currentScanningUrl}
-                isPaid={agentIsPaid}
-                onOpenPaymentModal={handleOpenPaymentForFreeScan}
-                txId={report?.tx_id}
-              />
-            )}
+            {/* Agentic Workflow HUD (Always visible UI matching user reference) */}
+            <AgenticWorkflowHUD
+              currentStage={currentScanningUrl && currentAgentStage >= 0 ? currentAgentStage : 7}
+              targetUrl={currentScanningUrl || 'https://psit.ac.in'}
+              isPaid={true}
+              onOpenPaymentModal={() => {}}
+              txId={report?.tx_id}
+            />
 
             {/* Error Banner */}
             {errorMessage && (
@@ -994,22 +981,6 @@ export function App() {
           )}
         </AnimatePresence>
 
-        {/* Algorand Wallet Connection & Account Management Modal */}
-        <WalletModal
-          isOpen={showWalletModal}
-          onClose={() => setShowWalletModal(false)}
-        />
-
-        {/* x402 Algorand Testnet Payment Modal */}
-        <X402PaymentModal
-          isOpen={showPaymentModal}
-          onClose={() => setShowPaymentModal(false)}
-          challenge={activeChallenge}
-          targetUrl={currentScanningUrl || 'https://campuskart.shop'}
-          caseId={freeScanResult?.case_id || 'case-live'}
-          onPaymentSuccess={handlePaymentSuccess}
-        />
-
         {/* Export Forensic Report Modal */}
         {showExportModal && report && (
           <ReportExportModal
@@ -1070,7 +1041,6 @@ export function App() {
         />
         </div>
       </div>
-    </AlgorandWalletProvider>
   );
 }
 

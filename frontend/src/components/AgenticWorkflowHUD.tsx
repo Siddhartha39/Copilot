@@ -192,8 +192,8 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
               style={{
                 background: 'var(--neu-bg, #E0E5EC)',
                 boxShadow: isRunning ? 'var(--neu-inset)' : 'var(--neu-extruded-sm)',
-                borderRadius: '16px',
-                border: isRunning ? '2.5px solid #6C63FF' : '2px solid rgba(0, 0, 0, 0.12)',
+                borderRadius: '20px',
+                border: 'none',
                 padding: '16px 18px',
                 display: 'flex',
                 flexDirection: 'column',

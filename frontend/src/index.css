@@ -183,54 +183,6 @@ body {
   box-shadow: 12px 12px 0px 0px #000000 !important;
 }
 
-/* Neo-Brutalist Stat Metric Cards (Directly matching user reference) */
-.neo-stat-card {
-  background: var(--bg-card, #FFFFFF) !important;
-  border: 4px solid #000000 !important;
-  border-radius: 0px !important;
-  box-shadow: 6px 6px 0px 0px #000000 !important;
-  padding: 20px 22px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justifyContent: space-between !important;
-  cursor: pointer !important;
-  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
-  position: relative !important;
-  z-index: 1 !important;
-}
-
-[data-theme="dark"] .neo-stat-card,
-body:not(.light-theme) .neo-stat-card {
-  background: #1A1A1A !important;
-  border: 4px solid #FFFFFF !important;
-  box-shadow: 6px 6px 0px 0px #FFD93D !important;
-}
-
-.neo-stat-card:hover {
-  transform: translate(-3px, -2px) !important;
-  box-shadow: 8px 8px 0px 0px #000000 !important;
-}
-
-[data-theme="dark"] .neo-stat-card:hover,
-body:not(.light-theme) .neo-stat-card:hover {
-  box-shadow: 8px 8px 0px 0px #FFD93D !important;
-}
-
-/* Neo-Brutalist Telemetry Pill */
-.neo-telemetry-pill {
-  background: var(--bg-card, #FFFFFF) !important;
-  border: 2px solid #000000 !important;
-  border-radius: 9999px !important;
-  box-shadow: 3px 3px 0px 0px #000000 !important;
-}
-
-[data-theme="dark"] .neo-telemetry-pill,
-body:not(.light-theme) .neo-telemetry-pill {
-  background: #1A1A1A !important;
-  border: 2px solid #FFFFFF !important;
-  box-shadow: 3px 3px 0px 0px #FFD93D !important;
-}
-
 /* Hard Mechanical Click Feedback for all buttons */
 button:active {
   transform: translate(2px, 2px) !important;
