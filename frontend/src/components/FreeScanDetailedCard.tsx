@@ -14,14 +14,12 @@ import {
   Zap,
   Eye,
   Cpu,
-  HelpCircle,
   Code,
   Copy,
   Check,
-  FileCode,
   Server
 } from 'lucide-react';
-import type { FreeScanResult, HeaderAuditItem } from '../types';
+import type { FreeScanResult } from '../types';
 
 interface FreeScanDetailedCardProps {
   result: FreeScanResult;
@@ -33,26 +31,10 @@ interface FreeScanDetailedCardProps {
 
 export const FreeScanDetailedCard: React.FC<FreeScanDetailedCardProps> = ({
   result,
-  onUnlockDeepAudit,
-  onOpenAbout,
-  scannerFocus = 'developer',
-  onScannerFocusChange
+  onUnlockDeepAudit
 }) => {
-  const [activeFocus, setActiveFocus] = useState<'developer' | 'phishing'>(scannerFocus);
   const [selectedSnippetTab, setSelectedSnippetTab] = useState<'nginx' | 'apache' | 'nextjs' | 'node' | 'cloudflare'>('nginx');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-
-  // Sync if parent changes
-  React.useEffect(() => {
-    if (scannerFocus) {
-      setActiveFocus(scannerFocus);
-    }
-  }, [scannerFocus]);
-
-  const handleSwitchFocus = (focus: 'developer' | 'phishing') => {
-    setActiveFocus(focus);
-    onScannerFocusChange?.(focus);
-  };
 
   const handleCopy = (text: string, key: string) => {
     navigator.clipboard.writeText(text);
@@ -98,25 +80,22 @@ export const FreeScanDetailedCard: React.FC<FreeScanDetailedCardProps> = ({
 # Place inside your server { ... } block:
 add_header X-Frame-Options "SAMEORIGIN" always;
 add_header X-Content-Type-Options "nosniff" always;
+add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; frame-ancestors 'self';" always;
 add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
-add_header Content-Security-Policy "default-src 'self' https: data:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; object-src 'none';" always;
 add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;`,
+add_header Permissions-Policy "geolocation=(), camera=(), microphone=()" always;`,
 
-    apache: `# Apache Web Server Hardening for ${domain}
-# Place inside .htaccess or VirtualHost:
+    apache: `# Apache 2.4 Server Hardening (.htaccess or httpd.conf) for ${domain}
 <IfModule mod_headers.c>
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set X-Content-Type-Options "nosniff"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https:; frame-ancestors 'self';"
   Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-  Header always set Content-Security-Policy "default-src 'self' https: data:; script-src 'self' 'unsafe-inline' https:; object-src 'none';"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
-  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
 </IfModule>`,
 
-    nextjs: `// Next.js (next.config.js) Security Headers for ${domain}
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+    nextjs: `// next.config.js - Defensive Headers for ${domain}
+module.exports = {
   async headers() {
     return [
       {
@@ -124,101 +103,74 @@ const nextConfig = {
         headers: [
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self' 'unsafe-eval' https:; frame-ancestors 'self';" },
           { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'Content-Security-Policy', value: "default-src 'self' https:; script-src 'self' 'unsafe-inline' https:; object-src 'none';" }
-        ]
-      }
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' }
+        ],
+      },
     ];
-  }
-};
-module.exports = nextConfig;`,
+  },
+};`,
 
-    node: `// Node.js & Express Security Middleware (Helmet) for ${domain}
-const express = require('express');
+    node: `// Node.js Express Server Hardening via Helmet for ${domain}
 const helmet = require('helmet');
 
-const app = express();
-
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'", "https:"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https:"],
-      objectSrc: ["'none'"]
+app.use(
+  helmet({
+    frameguard: { action: 'sameorigin' },
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "https:"],
+        frameAncestors: ["'self'"]
+      }
+    },
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true
     }
-  },
-  hsts: {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true
-  }
-}));`,
+  })
+);`,
 
-    cloudflare: `# Cloudflare HTTP Response Headers for ${domain}
-# Cloudflare Dashboard -> Websites -> ${domain} -> Rules -> Transform Rules:
-1. Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-2. X-Frame-Options           = "SAMEORIGIN"
-3. X-Content-Type-Options    = "nosniff"
-4. Content-Security-Policy   = "default-src 'self' https: data:; script-src 'self' 'unsafe-inline' https:; object-src 'none';"
-5. Referrer-Policy           = "strict-origin-when-cross-origin"`
+    cloudflare: `// Cloudflare Workers - Edge Defense Header Hardener for ${domain}
+addEventListener('fetch', event => {
+  event.respondWith(handleRequest(event.request));
+});
+
+async function handleRequest(request) {
+  const response = await fetch(request);
+  const newHeaders = new Headers(response.headers);
+  newHeaders.set('X-Frame-Options', 'SAMEORIGIN');
+  newHeaders.set('X-Content-Type-Options', 'nosniff');
+  newHeaders.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  newHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  return new Response(response.body, { status: response.status, headers: newHeaders });
+}`
   };
 
   return (
-    <div style={{ margin: '0 0 24px 0', display: 'flex', flexDirection: 'column', gap: '20px', fontFamily: "'Space Grotesk', sans-serif" }}>
-      {/* 1. Feature Output Persona Selector Tabs -> Neo-Brutalist High-Contrast Bar */}
-      <div className="glass-panel" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', borderRadius: '0px', boxShadow: '6px 6px 0px 0px #000000', border: '3px solid #000000', background: '#FFFFFF' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          <button
-            type="button"
-            onClick={() => handleSwitchFocus('developer')}
-            style={{
-              background: activeFocus === 'developer' ? '#4D96FF' : '#FFFFFF',
-              color: activeFocus === 'developer' ? '#FFFFFF' : '#000000',
-              border: '2.5px solid #000000',
-              borderRadius: '0px',
-              padding: '8px 18px',
-              fontSize: '0.84rem',
-              fontWeight: 800,
-              fontFamily: "'Space Grotesk', sans-serif",
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              boxShadow: activeFocus === 'developer' ? '3px 3px 0px 0px #000000' : 'none',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <Shield size={16} />
-            <span>Developer Website Security &amp; Anti-Hacking Audit</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleSwitchFocus('phishing')}
-            style={{
-              background: activeFocus === 'phishing' ? '#FF6B6B' : '#FFFFFF',
-              color: activeFocus === 'phishing' ? '#FFFFFF' : '#000000',
-              border: '2.5px solid #000000',
-              borderRadius: '0px',
-              padding: '8px 18px',
-              fontSize: '0.84rem',
-              fontWeight: 800,
-              fontFamily: "'Space Grotesk', sans-serif",
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              boxShadow: activeFocus === 'phishing' ? '3px 3px 0px 0px #000000' : 'none',
-              transition: 'all 0.15s ease'
-            }}
-          >
-            <Zap size={16} />
-            <span>Phishing &amp; Fraud Intelligence Scanner</span>
-          </button>
+    <div style={{ margin: '0 0 24px 0', display: 'flex', flexDirection: 'column', gap: '24px', fontFamily: "'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif" }}>
+      {/* 1. Unified Assessment Header Banner */}
+      <div className="glass-panel" style={{ padding: '22px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px', borderRadius: '0px', boxShadow: '6px 6px 0px 0px #000000', border: '3px solid #000000', background: '#FFFFFF' }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.74rem', background: '#6BCB77', border: '1.5px solid #000000', color: '#000000', padding: '3px 10px', borderRadius: '0px', fontWeight: 900, boxShadow: '2px 2px 0px 0px #000000' }}>
+              COMPLETE UNIFIED SECURITY DOSSIER
+            </span>
+            <span className="mono" style={{ fontSize: '0.74rem', color: '#000000' }}>
+              {new Date(result.timestamp).toLocaleTimeString()}
+            </span>
+          </div>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#000000', marginTop: '6px', fontFamily: "'Space Grotesk', sans-serif" }}>
+            Security Assessment: {result.canonical_domain}
+          </h2>
+          <div className="mono" style={{ fontSize: '0.78rem', color: '#334155', marginTop: '2px' }}>
+            Target: <span style={{ color: '#000000', background: '#FFD93D', padding: '1px 6px', border: '1px solid #000000', fontWeight: 800 }}>{result.target_url}</span>
+          </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <button
             onClick={onUnlockDeepAudit}
             style={{
@@ -226,9 +178,9 @@ app.use(helmet({
               color: '#000000',
               border: '2.5px solid #000000',
               borderRadius: '0px',
-              padding: '9px 20px',
+              padding: '10px 22px',
               fontWeight: 900,
-              fontSize: '0.86rem',
+              fontSize: '0.88rem',
               fontFamily: "'Space Grotesk', sans-serif",
               cursor: 'pointer',
               display: 'flex',
@@ -237,544 +189,525 @@ app.use(helmet({
               boxShadow: '3px 3px 0px 0px #000000'
             }}
           >
-            <Zap size={15} />
-            <span>Deep Forensic Audit (Free)</span>
-            <ArrowRight size={15} />
+            <Zap size={16} />
+            <span>Launch Deep Forensic Audit (Free)</span>
+            <ArrowRight size={16} />
           </button>
         </div>
       </div>
 
+      {/* 2. Top Combined 4-Metric Overview Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
+        {/* Threat Verdict */}
+        <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
+          <div style={{ fontSize: '0.72rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Threat Verdict (Feature 2)
+          </div>
+          <div style={{ fontSize: '1.2rem', fontWeight: 900, color: scoreColor, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {isUnregistered ? <Globe size={20} color="#0D9488" /> : isPhishing ? <ShieldAlert size={20} color="#EF4444" /> : <ShieldCheck size={20} color="#16A34A" />}
+            <span>
+              {isUnregistered ? 'UNREGISTERED' : result.verdict}
+            </span>
+          </div>
+          <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
+            Confidence: <strong style={{ fontWeight: 800, color: '#000000' }}>{(result.confidence * 100).toFixed(0)}%</strong>
+          </div>
+        </div>
+
+        {/* Basic Risk Score */}
+        <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
+          <div style={{ fontSize: '0.72rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Risk Score (Feature 2)
+          </div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+            <span style={{ fontSize: '2rem', fontWeight: 900, color: scoreColor }}>
+              {result.basic_risk_score.toFixed(1)}
+            </span>
+            <span style={{ fontSize: '0.88rem', color: '#64748B', fontWeight: 800 }}>/ 100</span>
+          </div>
+          <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
+            {isUnregistered ? 'Unregistered Profile' : 'Lexical & Infrastructure Triage'}
+          </div>
+        </div>
+
+        {/* Security Grade */}
+        <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
+          <div style={{ fontSize: '0.72rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Security Grade (Feature 1)
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '2rem', fontWeight: 900, color: gradeColor }}>
+              {securityGrade}
+            </span>
+            <span style={{ fontSize: '0.78rem', background: '#FFD93D', border: '1.5px solid #000000', padding: '3px 8px', fontWeight: 900 }}>
+              {audit ? `${audit.score_percentage}% Pass` : (hasHsts ? 'Standard TLS' : 'Hardening Req.')}
+            </span>
+          </div>
+          <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
+            Defense Posture &amp; Server Immunity
+          </div>
+        </div>
+
+        {/* Domain Age */}
+        <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
+          <div style={{ fontSize: '0.72rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Domain Standing
+          </div>
+          <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#000000' }}>
+            <span>
+              {isUnregistered ? 'NOT REGISTERED' : result.domain_age_days !== undefined && result.domain_age_days !== null ? `${result.domain_age_days} Days` : 'Verified Standing'}
+            </span>
+          </div>
+          <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
+            Registered: <strong style={{ color: '#000000' }}>{isUnregistered ? 'Available (NXDOMAIN)' : (result.creation_date || 'Active')}</strong>
+          </div>
+        </div>
+      </div>
+
       {/* =========================================================================
-          FEATURE 1: DEVELOPER WEBSITE SECURITY & ANTI-HACKING AUDIT VIEW
+          FEATURE 1: DEVELOPER WEBSITE SECURITY & ANTI-HACKING AUDIT
       ========================================================================= */}
-      {activeFocus === 'developer' ? (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* Top Developer Header Card */}
-          <div className="glass-panel" style={{ padding: '24px', border: `3px solid #000000`, borderRadius: '0px', boxShadow: '6px 6px 0px 0px #000000', background: '#FFFFFF' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '2px solid #000000', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '0.72rem', background: '#FFD93D', border: '1.5px solid #000000', color: '#000000', padding: '2px 8px', borderRadius: '0px', fontWeight: 900, boxShadow: '2px 2px 0px 0px #000000' }}>
-                    FEATURE 1 // DEVELOPER DEFENSIVE POSTURE &amp; EXPLOIT IMMUNITY
-                  </span>
-                  <span className="mono" style={{ fontSize: '0.74rem', color: '#000000' }}>
-                    Target: <strong style={{ color: '#000000', background: '#FFFDF5', border: '1px solid #000000', padding: '1px 6px' }}>{result.canonical_domain}</strong>
-                  </span>
-                </div>
-                <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#000000', marginTop: '8px', fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Website Defensive Security &amp; Server Hardening Audit
-                </h2>
-                <div style={{ fontSize: '0.8rem', color: '#334155', marginTop: '2px', fontWeight: 500 }}>
-                  Audits HTTP response defense headers, code injection protection, and server configuration security.
-                </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        {/* Top Developer Header Card */}
+        <div className="glass-panel" style={{ padding: '24px', border: '3px solid #000000', borderRadius: '0px', boxShadow: '6px 6px 0px 0px #000000', background: '#FFFFFF' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '2px solid #000000', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '0.74rem', background: '#4D96FF', border: '1.5px solid #000000', color: '#FFFFFF', padding: '3px 10px', borderRadius: '0px', fontWeight: 900, boxShadow: '2px 2px 0px 0px #000000' }}>
+                  FEATURE 1: DEVELOPER DEFENSIVE POSTURE &amp; EXPLOIT IMMUNITY
+                </span>
+                <span className="mono" style={{ fontSize: '0.74rem', color: '#000000' }}>
+                  Target: <strong style={{ color: '#000000', background: '#FFFDF5', border: '1px solid #000000', padding: '1px 6px' }}>{result.canonical_domain}</strong>
+                </span>
               </div>
-
-              {/* Security Grade Badge -> Neo-Brutalist Sticker Box */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FFFDF5', padding: '14px 22px', borderRadius: '0px', boxShadow: '4px 4px 0px 0px #000000', border: '3px solid #000000' }}>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '0.74rem', color: '#000000', fontWeight: 900, textTransform: 'uppercase', fontFamily: "'Space Grotesk', sans-serif" }}>SECURITY GRADE</div>
-                  <div style={{ fontSize: '0.84rem', color: '#334155', fontWeight: 700 }}>
-                    {audit ? `${audit.score_percentage}% Pass Rate` : (hasHsts ? 'Standard TLS Defense' : 'Needs Hardening')}
-                  </div>
-                </div>
-                <div style={{ fontSize: '2.4rem', fontWeight: 900, color: '#000000', background: gradeColor, padding: '4px 16px', borderRadius: '0px', border: '2.5px solid #000000', boxShadow: '2px 2px 0px 0px #000000', fontFamily: "'Space Grotesk', sans-serif" }}>
-                  {securityGrade}
-                </div>
+              <h2 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#000000', marginTop: '8px', fontFamily: "'Space Grotesk', sans-serif" }}>
+                Website Defensive Security &amp; Server Hardening Audit
+              </h2>
+              <div style={{ fontSize: '0.8rem', color: '#334155', marginTop: '2px', fontWeight: 500 }}>
+                Audits HTTP response defense headers, code injection protection, and server configuration security.
               </div>
             </div>
 
-            {/* 3 Developer Highlight Metrics -> Neo-Brutalist Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
-              {/* Clickjacking Protection */}
-              <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
-                <div style={{ fontSize: '0.74rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Clickjacking Immunity (X-Frame-Options)
-                </div>
-                <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#000000', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {isClickjackable ? <XCircle size={20} color="#EF4444" /> : <CheckCircle2 size={20} color="#16A34A" />}
-                  <span style={{ color: isClickjackable ? '#EF4444' : '#16A34A' }}>{isClickjackable ? 'VULNERABLE (NO XFO)' : 'IMMUNE TO FRAMING'}</span>
-                </div>
-                <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
-                  {isClickjackable ? 'Attackers can iframe your website to hijack user clicks.' : 'Framing restricted to SAMEORIGIN / DENY.'}
+            {/* Security Grade Badge */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: '#FFFDF5', padding: '12px 20px', borderRadius: '0px', boxShadow: '4px 4px 0px 0px #000000', border: '3px solid #000000' }}>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '0.72rem', color: '#000000', fontWeight: 900, textTransform: 'uppercase' }}>GRADE</div>
+                <div style={{ fontSize: '0.82rem', color: '#334155', fontWeight: 700 }}>
+                  {audit ? `${audit.score_percentage}% Pass` : (hasHsts ? 'Standard TLS' : 'Hardening Req.')}
                 </div>
               </div>
-
-              {/* Script Injection / CSP */}
-              <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
-                <div style={{ fontSize: '0.74rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Space Grotesk', sans-serif" }}>
-                  XSS / Code Injection (CSP)
-                </div>
-                <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#000000', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {hasCsp ? <CheckCircle2 size={20} color="#16A34A" /> : <AlertTriangle size={20} color="#D97706" />}
-                  <span style={{ color: hasCsp ? '#16A34A' : '#D97706' }}>{hasCsp ? 'CSP ENFORCED' : 'CSP NOT CONFIGURED'}</span>
-                </div>
-                <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
-                  {hasCsp ? 'Restricts unauthorized script execution.' : 'Missing Content-Security-Policy defense header.'}
-                </div>
-              </div>
-
-              {/* Transport & Email Domain Security */}
-              <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
-                <div style={{ fontSize: '0.74rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Transport &amp; Email Authentication
-                </div>
-                <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#000000', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {result.tls_valid ? <Lock size={20} color="#16A34A" /> : <AlertTriangle size={20} color="#EF4444" />}
-                  <span style={{ color: result.tls_valid ? '#16A34A' : '#EF4444' }}>{result.tls_valid ? 'TLS VALID & ENFORCED' : 'INSECURE HTTP'}</span>
-                </div>
-                <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
-                  DMARC: <strong style={{ color: result.has_dmarc ? '#16A34A' : '#EF4444' }}>{result.has_dmarc ? 'Enforced' : 'Missing'}</strong> • SPF: <strong style={{ color: result.has_spf ? '#16A34A' : '#D97706' }}>{result.has_spf ? 'Configured' : 'Missing'}</strong>
-                </div>
+              <div style={{ fontSize: '2.2rem', fontWeight: 900, color: '#000000', background: gradeColor, padding: '4px 14px', borderRadius: '0px', border: '2.5px solid #000000', boxShadow: '2px 2px 0px 0px #000000' }}>
+                {securityGrade}
               </div>
             </div>
           </div>
 
-          {/* Defensive Headers Breakdown Table */}
-          <div className="glass-panel" style={{ padding: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
-              <Server size={20} color="#38bdf8" />
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                Defensive HTTP Headers &amp; Exploitability Analysis
-              </h3>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {/* CSP Item */}
-              <div style={{ background: 'var(--code-box-bg)', padding: '14px 16px', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className="mono" style={{ fontWeight: 800, fontSize: '0.88rem', color: 'var(--text-primary)' }}>Content-Security-Policy (CSP)</span>
-                    <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '6px', fontWeight: 800, background: hasCsp ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)', color: hasCsp ? '#10b981' : '#f59e0b' }}>
-                      {hasCsp ? 'PASS' : 'WARNING'}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                    {hasCsp ? 'Restricts unauthorized executable scripts and inline event handlers.' : 'Missing CSP allows injected scripts or malicious third-party trackers to execute.'}
-                  </div>
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 700 }}>
-                  {hasCsp ? 'XSS Shield Active' : 'Add CSP Header'}
-                </div>
+          {/* 3 Developer Highlight Metrics */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+            {/* Clickjacking Protection */}
+            <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
+              <div style={{ fontSize: '0.74rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                Clickjacking Immunity (X-Frame-Options)
               </div>
-
-              {/* HSTS Item */}
-              <div style={{ background: 'var(--code-box-bg)', padding: '14px 16px', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className="mono" style={{ fontWeight: 800, fontSize: '0.88rem', color: 'var(--text-primary)' }}>Strict-Transport-Security (HSTS)</span>
-                    <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '6px', fontWeight: 800, background: hasHsts ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)', color: hasHsts ? '#10b981' : '#ef4444' }}>
-                      {hasHsts ? 'PASS' : 'FAIL'}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                    {hasHsts ? 'Forces browsers to communicate strictly over encrypted HTTPS.' : 'Without HSTS, users are susceptible to SSL-stripping and MitM downgrade attacks.'}
-                  </div>
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 700 }}>
-                  {hasHsts ? 'MitM Downgrade Immune' : 'Configure max-age=31536000'}
-                </div>
+              <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#000000', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {isClickjackable ? <XCircle size={20} color="#EF4444" /> : <CheckCircle2 size={20} color="#16A34A" />}
+                <span style={{ color: isClickjackable ? '#EF4444' : '#16A34A' }}>{isClickjackable ? 'VULNERABLE (NO XFO)' : 'IMMUNE TO FRAMING'}</span>
               </div>
-
-              {/* X-Frame-Options Item */}
-              <div style={{ background: 'var(--code-box-bg)', padding: '14px 16px', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className="mono" style={{ fontWeight: 800, fontSize: '0.88rem', color: 'var(--text-primary)' }}>X-Frame-Options (Anti-Clickjacking)</span>
-                    <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '6px', fontWeight: 800, background: !isClickjackable ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)', color: !isClickjackable ? '#10b981' : '#ef4444' }}>
-                      {!isClickjackable ? 'PASS' : 'FAIL'}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                    {!isClickjackable ? 'Framing restricted to SAMEORIGIN or DENY.' : 'Missing X-Frame-Options enables attackers to frame your site in transparent iframes.'}
-                  </div>
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 700 }}>
-                  {!isClickjackable ? 'Clickjacking Protected' : 'Set SAMEORIGIN'}
-                </div>
-              </div>
-
-              {/* DMARC / SPF Item */}
-              <div style={{ background: 'var(--code-box-bg)', padding: '14px 16px', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className="mono" style={{ fontWeight: 800, fontSize: '0.88rem', color: 'var(--text-primary)' }}>DMARC &amp; SPF Email Anti-Spoofing</span>
-                    <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '6px', fontWeight: 800, background: result.has_dmarc ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)', color: result.has_dmarc ? '#10b981' : '#ef4444' }}>
-                      {result.has_dmarc ? 'PASS' : 'VULNERABLE'}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                    {result.has_dmarc ? 'Strict DMARC policy prevents unauthorized spammers from forging emails from your domain.' : 'Without DMARC (p=reject), malicious actors can send forged emails pretending to be your domain.'}
-                  </div>
-                </div>
-                <div style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 700 }}>
-                  {result.has_dmarc ? 'Email Identity Hardened' : 'Publish DMARC TXT Record'}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Ready-to-Deploy Server Hardening Configurations */}
-          <div className="glass-panel" style={{ padding: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Code size={20} color="#10b981" />
-                <div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                    Drop-In Server Hardening Configurations
-                  </h3>
-                  <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)' }}>
-                    1-click copy configs customized for <strong>{domain}</strong>
-                  </div>
-                </div>
-              </div>
-
-              {/* Tab Selector */}
-              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                {(['nginx', 'apache', 'nextjs', 'node', 'cloudflare'] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setSelectedSnippetTab(tab)}
-                    style={{
-                      background: selectedSnippetTab === tab ? 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)' : 'var(--code-box-bg)',
-                      color: selectedSnippetTab === tab ? '#ffffff' : 'var(--text-secondary)',
-                      border: selectedSnippetTab === tab ? '1px solid #38bdf8' : '1px solid var(--border-color)',
-                      borderRadius: '6px',
-                      padding: '5px 12px',
-                      fontSize: '0.75rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      textTransform: 'uppercase'
-                    }}
-                  >
-                    {tab}
-                  </button>
-                ))}
+              <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
+                {isClickjackable ? 'Attackers can iframe your website to hijack user clicks.' : 'Framing restricted to SAMEORIGIN / DENY.'}
               </div>
             </div>
 
-            {/* Code Snippet Box */}
-            <div style={{ position: 'relative' }}>
-              <pre
-                className="mono"
-                style={{
-                  background: 'var(--code-box-bg)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '10px',
-                  padding: '16px',
-                  fontSize: '0.78rem',
-                  color: '#38bdf8',
-                  overflowX: 'auto',
-                  lineHeight: 1.6,
-                  maxHeight: '260px'
-                }}
-              >
-                {snippets[selectedSnippetTab]}
-              </pre>
+            {/* Script Injection / CSP */}
+            <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
+              <div style={{ fontSize: '0.74rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                XSS / Code Injection (CSP)
+              </div>
+              <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#000000', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {hasCsp ? <CheckCircle2 size={20} color="#16A34A" /> : <AlertTriangle size={20} color="#D97706" />}
+                <span style={{ color: hasCsp ? '#16A34A' : '#D97706' }}>{hasCsp ? 'CSP ENFORCED' : 'CSP NOT CONFIGURED'}</span>
+              </div>
+              <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
+                {hasCsp ? 'Restricts unauthorized script execution.' : 'Missing Content-Security-Policy defense header.'}
+              </div>
+            </div>
 
-              <button
-                onClick={() => handleCopy(snippets[selectedSnippetTab], selectedSnippetTab)}
-                style={{
-                  position: 'absolute',
-                  top: '10px',
-                  right: '10px',
-                  background: copiedKey === selectedSnippetTab ? '#10b981' : 'rgba(255, 255, 255, 0.1)',
-                  color: '#ffffff',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  borderRadius: '6px',
-                  padding: '6px 12px',
-                  fontSize: '0.74rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                {copiedKey === selectedSnippetTab ? <Check size={14} /> : <Copy size={14} />}
-                <span>{copiedKey === selectedSnippetTab ? 'Copied!' : 'Copy Config'}</span>
-              </button>
+            {/* Transport & Email Domain Security */}
+            <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
+              <div style={{ fontSize: '0.74rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                Transport &amp; Email Authentication
+              </div>
+              <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#000000', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {result.tls_valid ? <Lock size={20} color="#16A34A" /> : <AlertTriangle size={20} color="#EF4444" />}
+                <span style={{ color: result.tls_valid ? '#16A34A' : '#EF4444' }}>{result.tls_valid ? 'TLS VALID & ENFORCED' : 'INSECURE HTTP'}</span>
+              </div>
+              <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
+                DMARC: <strong style={{ color: result.has_dmarc ? '#16A34A' : '#EF4444' }}>{result.has_dmarc ? 'Enforced' : 'Missing'}</strong> • SPF: <strong style={{ color: result.has_spf ? '#16A34A' : '#D97706' }}>{result.has_spf ? 'Configured' : 'Missing'}</strong>
+              </div>
             </div>
           </div>
         </div>
-      ) : (
-        /* =========================================================================
-            FEATURE 2: PHISHING & FRAUD THREAT INTELLIGENCE VIEW
-        ========================================================================= */
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          {/* Header Banner & Safety Verdict */}
-          <div className="glass-panel" style={{ padding: '24px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+
+        {/* Defensive Headers Breakdown Table */}
+        <div className="glass-panel" style={{ padding: '24px', border: '3px solid #000000', borderRadius: '0px', boxShadow: '6px 6px 0px 0px #000000', background: '#FFFFFF' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+            <Server size={20} color="#000000" />
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 900, color: '#000000', margin: 0 }}>
+              Defensive HTTP Headers &amp; Exploitability Analysis
+            </h3>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {/* CSP Item */}
+            <div style={{ background: '#FFFDF5', padding: '14px 16px', borderRadius: '0px', border: '2px solid #000000', boxShadow: '2px 2px 0px 0px #000000', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '0.7rem', background: isUnregistered ? 'rgba(56, 189, 248, 0.15)' : isPhishing ? 'rgba(239, 68, 68, 0.15)' : 'rgba(16, 185, 129, 0.15)', border: isUnregistered ? '1px solid rgba(56, 189, 248, 0.4)' : isPhishing ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(16, 185, 129, 0.4)', color: isUnregistered ? '#38bdf8' : isPhishing ? '#ef4444' : '#10b981', padding: '2px 8px', borderRadius: '12px', fontWeight: 800 }}>
-                    {isUnregistered ? 'UNREGISTERED DOMAIN' : isPhishing ? 'PHISHING THREAT DETECTED' : 'FREE QUICK SCAN (TRIAGE)'}
-                  </span>
-                  <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-                    {new Date(result.timestamp).toLocaleTimeString()}
+                  <span className="mono" style={{ fontWeight: 800, fontSize: '0.88rem', color: '#000000' }}>Content-Security-Policy (CSP)</span>
+                  <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '0px', fontWeight: 900, border: '1.5px solid #000000', background: hasCsp ? '#6BCB77' : '#FFD93D', color: '#000000' }}>
+                    {hasCsp ? 'PASS' : 'WARNING'}
                   </span>
                 </div>
-                <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--text-primary)', marginTop: '6px' }}>
-                  Threat Assessment: {result.canonical_domain}
-                </h2>
-                <div className="mono" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                  Target: <span style={{ color: '#38bdf8' }}>{result.target_url}</span>
+                <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '4px' }}>
+                  {hasCsp ? 'Restricts unauthorized executable scripts and inline event handlers.' : 'Missing CSP allows injected scripts or malicious third-party trackers to execute.'}
                 </div>
               </div>
+              <div style={{ fontSize: '0.76rem', color: '#000000', fontWeight: 800, background: '#FFFDF5', padding: '3px 8px', border: '1px solid #000000' }}>
+                {hasCsp ? 'XSS Shield Active' : 'Add CSP Header'}
+              </div>
+            </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            {/* HSTS Item */}
+            <div style={{ background: '#FFFDF5', padding: '14px 16px', borderRadius: '0px', border: '2px solid #000000', boxShadow: '2px 2px 0px 0px #000000', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span className="mono" style={{ fontWeight: 800, fontSize: '0.88rem', color: '#000000' }}>Strict-Transport-Security (HSTS)</span>
+                  <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '0px', fontWeight: 900, border: '1.5px solid #000000', background: hasHsts ? '#6BCB77' : '#FF6B6B', color: hasHsts ? '#000000' : '#FFFFFF' }}>
+                    {hasHsts ? 'PASS' : 'FAIL'}
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '4px' }}>
+                  {hasHsts ? 'Forces browsers to communicate strictly over encrypted HTTPS.' : 'Without HSTS, users are susceptible to SSL-stripping and MitM downgrade attacks.'}
+                </div>
+              </div>
+              <div style={{ fontSize: '0.76rem', color: '#000000', fontWeight: 800, background: '#FFFDF5', padding: '3px 8px', border: '1px solid #000000' }}>
+                {hasHsts ? 'MitM Downgrade Immune' : 'Configure max-age=31536000'}
+              </div>
+            </div>
+
+            {/* X-Frame-Options Item */}
+            <div style={{ background: '#FFFDF5', padding: '14px 16px', borderRadius: '0px', border: '2px solid #000000', boxShadow: '2px 2px 0px 0px #000000', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span className="mono" style={{ fontWeight: 800, fontSize: '0.88rem', color: '#000000' }}>X-Frame-Options (Anti-Clickjacking)</span>
+                  <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '0px', fontWeight: 900, border: '1.5px solid #000000', background: !isClickjackable ? '#6BCB77' : '#FF6B6B', color: !isClickjackable ? '#000000' : '#FFFFFF' }}>
+                    {!isClickjackable ? 'PASS' : 'FAIL'}
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '4px' }}>
+                  {!isClickjackable ? 'Framing restricted to SAMEORIGIN or DENY.' : 'Missing X-Frame-Options enables attackers to frame your site in transparent iframes.'}
+                </div>
+              </div>
+              <div style={{ fontSize: '0.76rem', color: '#000000', fontWeight: 800, background: '#FFFDF5', padding: '3px 8px', border: '1px solid #000000' }}>
+                {!isClickjackable ? 'Clickjacking Protected' : 'Set SAMEORIGIN'}
+              </div>
+            </div>
+
+            {/* DMARC / SPF Item */}
+            <div style={{ background: '#FFFDF5', padding: '14px 16px', borderRadius: '0px', border: '2px solid #000000', boxShadow: '2px 2px 0px 0px #000000', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span className="mono" style={{ fontWeight: 800, fontSize: '0.88rem', color: '#000000' }}>DMARC &amp; SPF Email Anti-Spoofing</span>
+                  <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '0px', fontWeight: 900, border: '1.5px solid #000000', background: result.has_dmarc ? '#6BCB77' : '#FF6B6B', color: result.has_dmarc ? '#000000' : '#FFFFFF' }}>
+                    {result.has_dmarc ? 'PASS' : 'VULNERABLE'}
+                  </span>
+                </div>
+                <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '4px' }}>
+                  {result.has_dmarc ? 'Strict DMARC policy prevents unauthorized spammers from forging emails from your domain.' : 'Without DMARC (p=reject), malicious actors can send forged emails pretending to be your domain.'}
+                </div>
+              </div>
+              <div style={{ fontSize: '0.76rem', color: '#000000', fontWeight: 800, background: '#FFFDF5', padding: '3px 8px', border: '1px solid #000000' }}>
+                {result.has_dmarc ? 'Email Identity Hardened' : 'Publish DMARC TXT Record'}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Ready-to-Deploy Server Hardening Configurations */}
+        <div className="glass-panel" style={{ padding: '24px', border: '3px solid #000000', borderRadius: '0px', boxShadow: '6px 6px 0px 0px #000000', background: '#FFFFFF' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Code size={20} color="#000000" />
+              <div>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 900, color: '#000000', margin: 0 }}>
+                  Drop-In Server Hardening Configurations
+                </h3>
+                <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '2px' }}>
+                  1-click copy configs customized for <strong>{domain}</strong>
+                </div>
+              </div>
+            </div>
+
+            {/* Tab Selector */}
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {(['nginx', 'apache', 'nextjs', 'node', 'cloudflare'] as const).map((tab) => (
                 <button
-                  onClick={onUnlockDeepAudit}
+                  key={tab}
+                  onClick={() => setSelectedSnippetTab(tab)}
                   style={{
-                    background: 'linear-gradient(135deg, #6C63FF 0%, #8B84FF 100%)',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '16px',
-                    padding: '12px 24px',
+                    background: selectedSnippetTab === tab ? '#FFD93D' : '#FFFDF5',
+                    color: '#000000',
+                    border: '2px solid #000000',
+                    borderRadius: '0px',
+                    boxShadow: selectedSnippetTab === tab ? '2px 2px 0px 0px #000000' : 'none',
+                    padding: '6px 14px',
+                    fontSize: '0.76rem',
                     fontWeight: 800,
-                    fontSize: '0.88rem',
-                    fontFamily: "'Plus Jakarta Sans', sans-serif",
                     cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    boxShadow: '4px 4px 12px rgba(108, 99, 255, 0.35)'
+                    textTransform: 'uppercase'
                   }}
                 >
-                  <Zap size={17} />
-                  <span>Launch Complete Deep Audit (Free)</span>
-                  <ArrowRight size={16} />
+                  {tab}
                 </button>
-              </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Code Snippet Box */}
+          <div style={{ position: 'relative' }}>
+            <pre
+              className="mono"
+              style={{
+                background: '#1A1A1A',
+                border: '3px solid #000000',
+                borderRadius: '0px',
+                padding: '16px',
+                fontSize: '0.78rem',
+                color: '#00F0FF',
+                overflowX: 'auto',
+                lineHeight: 1.6,
+                maxHeight: '260px'
+              }}
+            >
+              {snippets[selectedSnippetTab]}
+            </pre>
+
+            <button
+              onClick={() => handleCopy(snippets[selectedSnippetTab], selectedSnippetTab)}
+              style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                background: copiedKey === selectedSnippetTab ? '#6BCB77' : '#FFD93D',
+                color: '#000000',
+                border: '2px solid #000000',
+                boxShadow: '2px 2px 0px 0px #000000',
+                borderRadius: '0px',
+                padding: '6px 12px',
+                fontSize: '0.74rem',
+                fontWeight: 900,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              {copiedKey === selectedSnippetTab ? <Check size={14} /> : <Copy size={14} />}
+              <span>{copiedKey === selectedSnippetTab ? 'Copied!' : 'Copy Config'}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* =========================================================================
+          FEATURE 2: PHISHING & FRAUD THREAT INTELLIGENCE
+      ========================================================================= */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '0.74rem', background: '#FF6B6B', border: '1.5px solid #000000', color: '#FFFFFF', padding: '3px 10px', borderRadius: '0px', fontWeight: 900, boxShadow: '2px 2px 0px 0px #000000' }}>
+            FEATURE 2: PHISHING &amp; FRAUD THREAT INTELLIGENCE
+          </span>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#000000', margin: 0 }}>
+            Multi-Modal Threat &amp; Infrastructure Forensics
+          </h3>
+        </div>
+
+        {/* 4 In-Depth Phishing & Infrastructure Panels */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
+          {/* Panel A: Lexical ML Triage */}
+          <div className="glass-panel" style={{ padding: '20px', border: '3px solid #000000', borderRadius: '0px', boxShadow: '5px 5px 0px 0px #000000', background: '#FFFFFF' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '2px solid #000000', paddingBottom: '10px' }}>
+              <Terminal size={18} color="#000000" />
+              <h4 style={{ fontSize: '0.95rem', fontWeight: 900, color: '#000000', margin: 0 }}>
+                1. URL &amp; Lexical Machine Learning
+              </h4>
             </div>
 
-            {/* 3 Metric Cards -> Neo-Brutalist Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
-              {/* Risk Score */}
-              <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
-                <div style={{ fontSize: '0.74rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Basic Risk Score
-                </div>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                  <span style={{ fontSize: '2rem', fontWeight: 900, color: scoreColor, fontFamily: "'Space Grotesk', sans-serif" }}>
-                    {result.basic_risk_score.toFixed(1)}
-                  </span>
-                  <span style={{ fontSize: '0.88rem', color: '#64748B', fontWeight: 800 }}>/ 100</span>
-                </div>
-                <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
-                  {isUnregistered ? 'Unregistered Domain Profile' : 'Lexical & Infrastructure Triage'}
-                </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.78rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#334155' }}>Lexical Risk Probability:</span>
+                <strong className="mono" style={{ color: result.lexical_score > 0.5 ? '#ef4444' : '#16a34a' }}>
+                  {(result.lexical_score * 100).toFixed(1)}%
+                </strong>
               </div>
 
-              {/* Verdict */}
-              <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
-                <div style={{ fontSize: '0.74rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Threat Verdict
-                </div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 900, color: scoreColor, display: 'flex', alignItems: 'center', gap: '8px', fontFamily: "'Space Grotesk', sans-serif" }}>
-                  {isUnregistered ? <Globe size={20} color="#0D9488" /> : isPhishing ? <ShieldAlert size={20} color="#EF4444" /> : <ShieldCheck size={20} color="#16A34A" />}
-                  <span>
-                    {isUnregistered ? 'UNREGISTERED' : result.verdict}
-                  </span>
-                </div>
-                <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
-                  Confidence: <strong style={{ fontWeight: 800, color: '#000000' }}>{(result.confidence * 100).toFixed(0)}%</strong>
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#334155' }}>Shannon Character Entropy:</span>
+                <strong className="mono" style={{ color: '#000000', background: '#FFFDF5', padding: '1px 6px', border: '1px solid #000000' }}>
+                  {result.entropy_score ? `${result.entropy_score} bits/char` : '3.42 bits/char'}
+                </strong>
               </div>
 
-              {/* Domain Age */}
-              <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
-                <div style={{ fontSize: '0.74rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Space Grotesk', sans-serif" }}>
-                  Authoritative Domain Age
-                </div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#000000', fontFamily: "'Space Grotesk', sans-serif" }}>
-                  <span>
-                    {isUnregistered ? 'NOT REGISTERED' : result.domain_age_days !== undefined && result.domain_age_days !== null ? `${result.domain_age_days} Days` : 'Verified Standing'}
-                  </span>
-                </div>
-                <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
-                  Registered: <strong style={{ color: '#000000' }}>{isUnregistered ? 'Domain Available (NXDOMAIN)' : (result.creation_date || 'Active')}</strong>
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#334155' }}>Triage Model Rationale:</span>
+                <span style={{ color: '#000000', fontWeight: 600, textAlign: 'right', maxWidth: '60%' }}>
+                  {result.triage_reason}
+                </span>
               </div>
             </div>
           </div>
 
-          {/* 4 In-Depth Phishing & Infrastructure Panels */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
-            {/* Panel A: Lexical ML Triage */}
-            <div className="glass-panel" style={{ padding: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
-                <Terminal size={18} color="#38bdf8" />
-                <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                  1. URL &amp; Lexical Machine Learning
-                </h3>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.78rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Lexical Risk Probability:</span>
-                  <strong className="mono" style={{ color: result.lexical_score > 0.5 ? '#ef4444' : '#10b981' }}>
-                    {(result.lexical_score * 100).toFixed(1)}%
-                  </strong>
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Shannon Character Entropy:</span>
-                  <strong className="mono" style={{ color: '#38bdf8' }}>
-                    {result.entropy_score ? `${result.entropy_score} bits/char` : '3.42 bits/char'}
-                  </strong>
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Triage Model Rationale:</span>
-                  <span style={{ color: 'var(--text-primary)', textAlign: 'right', maxWidth: '60%' }}>
-                    {result.triage_reason}
-                  </span>
-                </div>
-              </div>
+          {/* Panel B: Domain Infrastructure & Registrar */}
+          <div className="glass-panel" style={{ padding: '20px', border: '3px solid #000000', borderRadius: '0px', boxShadow: '5px 5px 0px 0px #000000', background: '#FFFFFF' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '2px solid #000000', paddingBottom: '10px' }}>
+              <Globe size={18} color="#000000" />
+              <h4 style={{ fontSize: '0.95rem', fontWeight: 900, color: '#000000', margin: 0 }}>
+                2. Domain Standing &amp; Registrar
+              </h4>
             </div>
 
-            {/* Panel B: Domain Infrastructure & Registrar */}
-            <div className="glass-panel" style={{ padding: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
-                <Globe size={18} color="#10b981" />
-                <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                  2. Domain Standing &amp; Registrar
-                </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.78rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#334155' }}>Sponsoring Registrar:</span>
+                <strong style={{ color: isUnregistered ? '#64748B' : '#000000' }}>
+                  {isUnregistered ? 'None (Unregistered Domain)' : (result.registrar || 'ICANN Accredited Registrar')}
+                </strong>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.78rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Sponsoring Registrar:</span>
-                  <strong style={{ color: isUnregistered ? '#9ca3af' : 'var(--text-primary)' }}>
-                    {isUnregistered ? 'None (Unregistered Domain)' : (result.registrar || 'ICANN Accredited Registrar')}
-                  </strong>
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#334155' }}>Registration Standing:</span>
+                <strong style={{ color: isUnregistered ? '#0284c7' : result.is_newly_registered ? '#ef4444' : '#16a34a' }}>
+                  {isUnregistered ? 'UNREGISTERED / AVAILABLE' : result.is_newly_registered ? 'YES (NRD < 30 Days Old)' : 'NO (Established Standing)'}
+                </strong>
+              </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Registration Standing:</span>
-                  <strong style={{ color: isUnregistered ? '#38bdf8' : result.is_newly_registered ? '#ef4444' : '#10b981' }}>
-                    {isUnregistered ? 'UNREGISTERED / AVAILABLE' : result.is_newly_registered ? 'YES (NRD < 30 Days Old)' : 'NO (Established Standing)'}
-                  </strong>
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Resolved Host IP (A Record):</span>
-                  <span className="mono" style={{ color: isUnregistered ? '#9ca3af' : '#38bdf8' }}>
-                    {result.dns_a_records && result.dns_a_records.length > 0 ? result.dns_a_records.join(', ') : 'NXDOMAIN (No Host IP Assigned)'}
-                  </span>
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#334155' }}>Resolved Host IP (A Record):</span>
+                <span className="mono" style={{ color: isUnregistered ? '#64748B' : '#000000', fontWeight: 700 }}>
+                  {result.dns_a_records && result.dns_a_records.length > 0 ? result.dns_a_records.join(', ') : 'NXDOMAIN (No Host IP Assigned)'}
+                </span>
               </div>
             </div>
+          </div>
 
-            {/* Panel C: SSL/TLS & HTTPS Encryption */}
-            <div className="glass-panel" style={{ padding: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
-                <Lock size={18} color="#f59e0b" />
-                <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                  3. SSL/TLS &amp; Transport Encryption
-                </h3>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.78rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>HTTPS Transport Security:</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: isUnregistered ? '#9ca3af' : result.tls_valid ? '#10b981' : '#ef4444', fontWeight: 700 }}>
-                    {isUnregistered ? <AlertTriangle size={14} /> : result.tls_valid ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
-                    {isUnregistered ? 'NO HOST / UNRESOLVED' : result.tls_valid ? 'ENFORCED' : 'NOT CONFIGURED'}
-                  </span>
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>TLS Certificate Status:</span>
-                  <strong style={{ color: isUnregistered ? '#9ca3af' : result.tls_valid ? '#10b981' : '#ef4444' }}>
-                    {isUnregistered ? 'NO CERTIFICATE (UNREGISTERED)' : result.tls_valid ? 'VALID & TRUSTED' : 'INVALID / UNTRUSTED'}
-                  </strong>
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Certificate Authority (CA):</span>
-                  <span style={{ color: isUnregistered ? '#9ca3af' : 'var(--text-primary)' }}>
-                    {isUnregistered ? 'None (Host Inactive)' : (result.tls_issuer || 'Public CA')}
-                  </span>
-                </div>
-              </div>
+          {/* Panel C: SSL/TLS & HTTPS Encryption */}
+          <div className="glass-panel" style={{ padding: '20px', border: '3px solid #000000', borderRadius: '0px', boxShadow: '5px 5px 0px 0px #000000', background: '#FFFFFF' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '2px solid #000000', paddingBottom: '10px' }}>
+              <Lock size={18} color="#000000" />
+              <h4 style={{ fontSize: '0.95rem', fontWeight: 900, color: '#000000', margin: 0 }}>
+                3. SSL/TLS &amp; Transport Encryption
+              </h4>
             </div>
 
-            {/* Panel D: Email Spoofing Defense (SPF / DMARC) */}
-            <div className="glass-panel" style={{ padding: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
-                <Database size={18} color="#a855f7" />
-                <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                  4. Email Anti-Spoofing Configuration
-                </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.78rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#334155' }}>HTTPS Transport Security:</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: isUnregistered ? '#64748B' : result.tls_valid ? '#16a34a' : '#ef4444', fontWeight: 800 }}>
+                  {isUnregistered ? <AlertTriangle size={14} /> : result.tls_valid ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
+                  {isUnregistered ? 'NO HOST / UNRESOLVED' : result.tls_valid ? 'ENFORCED' : 'NOT CONFIGURED'}
+                </span>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.78rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>SPF Policy in DNS:</span>
-                  <span style={{ color: isUnregistered ? '#9ca3af' : result.has_spf ? '#10b981' : '#f59e0b', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {isUnregistered ? <AlertTriangle size={14} /> : result.has_spf ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
-                    {isUnregistered ? 'NXDOMAIN' : result.has_spf ? 'PUBLISHED (v=spf1)' : 'NOT FOUND'}
-                  </span>
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#334155' }}>TLS Certificate Status:</span>
+                <strong style={{ color: isUnregistered ? '#64748B' : result.tls_valid ? '#16a34a' : '#ef4444' }}>
+                  {isUnregistered ? 'NO CERTIFICATE (UNREGISTERED)' : result.tls_valid ? 'VALID & TRUSTED' : 'INVALID / UNTRUSTED'}
+                </strong>
+              </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>DMARC Enforcement:</span>
-                  <span style={{ color: isUnregistered ? '#9ca3af' : result.has_dmarc ? '#10b981' : '#ef4444', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {isUnregistered ? <AlertTriangle size={14} /> : result.has_dmarc ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
-                    {isUnregistered ? 'NXDOMAIN' : result.has_dmarc ? 'ENFORCED (p=reject)' : 'MISSING (Vulnerable to Spoofing)'}
-                  </span>
-                </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#334155' }}>Certificate Authority (CA):</span>
+                <span style={{ color: isUnregistered ? '#64748B' : '#000000', fontWeight: 600 }}>
+                  {isUnregistered ? 'None (Host Inactive)' : (result.tls_issuer || 'Public CA')}
+                </span>
+              </div>
+            </div>
+          </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Email Impersonation Risk:</span>
-                  <strong style={{ color: isUnregistered ? '#9ca3af' : result.has_dmarc ? '#10b981' : '#ef4444' }}>
-                    {isUnregistered ? 'INACTIVE (NO MX)' : result.has_dmarc ? 'PROTECTED' : 'HIGH RISK'}
-                  </strong>
-                </div>
+          {/* Panel D: Email Spoofing Defense (SPF / DMARC) */}
+          <div className="glass-panel" style={{ padding: '20px', border: '3px solid #000000', borderRadius: '0px', boxShadow: '5px 5px 0px 0px #000000', background: '#FFFFFF' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', borderBottom: '2px solid #000000', paddingBottom: '10px' }}>
+              <Database size={18} color="#000000" />
+              <h4 style={{ fontSize: '0.95rem', fontWeight: 900, color: '#000000', margin: 0 }}>
+                4. Email Anti-Spoofing Configuration
+              </h4>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.78rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#334155' }}>SPF Policy in DNS:</span>
+                <span style={{ color: isUnregistered ? '#64748B' : result.has_spf ? '#16a34a' : '#d97706', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  {isUnregistered ? <AlertTriangle size={14} /> : result.has_spf ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
+                  {isUnregistered ? 'NXDOMAIN' : result.has_spf ? 'PUBLISHED (v=spf1)' : 'NOT FOUND'}
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#334155' }}>DMARC Enforcement:</span>
+                <span style={{ color: isUnregistered ? '#64748B' : result.has_dmarc ? '#16a34a' : '#ef4444', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  {isUnregistered ? <AlertTriangle size={14} /> : result.has_dmarc ? <CheckCircle2 size={14} /> : <XCircle size={14} />}
+                  {isUnregistered ? 'NXDOMAIN' : result.has_dmarc ? 'ENFORCED (p=reject)' : 'MISSING (Spoofable)'}
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#334155' }}>Email Impersonation Risk:</span>
+                <strong style={{ color: isUnregistered ? '#64748B' : result.has_dmarc ? '#16a34a' : '#ef4444' }}>
+                  {isUnregistered ? 'INACTIVE (NO MX)' : result.has_dmarc ? 'PROTECTED' : 'HIGH RISK'}
+                </strong>
               </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* 3. Deep Forensic Audit Callout */}
       <div
         className="glass-panel"
         style={{
           padding: '24px',
-          background: 'radial-gradient(circle at 100% 0%, rgba(2, 132, 199, 0.25) 0%, var(--bg-card) 70%)',
-          border: '1px solid rgba(6, 182, 212, 0.4)',
-          borderRadius: '14px'
+          background: '#FFFDF5',
+          border: '3px solid #000000',
+          borderRadius: '0px',
+          boxShadow: '6px 6px 0px 0px #000000'
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
           <div style={{ maxWidth: '650px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-              <Zap size={20} color="#00f0ff" />
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+              <Zap size={20} color="#000000" />
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 900, color: '#000000', margin: 0 }}>
                 Complete Deep Forensic Security Audit
               </h3>
-              <span className="mono" style={{ fontSize: '0.68rem', background: 'rgba(0, 240, 255, 0.15)', color: '#00f0ff', padding: '2px 8px', borderRadius: '10px', fontWeight: 800 }}>
+              <span className="mono" style={{ fontSize: '0.68rem', background: '#6BCB77', border: '1.5px solid #000000', color: '#000000', padding: '2px 8px', borderRadius: '0px', fontWeight: 900 }}>
                 100% FREE &amp; OPEN ACCESS
               </span>
             </div>
 
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '12px' }}>
+            <p style={{ fontSize: '0.82rem', color: '#334155', lineHeight: 1.5, marginBottom: '12px', fontWeight: 500 }}>
               Run the full headless browser sandbox, detect visual brand contradiction with 64-bit pHash logo vision, audit clickjacking (X-Frame-Options), reconstruct the adversary attack chain, and generate CyberGuard AI threat intelligence.
             </p>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', fontSize: '0.72rem' }}>
-              <span className="badge-info" style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '6px' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '0px', background: '#FFFFFF', border: '1.5px solid #000000', fontWeight: 800 }}>
                 <Eye size={12} /> Playwright DOM Sandbox
               </span>
-              <span className="badge-info" style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '6px' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '0px', background: '#FFFFFF', border: '1.5px solid #000000', fontWeight: 800 }}>
                 <Shield size={12} /> Brand pHash Vision
               </span>
-              <span className="badge-info" style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '6px' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '0px', background: '#FFFFFF', border: '1.5px solid #000000', fontWeight: 800 }}>
                 <Lock size={12} /> HSTS/CSP/X-Frame Audit
               </span>
-              <span className="badge-info" style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '6px' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '0px', background: '#FFFFFF', border: '1.5px solid #000000', fontWeight: 800 }}>
                 <Cpu size={12} /> AI Hardening &amp; Remediation
               </span>
             </div>
@@ -783,18 +716,18 @@ app.use(helmet({
           <button
             onClick={onUnlockDeepAudit}
             style={{
-              background: 'linear-gradient(135deg, #00f0ff 0%, #0284c7 100%)',
-              color: '#070a10',
-              border: 'none',
-              borderRadius: '10px',
+              background: '#FFD93D',
+              color: '#000000',
+              border: '3px solid #000000',
+              borderRadius: '0px',
               padding: '14px 28px',
-              fontWeight: 800,
+              fontWeight: 900,
               fontSize: '0.95rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              boxShadow: '0 0 25px rgba(0, 240, 255, 0.4)'
+              boxShadow: '4px 4px 0px 0px #000000'
             }}
           >
             <Zap size={18} />

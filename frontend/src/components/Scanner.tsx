@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Play, RefreshCw, Zap, Shield } from 'lucide-react';
+import { Search, Play, RefreshCw, Shield } from 'lucide-react';
 import type { BenchmarkSample } from '../types';
 
 interface ScannerProps {
-  onScan: (url: string, deep: boolean, forceRefresh: boolean, focus?: 'developer' | 'phishing') => void;
+  onScan: (url: string, deep: boolean, forceRefresh: boolean) => void;
   isLoading: boolean;
   benchmarkSamples: BenchmarkSample[];
   scannerFocus?: 'developer' | 'phishing';
@@ -14,25 +14,15 @@ interface ScannerProps {
 export const Scanner: React.FC<ScannerProps> = ({
   onScan,
   isLoading,
-  benchmarkSamples,
-  scannerFocus = 'developer',
-  onScannerFocusChange
+  benchmarkSamples
 }) => {
   const [url, setUrl] = useState('');
   const [selectedSample, setSelectedSample] = useState('');
-  const [localFocus, setLocalFocus] = useState<'developer' | 'phishing'>(scannerFocus);
-
-  const activeFocus = scannerFocus || localFocus;
-
-  const handleSelectFocus = (focus: 'developer' | 'phishing') => {
-    setLocalFocus(focus);
-    onScannerFocusChange?.(focus);
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!url.trim()) return;
-    onScan(url.trim(), true, false, activeFocus);
+    onScan(url.trim(), true, false);
   };
 
   const handleSelectSample = (sampleId: string) => {
@@ -43,22 +33,15 @@ export const Scanner: React.FC<ScannerProps> = ({
     }
   };
 
-  // Quick targets tailored specifically for each feature
-  const developerTargets = [
-    { label: 'psit.ac.in (Edu Web Portal)', url: 'https://psit.ac.in', desc: 'Audit headers & student portal posture' },
-    { label: 'github.com (Hardened Grade A+)', url: 'https://github.com', desc: 'Enterprise baseline defense' },
-    { label: 'example.com (Basic Web Server)', url: 'http://example.com', desc: 'Missing CSP/HSTS baseline' },
-    { label: 'wikipedia.org (Knowledge Base)', url: 'https://wikipedia.org', desc: 'Public content delivery' }
+  // Comprehensive targets spanning developer hardening & phishing detection
+  const quickTargets = [
+    { label: 'psit.ac.in (Edu Portal)', url: 'https://psit.ac.in' },
+    { label: 'github.com (Hardened A+)', url: 'https://github.com' },
+    { label: 'PayPal Spoof (.xyz)', url: 'http://login-paypal-security-verification.xyz/auth/signin' },
+    { label: 'Microsoft 365 Fake (.top)', url: 'http://microsoft-onedrive-sharepoint-verify.top/login.php' },
+    { label: 'campuskart.shop (43d NRD)', url: 'https://campuskart.shop' },
+    { label: 'example.com (Baseline)', url: 'http://example.com' }
   ];
-
-  const phishingTargets = [
-    { label: 'PayPal Spoof (.xyz)', url: 'http://login-paypal-security-verification.xyz/auth/signin', desc: 'Brand Contradiction' },
-    { label: 'Microsoft 365 Fake Portal (.top)', url: 'http://microsoft-onedrive-sharepoint-verify.top/login.php', desc: 'Credential Harvester' },
-    { label: 'Apple ID Punycode (Homograph)', url: 'http://xn--appl-1na.com/icloud/find-my-iphone', desc: 'IDN Spoof' },
-    { label: 'campuskart.shop (43d NRD)', url: 'https://campuskart.shop', desc: 'Newly Registered Domain' }
-  ];
-
-  const activeQuickTargets = activeFocus === 'developer' ? developerTargets : phishingTargets;
 
   return (
     <motion.div
@@ -79,149 +62,6 @@ export const Scanner: React.FC<ScannerProps> = ({
     >
       <form onSubmit={handleSubmit}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-          {/* Dual-Feature Persona Mode Selector -> Neo-Brutalist High-Contrast Buttons */}
-          <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-            <motion.button
-              whileHover={{ translateY: -2, boxShadow: '6px 6px 0px 0px #000000' }}
-              whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '2px 2px 0px 0px #000000' }}
-              type="button"
-              onClick={() => handleSelectFocus('developer')}
-              style={{
-                background: activeFocus === 'developer' ? '#4D96FF' : 'var(--bg-secondary, #FFFFFF)',
-                color: activeFocus === 'developer' ? '#FFFFFF' : '#000000',
-                border: '3px solid #000000',
-                borderRadius: '0px',
-                padding: '12px 20px',
-                fontSize: '0.86rem',
-                fontWeight: 800,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                boxShadow: activeFocus === 'developer' ? '4px 4px 0px 0px #000000' : '3px 3px 0px 0px #000000',
-                transition: 'background 0.15s ease, color 0.15s ease',
-                fontFamily: "'Space Grotesk', sans-serif"
-              }}
-            >
-              <div
-                style={{
-                  background: activeFocus === 'developer' ? '#FFFFFF' : '#4D96FF',
-                  padding: '4px',
-                  borderRadius: '0px',
-                  border: '2px solid #000000',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <Shield size={16} color={activeFocus === 'developer' ? '#4D96FF' : '#FFFFFF'} />
-              </div>
-              <span>Feature 1: Developer Website Security &amp; Anti-Hacking Audit</span>
-            </motion.button>
-
-            <motion.button
-              whileHover={{ translateY: -2, boxShadow: '6px 6px 0px 0px #000000' }}
-              whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '2px 2px 0px 0px #000000' }}
-              type="button"
-              onClick={() => handleSelectFocus('phishing')}
-              style={{
-                background: activeFocus === 'phishing' ? '#FF6B6B' : 'var(--bg-secondary, #FFFFFF)',
-                color: activeFocus === 'phishing' ? '#FFFFFF' : '#000000',
-                border: '3px solid #000000',
-                borderRadius: '0px',
-                padding: '12px 20px',
-                fontSize: '0.86rem',
-                fontWeight: 800,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                boxShadow: activeFocus === 'phishing' ? '4px 4px 0px 0px #000000' : '3px 3px 0px 0px #000000',
-                transition: 'background 0.15s ease, color 0.15s ease',
-                fontFamily: "'Space Grotesk', sans-serif"
-              }}
-            >
-              <div
-                style={{
-                  background: activeFocus === 'phishing' ? '#FFFFFF' : '#FF6B6B',
-                  padding: '4px',
-                  borderRadius: '0px',
-                  border: '2px solid #000000',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <Zap size={16} color={activeFocus === 'phishing' ? '#FF6B6B' : '#FFFFFF'} />
-              </div>
-              <span>Feature 2: Phishing &amp; Fraud Intelligence Scanner</span>
-            </motion.button>
-          </div>
-
-          {/* Persona Explainer Callout -> Neo-Brutalist Sticker Box */}
-          <div
-            style={{
-              padding: '14px 18px',
-              borderRadius: '0px',
-              fontSize: '0.82rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              background: activeFocus === 'developer' ? '#EBF4FF' : '#FFF1F2',
-              boxShadow: '4px 4px 0px 0px #000000',
-              border: '3px solid #000000',
-              color: '#000000',
-              lineHeight: 1.55,
-              fontWeight: 500
-            }}
-          >
-            {activeFocus === 'developer' ? (
-              <>
-                <div
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '0px',
-                    background: '#4D96FF',
-                    border: '2px solid #000000',
-                    boxShadow: '2px 2px 0px 0px #000000',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
-                  }}
-                >
-                  <Shield size={16} color="#FFFFFF" />
-                </div>
-                <span>
-                  <strong style={{ color: '#000000', fontWeight: 800 }}>Feature 1 Active (Webmaster &amp; Developer Mode):</strong> Audits your website's defensive HTTP headers (CSP, HSTS, X-Frame-Options), tests anti-code injection &amp; clickjacking immunity, evaluates TLS/DNS, and generates drop-in server hardening configurations (Nginx, Apache, Next.js, Node.js Helmet, Cloudflare).
-                </span>
-              </>
-            ) : (
-              <>
-                <div
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '0px',
-                    background: '#FF6B6B',
-                    border: '2px solid #000000',
-                    boxShadow: '2px 2px 0px 0px #000000',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
-                  }}
-                >
-                  <Zap size={16} color="#FFFFFF" />
-                </div>
-                <span>
-                  <strong style={{ color: '#000000', fontWeight: 800 }}>Feature 2 Active (SOC &amp; Threat Intelligence Mode):</strong> Inspects suspicious URLs for brand impersonation, visual logo contradiction (64-bit pHash), 24-dimensional lexical URL ML, newly registered domain (NRD) risk, and credential-harvesting traps.
-                </span>
-              </>
-            )}
-          </div>
-
           {/* Main Input Row -> Neo-Brutalist Solid Input + Hard Action Button */}
           <div className="scanner-input-row" style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
             <div
@@ -237,12 +77,10 @@ export const Scanner: React.FC<ScannerProps> = ({
                 height: '54px'
               }}
             >
-              <Search size={20} color={activeFocus === 'developer' ? '#4D96FF' : '#FF6B6B'} />
+              <Search size={20} color="#000000" />
               <input
                 type="text"
-                placeholder={activeFocus === 'developer'
-                  ? "Enter website domain to audit defensive headers & server hardening (e.g. psit.ac.in, github.com)"
-                  : "Enter suspicious URL to inspect phishing brand spoofing & credential harvesting (e.g. login-paypal-verify.xyz)"}
+                placeholder="Enter website domain or URL (e.g. psit.ac.in, github.com, login-paypal-verify.xyz)"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 disabled={isLoading}
@@ -286,11 +124,7 @@ export const Scanner: React.FC<ScannerProps> = ({
               type="submit"
               disabled={isLoading || !url.trim()}
               style={{
-                background: isLoading
-                  ? '#CBD5E1'
-                  : activeFocus === 'developer'
-                    ? '#4D96FF'
-                    : '#FF6B6B',
+                background: isLoading ? '#CBD5E1' : '#4D96FF',
                 color: '#FFFFFF',
                 border: '3px solid #000000',
                 borderRadius: '0px',
@@ -313,18 +147,12 @@ export const Scanner: React.FC<ScannerProps> = ({
               {isLoading ? (
                 <>
                   <RefreshCw size={18} className="animate-spin" />
-                  <span>
-                    {activeFocus === 'developer' ? 'AUDITING DEFENSE...' : 'ANALYZING THREAT...'}
-                  </span>
+                  <span>AUDITING DEFENSE &amp; THREATS...</span>
                 </>
               ) : (
                 <>
-                  {activeFocus === 'developer' ? <Shield size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
-                  <span>
-                    {activeFocus === 'developer'
-                      ? 'RUN AUDIT & HARDENING'
-                      : 'RUN PHISHING & FRAUD SCAN'}
-                  </span>
+                  <Play size={18} fill="currentColor" />
+                  <span>RUN SECURITY SCAN &amp; AUDIT</span>
                 </>
               )}
             </motion.button>
@@ -335,24 +163,22 @@ export const Scanner: React.FC<ScannerProps> = ({
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div
                 style={{
-                  background: activeFocus === 'developer' ? '#4D96FF' : '#FF6B6B',
+                  background: '#6BCB77',
                   boxShadow: '3px 3px 0px 0px #000000',
                   border: '2px solid #000000',
                   borderRadius: '0px',
                   padding: '6px 14px',
                   fontSize: '0.78rem',
                   fontWeight: 800,
-                  color: '#FFFFFF',
+                  color: '#000000',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
                   fontFamily: "'Space Grotesk', sans-serif"
                 }}
               >
-                {activeFocus === 'developer' ? <Shield size={14} /> : <Zap size={14} />}
-                <span>
-                  {activeFocus === 'developer' ? 'Defensive Posture & Exploit Immunity' : 'Multi-Modal Phishing Intelligence'}
-                </span>
+                <Shield size={14} />
+                <span>Dual-Engine: Defensive Webmaster Hardening + Phishing Intelligence</span>
               </div>
             </div>
 
@@ -389,12 +215,12 @@ export const Scanner: React.FC<ScannerProps> = ({
             </div>
           </div>
 
-          {/* Quick 1-Tap Target Benchmark Buttons -> Neo-Brutalist Sticker Chips */}
+          {/* Quick 1-Tap Target Benchmark Buttons */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', paddingTop: '4px' }}>
             <span style={{ fontSize: '0.74rem', color: '#000000', fontWeight: 900, textTransform: 'uppercase', fontFamily: "'Space Grotesk', sans-serif" }}>
-              {activeFocus === 'developer' ? 'QUICK TARGETS:' : 'PHISHING SAMPLES:'}
+              QUICK TARGETS:
             </span>
-            {activeQuickTargets.map((tgt, idx) => (
+            {quickTargets.map((tgt, idx) => (
               <motion.button
                 key={idx}
                 whileHover={{ translateY: -1, boxShadow: '4px 4px 0px 0px #000000' }}
@@ -402,17 +228,15 @@ export const Scanner: React.FC<ScannerProps> = ({
                 type="button"
                 onClick={() => { setUrl(tgt.url); }}
                 style={{
-                  background: url === tgt.url
-                    ? (activeFocus === 'developer' ? '#4D96FF' : '#FF6B6B')
-                    : '#FFFDF5',
+                  background: url === tgt.url ? '#FFD93D' : '#FFFDF5',
                   boxShadow: '2px 2px 0px 0px #000000',
-                  color: url === tgt.url ? '#FFFFFF' : '#000000',
+                  color: '#000000',
                   borderRadius: '0px',
                   padding: '6px 14px',
                   fontSize: '0.76rem',
                   cursor: 'pointer',
                   border: '2px solid #000000',
-                  transition: 'background 0.15s ease, color 0.15s ease',
+                  transition: 'background 0.15s ease',
                   fontFamily: "'Space Grotesk', sans-serif",
                   fontWeight: 800
                 }}
