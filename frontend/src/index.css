@@ -923,6 +923,27 @@ body:not(.light-theme) .copilot-assistant-bubble {
   box-shadow: 4px 4px 0px 0px #FFD93D !important;
 }
 
+/* ChatGPT-Style Streaming Cursor */
+@keyframes copilotCursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.copilot-stream-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  background: #000000;
+  margin-left: 4px;
+  vertical-align: -2px;
+  animation: copilotCursorBlink 0.65s infinite;
+}
+
+[data-theme="dark"]:not(.light-theme) .copilot-stream-cursor,
+body:not(.light-theme) .copilot-stream-cursor {
+  background: #FFD93D;
+}
+
 /* Quick Prompt Chip Pills */
 .copilot-prompt-chip {
   border-radius: 0px !important;

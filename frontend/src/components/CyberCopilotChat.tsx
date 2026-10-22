@@ -189,6 +189,8 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const stopStreamRequestedRef = useRef(false);
   const [statusNotice, setStatusNotice] = useState<string | null>(null);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [copiedMessageIndex, setCopiedMessageIndex] = useState<number | null>(null);
@@ -477,9 +479,11 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
     );
   };
 
-  // Stop Generation
+  // Stop Generation (immediately interrupts stream or fetch)
   const handleStopGenerating = () => {
+    stopStreamRequestedRef.current = true;
     setIsLoading(false);
+    setIsStreaming(false);
     setStatusNotice(null);
   };
 
@@ -497,12 +501,16 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
     }
   }, [pendingPrompt]);
 
-  // Auto-scroll on new message
+  // Auto-scroll on new message or live streaming token
   useEffect(() => {
     if (isOpen && !isMinimized) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      if (isStreaming) {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+      } else {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }
     }
-  }, [messages, isOpen, isMinimized, isLoading]);
+  }, [messages, isOpen, isMinimized, isLoading, isStreaming]);
 
   // Auto-focus on open
   useEffect(() => {
@@ -564,9 +572,102 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
     setTimeout(() => setHasExported(false), 2500);
   };
 
+  // Stream assistant reply line by line with natural ChatGPT typewriter cadence
+  const streamAssistantMessage = async (
+    fullText: string,
+    currentBaseMessages: ChatMessage[],
+    updatedTitle?: string
+  ) => {
+    const targetSessionId = activeSessionId;
+    stopStreamRequestedRef.current = false;
+    setIsLoading(false);
+    setIsStreaming(true);
+
+    // Initial empty assistant message in chat
+    const initialAssistantMessages: ChatMessage[] = [
+      ...currentBaseMessages,
+      { role: 'assistant', content: '' }
+    ];
+    setMessages(initialAssistantMessages);
+
+    // Split text into lines to ensure natural line-by-line flow
+    const lines = fullText.split('\n');
+    let accumulated = '';
+
+    for (let lIdx = 0; lIdx < lines.length; lIdx++) {
+      if (stopStreamRequestedRef.current) break;
+
+      const line = lines[lIdx];
+      // Tokenize line into words and spacing
+      const tokens = line.match(/\S+|\s+/g) || [line];
+
+      for (let tIdx = 0; tIdx < tokens.length; tIdx++) {
+        if (stopStreamRequestedRef.current) break;
+
+        const token = tokens[tIdx];
+        accumulated += token;
+
+        setMessages(prev => {
+          if (prev.length === 0) return prev;
+          const copy = [...prev];
+          const lastIndex = copy.length - 1;
+          copy[lastIndex] = { role: 'assistant', content: accumulated };
+          return copy;
+        });
+
+        // Fast & natural delay per token:
+        // Punctuation gets slight pause (35ms), regular words ~16ms
+        const isPunctuation = /[.,!?;:]$/.test(token.trim());
+        const tokenDelay = isPunctuation ? 35 : 16;
+        await new Promise(r => setTimeout(r, tokenDelay));
+      }
+
+      if (stopStreamRequestedRef.current) break;
+
+      // When finishing a line, add newline and pause naturally (65ms)
+      if (lIdx < lines.length - 1) {
+        accumulated += '\n';
+        setMessages(prev => {
+          if (prev.length === 0) return prev;
+          const copy = [...prev];
+          const lastIndex = copy.length - 1;
+          copy[lastIndex] = { role: 'assistant', content: accumulated };
+          return copy;
+        });
+        await new Promise(r => setTimeout(r, 65));
+      }
+    }
+
+    setIsStreaming(false);
+
+    // Finalize session persistence
+    const finalContent = accumulated || fullText;
+    const finalizedMessages: ChatMessage[] = [
+      ...currentBaseMessages,
+      { role: 'assistant', content: finalContent }
+    ];
+    setMessages(finalizedMessages);
+
+    setSessions(prev =>
+      prev.map(s => {
+        if (s.id === targetSessionId) {
+          return {
+            ...s,
+            title: updatedTitle || s.title,
+            updatedAt: Date.now(),
+            messages: finalizedMessages,
+            domain: domain || s.domain,
+            securityMode
+          };
+        }
+        return s;
+      })
+    );
+  };
+
   const handleSendMessage = async (textToSend?: string) => {
     const query = (textToSend || inputValue).trim();
-    if (!query || isLoading) return;
+    if (!query || isLoading || isStreaming) return;
 
     const userMessage: ChatMessage = { role: 'user', content: query };
     const newMessages = [...messages, userMessage];
@@ -623,28 +724,7 @@ Plan Tier | Quota Allocation
 
 💡 **Account Action:** You can manage credits, view full memory fill-up, or upgrade your plan anytime using the account tile in the left sidebar or the **Profile & Plans** button.`;
 
-      const finalMessages = [
-        ...newMessages,
-        { role: 'assistant' as const, content: accountReply }
-      ];
-      setMessages(finalMessages);
-      setIsLoading(false);
-
-      setSessions(prev =>
-        prev.map(s => {
-          if (s.id === activeSessionId) {
-            return {
-              ...s,
-              title: updatedTitle || s.title,
-              updatedAt: Date.now(),
-              messages: finalMessages,
-              domain: domain || s.domain,
-              securityMode
-            };
-          }
-          return s;
-        })
-      );
+      await streamAssistantMessage(accountReply, newMessages, updatedTitle);
       return;
     }
 
@@ -698,55 +778,14 @@ Plan Tier | Quota Allocation
       const response = await sendChatMessage(processedQuery, currentContextReport, chatHistory, geminiApiKey, scanHistory);
       deductUserCredit().catch(() => {});
 
-      const finalMessages = [
-        ...newMessages,
-        { role: 'assistant' as const, content: response.reply }
-      ];
-
-      setMessages(finalMessages);
-
-      // Persist to current session in sessions array
-      setSessions(prev =>
-        prev.map(s => {
-          if (s.id === activeSessionId) {
-            return {
-              ...s,
-              title: updatedTitle || s.title,
-              updatedAt: Date.now(),
-              messages: finalMessages,
-              domain: domain || s.domain,
-              securityMode
-            };
-          }
-          return s;
-        })
-      );
+      await streamAssistantMessage(response.reply, newMessages, updatedTitle);
     } catch (err) {
       console.error('Chat error:', err);
-      const fallbackMessages = [
-        ...newMessages,
-        {
-          role: 'assistant' as const,
-          content: '⚠️ **Copilot System Notice:** Network timeout on remote socket. Generated forensic analysis based on active local telemetry.'
-        }
-      ];
-      setMessages(fallbackMessages);
-
-      setSessions(prev =>
-        prev.map(s => {
-          if (s.id === activeSessionId) {
-            return {
-              ...s,
-              title: updatedTitle || s.title,
-              updatedAt: Date.now(),
-              messages: fallbackMessages
-            };
-          }
-          return s;
-        })
-      );
+      const fallbackReply = '⚠️ **Copilot System Notice:** Network timeout on remote socket. Generated forensic analysis based on active local telemetry.';
+      await streamAssistantMessage(fallbackReply, newMessages, updatedTitle);
     } finally {
       setIsLoading(false);
+      setIsStreaming(false);
       setStatusNotice(null);
     }
   };
@@ -2950,10 +2989,13 @@ Plan Tier | Quota Allocation
                       }}
                     >
                       {renderMessageContent(msg.content, idx)}
+                      {isStreaming && !isUser && idx === messages.length - 1 && (
+                        <span className="copilot-stream-cursor" />
+                      )}
                     </div>
 
                     {/* Action Bar for Assistant Messages (Copy / Regenerate) */}
-                    {!isUser && (
+                    {!isUser && (!isStreaming || idx !== messages.length - 1) && Boolean(msg.content) && (
                       <div
                         style={{
                           display: 'flex',
@@ -3010,7 +3052,7 @@ Plan Tier | Quota Allocation
                         <button
                           onClick={() => {
                             const lastUser = [...messages.slice(0, idx)].reverse().find(m => m.role === 'user');
-                            if (lastUser) handleSendMessage(lastUser.content);
+                            if (lastUser && !isLoading && !isStreaming) handleSendMessage(lastUser.content);
                           }}
                           style={{
                             background: 'transparent',
@@ -3035,7 +3077,7 @@ Plan Tier | Quota Allocation
             })}
 
             {/* Loading Indicator */}
-            {isLoading && (
+            {isLoading && !isStreaming && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 4px' }}>
                 <div
                   style={{
@@ -3098,7 +3140,7 @@ Plan Tier | Quota Allocation
             {quickPrompts.map((p, idx) => (
               <button
                 key={`qp-${idx}`}
-                onClick={() => handleSendMessage(p.label)}
+                onClick={() => !isLoading && !isStreaming && handleSendMessage(p.label)}
                 className={`copilot-prompt-chip ${p.colorClass}`}
                 style={{
                   display: 'inline-flex',
@@ -3319,7 +3361,9 @@ Plan Tier | Quota Allocation
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
-                    handleSendMessage();
+                    if (!isLoading && !isStreaming) {
+                      handleSendMessage();
+                    }
                   }
                 }}
                 placeholder={
@@ -3344,7 +3388,7 @@ Plan Tier | Quota Allocation
               />
 
               {/* Send or Stop Generating Button */}
-              {isLoading ? (
+              {isLoading || isStreaming ? (
                 <button
                   type="button"
                   onClick={handleStopGenerating}
@@ -3371,10 +3415,10 @@ Plan Tier | Quota Allocation
                 <button
                   type="button"
                   onClick={() => handleSendMessage()}
-                  disabled={!inputValue.trim() || isLoading}
+                  disabled={!inputValue.trim() || isLoading || isStreaming}
                   className="copilot-send-button"
                   style={{
-                    background: inputValue.trim() && !isLoading
+                    background: inputValue.trim() && !isLoading && !isStreaming
                       ? '#4D96FF'
                       : '#E2E8F0',
                     color: '#000000',
@@ -3385,8 +3429,8 @@ Plan Tier | Quota Allocation
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    cursor: inputValue.trim() && !isLoading ? 'pointer' : 'default',
-                    boxShadow: inputValue.trim() && !isLoading ? '2px 2px 0px 0px #000000' : 'none',
+                    cursor: inputValue.trim() && !isLoading && !isStreaming ? 'pointer' : 'default',
+                    boxShadow: inputValue.trim() && !isLoading && !isStreaming ? '2px 2px 0px 0px #000000' : 'none',
                     transition: 'transform 0.1s ease, box-shadow 0.1s ease',
                     flexShrink: 0
                   }}
