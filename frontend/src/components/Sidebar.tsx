@@ -148,14 +148,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
 
-        {/* Mobile close button */}
+        {/* Close button for slide-out drawer */}
         {onCloseMobile && (
           <button
             onClick={(e) => {
               e.stopPropagation();
               onCloseMobile();
             }}
-            className="md:hidden"
             style={{
               width: '32px',
               height: '32px',
@@ -166,10 +165,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              boxShadow: '2px 2px 0px 0px #000000',
+              flexShrink: 0
             }}
+            aria-label="Close navigation"
           >
-            <X size={16} />
+            <X size={16} strokeWidth={2.8} />
           </button>
         )}
       </div>
@@ -315,69 +317,47 @@ export const Sidebar: React.FC<SidebarProps> = ({
   );
 
   return (
-    <>
-      {/* Desktop Persistent Sidebar */}
-      <aside
-        className="hidden lg:flex"
-        style={{
-          width: '270px',
-          minWidth: '270px',
-          height: '100vh',
-          position: 'sticky',
-          top: 0,
-          background: '#FFFDF5',
-          padding: '20px 16px',
-          flexDirection: 'column',
-          zIndex: 40,
-          borderRight: '4px solid #000000'
-        }}
-      >
-        <SidebarContent />
-      </aside>
-
-      {/* Mobile / Tablet Drawer */}
-      <AnimatePresence>
-        {isMobileOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={onCloseMobile}
-              style={{
-                position: 'fixed',
-                inset: 0,
-                background: 'rgba(0, 0, 0, 0.65)',
-                backdropFilter: 'blur(4px)',
-                zIndex: 99990
-              }}
-            />
-            <motion.div
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                bottom: 0,
-                width: '290px',
-                maxWidth: '85vw',
-                background: '#FFFDF5',
-                borderRight: '4px solid #000000',
-                boxShadow: '10px 0px 0px 0px #000000',
-                padding: '20px 16px',
-                zIndex: 99991,
-                display: 'flex',
-                flexDirection: 'column'
-              }}
-            >
-              <SidebarContent />
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </>
+    <AnimatePresence>
+      {isMobileOpen && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onCloseMobile}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(0, 0, 0, 0.65)',
+              backdropFilter: 'blur(4px)',
+              zIndex: 99990
+            }}
+          />
+          <motion.div
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 220 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              width: '300px',
+              maxWidth: '85vw',
+              background: '#FFFDF5',
+              borderRight: '4px solid #000000',
+              boxShadow: '10px 0px 0px 0px #000000',
+              padding: '20px 16px',
+              zIndex: 99991,
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <SidebarContent />
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
   );
 };

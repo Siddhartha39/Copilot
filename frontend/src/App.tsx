@@ -462,7 +462,7 @@ export function App() {
 
   return (
     <AlgorandWalletProvider>
-      <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--neo-bg, #FFFDF5)', position: 'relative' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--neo-bg, #FFFDF5)', position: 'relative' }}>
         {/* Subtle Background Matrix Canvas */}
         <MatrixBackground opacity={theme === 'dark' ? 0.15 : 0.03} themeMode={theme} />
 

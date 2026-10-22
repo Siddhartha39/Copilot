@@ -94,12 +94,11 @@ export const Header: React.FC<HeaderProps> = ({
     >
       {/* Left Area: Mobile Menu Button & Desktop Breadcrumb */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        {/* Mobile Hamburger Toggle Button */}
+        {/* Hamburger Toggle Button (Always visible on all screens) */}
         <motion.button
           whileHover={{ translateY: -2, boxShadow: '4px 4px 0px 0px #000000' }}
           whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '0px 0px 0px 0px #000000' }}
           onClick={onToggleMobileMenu}
-          className="lg:hidden"
           style={{
             width: '42px',
             height: '42px',
@@ -111,7 +110,8 @@ export const Header: React.FC<HeaderProps> = ({
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            color: '#000000'
+            color: '#000000',
+            flexShrink: 0
           }}
           aria-label="Toggle navigation menu"
         >
