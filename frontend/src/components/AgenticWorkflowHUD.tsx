@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bot, CheckCircle2, Loader2, ShieldAlert, Cpu, Terminal, Coins, ArrowRight } from 'lucide-react';
+import { Bot, CheckCircle2, Loader2, Cpu, Coins } from 'lucide-react';
 
 export interface AgenticStep {
   id: string;
@@ -79,96 +79,189 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
 
   return (
     <div
-      className="glass-panel"
       style={{
-        background: 'var(--bg-card)',
-        border: '1px solid var(--border-color)',
-        borderRadius: '16px',
-        padding: '22px',
-        margin: '0 24px 24px 24px',
-        boxShadow: 'var(--panel-shadow)'
+        background: 'var(--neu-bg, #E0E5EC)',
+        borderRadius: '28px',
+        boxShadow: 'var(--neu-extruded)',
+        border: 'none',
+        padding: '24px 26px',
+        margin: '0 0 24px 0',
+        fontFamily: "'DM Sans', sans-serif"
       }}
     >
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '14px', marginBottom: '18px', flexWrap: 'wrap', gap: '12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.2))', border: '1px solid rgba(6, 182, 212, 0.4)', borderRadius: '10px', padding: '8px', display: 'flex' }}>
-            <Bot size={22} color="var(--accent-cyan)" />
+      {/* Header Row -> Molded Icon Well & Soft Badges */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          {/* Neumorphic Inset Robot Icon Well */}
+          <div
+            style={{
+              width: '46px',
+              height: '46px',
+              borderRadius: '16px',
+              background: 'var(--neu-bg, #E0E5EC)',
+              boxShadow: 'var(--neu-inset)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0
+            }}
+          >
+            <Bot size={24} color="#6C63FF" />
           </div>
+
           <div>
-            <div style={{ fontSize: '0.98rem', fontWeight: 800, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span>Autonomous Cyber Intelligence Agent</span>
-              <span className="badge-info" style={{ fontSize: '0.65rem', padding: '2px 8px', borderRadius: '10px' }}>
-                100% FREE & OPEN
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <span
+                style={{
+                  fontSize: '1.02rem',
+                  fontWeight: 800,
+                  color: 'var(--neu-foreground, #3D4852)',
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  letterSpacing: '-0.02em'
+                }}
+              >
+                Autonomous Cyber Intelligence Agent
+              </span>
+              <span
+                style={{
+                  fontSize: '0.64rem',
+                  padding: '3px 10px',
+                  borderRadius: '9999px',
+                  background: 'var(--neu-bg, #E0E5EC)',
+                  boxShadow: 'var(--neu-inset-sm)',
+                  fontWeight: 800,
+                  color: '#10B981',
+                  fontFamily: "'Plus Jakarta Sans', sans-serif"
+                }}
+              >
+                100% FREE &amp; OPEN
               </span>
             </div>
-            <div className="mono" style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-              Target: <span style={{ color: 'var(--accent-cyan)', fontWeight: 700 }}>{targetUrl || 'Ready for URL analysis'}</span>
+            <div style={{ fontSize: '0.78rem', color: 'var(--neu-muted, #6B7280)', marginTop: '2px', fontWeight: 600 }}>
+              Target: <span style={{ color: '#6C63FF', fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{targetUrl || 'Ready for URL analysis'}</span>
             </div>
           </div>
         </div>
 
-        {/* Status Indicator */}
+        {/* Status Indicator -> Soft Raised Pill */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.35)', padding: '5px 12px', borderRadius: '20px', fontWeight: 700 }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981' }} />
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '0.74rem',
+              color: '#10B981',
+              background: 'var(--neu-bg, #E0E5EC)',
+              boxShadow: 'var(--neu-extruded-sm)',
+              padding: '7px 16px',
+              borderRadius: '9999px',
+              fontWeight: 800,
+              fontFamily: "'Plus Jakarta Sans', sans-serif"
+            }}
+          >
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 8px rgba(16, 185, 129, 0.6)' }} />
             <span>AGENT ACTIVE &amp; UNRESTRICTED</span>
           </div>
         </div>
       </div>
 
-      {/* Workflow Stage Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+      {/* Workflow Stage Grid -> Soft Molded Neumorphic Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '14px' }}>
         {steps.map((step, idx) => {
-          let statusBorder = '1px solid var(--border-color)';
-          let statusBg = 'var(--code-box-bg)';
-          let statusColor = 'var(--text-secondary)';
-          let StatusIcon = Cpu;
+          const isCompleted = step.status === 'completed';
+          const isRunning = step.status === 'running';
 
-          if (step.status === 'completed') {
-            statusBorder = '1.5px solid #10b981';
-            statusBg = 'rgba(16, 185, 129, 0.08)';
-            statusColor = '#10b981';
-            StatusIcon = CheckCircle2;
-          } else if (step.status === 'running') {
-            statusBorder = '1.5px solid var(--accent-cyan)';
-            statusBg = 'rgba(6, 182, 212, 0.08)';
-            statusColor = 'var(--accent-cyan)';
+          let stageColor = '#10B981';
+          let StatusIcon = CheckCircle2;
+
+          if (isRunning) {
+            stageColor = '#6C63FF';
             StatusIcon = Loader2;
           } else if (step.status === 'paused_for_payment') {
-            statusBorder = '1.5px solid #f59e0b';
-            statusBg = 'rgba(245, 158, 11, 0.08)';
-            statusColor = '#f59e0b';
+            stageColor = '#F59E0B';
             StatusIcon = Coins;
+          } else if (!isCompleted) {
+            stageColor = '#9CA3AF';
+            StatusIcon = Cpu;
           }
 
           return (
             <div
               key={step.id}
               style={{
-                background: statusBg,
-                border: statusBorder,
-                borderRadius: '12px',
-                padding: '14px',
+                background: 'var(--neu-bg, #E0E5EC)',
+                boxShadow: isRunning ? 'var(--neu-inset)' : 'var(--neu-extruded-sm)',
+                borderRadius: '20px',
+                border: 'none',
+                padding: '16px 18px',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                transition: 'all 0.2s',
-                boxShadow: step.status === 'running' ? '0 0 14px rgba(6, 182, 212, 0.2)' : 'none'
+                transition: 'all 0.25s ease'
               }}
             >
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '0.68rem', fontWeight: 800, color: statusColor, letterSpacing: '0.04em' }}>
+                {/* Stage Header with Inset Icon Circle */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span
+                    style={{
+                      fontSize: '0.68rem',
+                      fontWeight: 800,
+                      color: stageColor,
+                      letterSpacing: '0.04em',
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      textTransform: 'uppercase'
+                    }}
+                  >
                     STAGE {idx + 1}: {step.stage}
                   </span>
-                  <StatusIcon size={14} color={statusColor} className={step.status === 'running' ? 'animate-spin' : ''} />
+
+                  {/* Neumorphic Inset Circle Icon Well */}
+                  <div
+                    style={{
+                      width: '28px',
+                      height: '28px',
+                      borderRadius: '50%',
+                      background: 'var(--neu-bg, #E0E5EC)',
+                      boxShadow: isRunning ? 'var(--neu-extruded-xs)' : 'var(--neu-inset-sm)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0
+                    }}
+                  >
+                    <StatusIcon
+                      size={15}
+                      color={stageColor}
+                      className={isRunning ? 'animate-spin' : ''}
+                    />
+                  </div>
                 </div>
-                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px', lineHeight: 1.35 }}>
+
+                <div
+                  style={{
+                    fontSize: '0.84rem',
+                    fontWeight: 800,
+                    color: isRunning ? '#6C63FF' : 'var(--neu-foreground, #3D4852)',
+                    marginBottom: '6px',
+                    lineHeight: 1.35,
+                    fontFamily: "'Plus Jakarta Sans', sans-serif"
+                  }}
+                >
                   {step.action}
                 </div>
               </div>
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', lineHeight: 1.45, marginTop: '8px' }}>
+
+              <div
+                style={{
+                  fontSize: '0.74rem',
+                  color: 'var(--neu-muted, #6B7280)',
+                  lineHeight: 1.5,
+                  marginTop: '8px',
+                  fontWeight: 500
+                }}
+              >
                 {step.detail}
               </div>
             </div>

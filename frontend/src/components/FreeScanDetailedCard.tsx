@@ -165,7 +165,7 @@ app.use(helmet({
   };
 
   return (
-    <div style={{ margin: '0 24px 24px 24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div style={{ margin: '0 0 24px 0', display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* 1. Feature Output Persona Selector Tabs -> Neumorphic Soft Inset Track */}
       <div className="glass-panel" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', borderRadius: '24px', boxShadow: 'var(--neu-extruded-sm)', border: 'none', background: 'var(--neu-bg, #E0E5EC)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', background: 'var(--neu-bg, #E0E5EC)', boxShadow: 'var(--neu-inset)', padding: '5px', borderRadius: '9999px' }}>

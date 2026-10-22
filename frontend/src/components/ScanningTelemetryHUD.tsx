@@ -134,13 +134,14 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
       className="glass-panel"
       style={{
         padding: '28px 24px',
-        margin: '0 24px 24px 24px',
-        background: 'var(--bg-card)',
-        border: '1px solid var(--border-color)',
-        boxShadow: 'var(--panel-shadow)',
-        borderRadius: '16px',
+        margin: '0 0 24px 0',
+        background: 'var(--neu-bg, #E0E5EC)',
+        border: 'none',
+        boxShadow: 'var(--neu-extruded)',
+        borderRadius: '28px',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        fontFamily: "'DM Sans', sans-serif"
       }}
     >
       {/* Top Background Animated Scanner Beam */}
