@@ -166,61 +166,55 @@ app.use(helmet({
 
   return (
     <div style={{ margin: '0 24px 24px 24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      {/* 1. Feature Output Persona Selector Tabs */}
-      <div className="glass-panel" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 700 }}>
-            VIEW MODE:
-          </span>
-
+      {/* 1. Feature Output Persona Selector Tabs -> Neumorphic Soft Inset Track */}
+      <div className="glass-panel" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', borderRadius: '24px', boxShadow: 'var(--neu-extruded-sm)', border: 'none', background: 'var(--neu-bg, #E0E5EC)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', background: 'var(--neu-bg, #E0E5EC)', boxShadow: 'var(--neu-inset)', padding: '5px', borderRadius: '9999px' }}>
           <button
             type="button"
             onClick={() => handleSwitchFocus('developer')}
             style={{
-              background: activeFocus === 'developer'
-                ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.3) 0%, rgba(59, 130, 246, 0.3) 100%)'
-                : 'var(--code-box-bg)',
-              color: activeFocus === 'developer' ? '#38bdf8' : 'var(--text-secondary)',
-              border: activeFocus === 'developer' ? '2px solid #38bdf8' : '1px solid var(--border-color)',
-              borderRadius: '8px',
-              padding: '8px 16px',
+              background: 'var(--neu-bg, #E0E5EC)',
+              color: activeFocus === 'developer' ? 'var(--neu-accent, #6C63FF)' : 'var(--neu-muted, #6B7280)',
+              border: 'none',
+              borderRadius: '9999px',
+              padding: '8px 18px',
               fontSize: '0.82rem',
               fontWeight: 800,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              boxShadow: activeFocus === 'developer' ? '0 0 16px rgba(56, 189, 248, 0.3)' : 'none',
-              transition: 'all 0.15s'
+              boxShadow: activeFocus === 'developer' ? 'var(--neu-extruded-sm)' : 'none',
+              transition: 'all 0.2s ease'
             }}
           >
-            <Shield size={16} color={activeFocus === 'developer' ? '#38bdf8' : 'var(--text-muted)'} />
-            <span>Feature 1: Developer Website Security &amp; Anti-Hacking Audit</span>
+            <Shield size={16} />
+            <span>Developer Website Security &amp; Anti-Hacking Audit</span>
           </button>
 
           <button
             type="button"
             onClick={() => handleSwitchFocus('phishing')}
             style={{
-              background: activeFocus === 'phishing'
-                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(249, 115, 22, 0.3) 100%)'
-                : 'var(--code-box-bg)',
-              color: activeFocus === 'phishing' ? '#f87171' : 'var(--text-secondary)',
-              border: activeFocus === 'phishing' ? '2px solid #f87171' : '1px solid var(--border-color)',
-              borderRadius: '8px',
-              padding: '8px 16px',
+              background: 'var(--neu-bg, #E0E5EC)',
+              color: activeFocus === 'phishing' ? 'var(--neu-accent, #6C63FF)' : 'var(--neu-muted, #6B7280)',
+              border: 'none',
+              borderRadius: '9999px',
+              padding: '8px 18px',
               fontSize: '0.82rem',
               fontWeight: 800,
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              boxShadow: activeFocus === 'phishing' ? '0 0 16px rgba(248, 113, 113, 0.3)' : 'none',
-              transition: 'all 0.15s'
+              boxShadow: activeFocus === 'phishing' ? 'var(--neu-extruded-sm)' : 'none',
+              transition: 'all 0.2s ease'
             }}
           >
-            <Zap size={16} color={activeFocus === 'phishing' ? '#f87171' : 'var(--text-muted)'} />
-            <span>Feature 2: Phishing &amp; Fraud Intelligence Scanner</span>
+            <Zap size={16} />
+            <span>Phishing &amp; Fraud Intelligence Scanner</span>
           </button>
         </div>
 
@@ -228,23 +222,24 @@ app.use(helmet({
           <button
             onClick={onUnlockDeepAudit}
             style={{
-              background: 'linear-gradient(135deg, #00f0ff 0%, #0284c7 100%)',
-              color: '#070a10',
+              background: 'linear-gradient(135deg, #6C63FF 0%, #8B84FF 100%)',
+              color: '#ffffff',
               border: 'none',
-              borderRadius: '8px',
-              padding: '8px 16px',
+              borderRadius: '16px',
+              padding: '9px 20px',
               fontWeight: 800,
-              fontSize: '0.82rem',
+              fontSize: '0.84rem',
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 0 16px rgba(0, 240, 255, 0.35)'
+              gap: '8px',
+              boxShadow: '4px 4px 12px rgba(108, 99, 255, 0.35)'
             }}
           >
-            <Zap size={14} />
+            <Zap size={15} />
             <span>Deep Forensic Audit (Free)</span>
-            <ArrowRight size={13} />
+            <ArrowRight size={15} />
           </button>
         </div>
       </div>
@@ -274,61 +269,61 @@ app.use(helmet({
                 </div>
               </div>
 
-              {/* Security Grade Badge */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: 'var(--bg-secondary)', padding: '10px 20px', borderRadius: '14px', border: `1px solid ${gradeColor}` }}>
+              {/* Security Grade Badge -> Neumorphic Soft Extruded Card */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: 'var(--neu-bg, #E0E5EC)', padding: '14px 22px', borderRadius: '24px', boxShadow: 'var(--neu-extruded-sm)', border: 'none' }}>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 800 }}>SECURITY GRADE</div>
-                  <div className="mono" style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, textTransform: 'uppercase', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>SECURITY GRADE</div>
+                  <div style={{ fontSize: '0.84rem', color: 'var(--neu-foreground, #3D4852)', fontWeight: 700 }}>
                     {audit ? `${audit.score_percentage}% Pass Rate` : (hasHsts ? 'Standard TLS Defense' : 'Needs Hardening')}
                   </div>
                 </div>
-                <div style={{ fontSize: '2.4rem', fontWeight: 900, color: gradeColor }} className="mono">
+                <div style={{ fontSize: '2.4rem', fontWeight: 900, color: gradeColor, background: 'var(--neu-bg, #E0E5EC)', padding: '4px 16px', borderRadius: '16px', boxShadow: 'var(--neu-inset-sm)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   {securityGrade}
                 </div>
               </div>
             </div>
 
-            {/* 3 Developer Highlight Metrics */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px' }}>
+            {/* 3 Developer Highlight Metrics -> Neumorphic Soft Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
               {/* Clickjacking Protection */}
-              <div style={{ background: 'var(--code-box-bg)', padding: '16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '4px', fontWeight: 700, textTransform: 'uppercase' }}>
+              <div style={{ background: 'var(--neu-bg, #E0E5EC)', padding: '18px 20px', borderRadius: '24px', boxShadow: 'var(--neu-extruded-sm)', border: 'none' }}>
+                <div style={{ fontSize: '0.74rem', color: 'var(--neu-muted, #6B7280)', marginBottom: '8px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   Clickjacking Immunity (X-Frame-Options)
                 </div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: isClickjackable ? '#ef4444' : '#10b981', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {isClickjackable ? <XCircle size={20} /> : <CheckCircle2 size={20} />}
-                  <span>{isClickjackable ? 'VULNERABLE (NO XFO)' : 'IMMUNE TO FRAMING'}</span>
+                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--neu-foreground, #3D4852)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {isClickjackable ? <XCircle size={20} color="#EF4444" /> : <CheckCircle2 size={20} color="#10B981" />}
+                  <span style={{ color: isClickjackable ? '#EF4444' : '#10B981' }}>{isClickjackable ? 'VULNERABLE (NO XFO)' : 'IMMUNE TO FRAMING'}</span>
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                <div style={{ fontSize: '0.76rem', color: 'var(--neu-muted, #6B7280)', marginTop: '8px', fontWeight: 500 }}>
                   {isClickjackable ? 'Attackers can iframe your website to hijack user clicks.' : 'Framing restricted to SAMEORIGIN / DENY.'}
                 </div>
               </div>
 
               {/* Script Injection / CSP */}
-              <div style={{ background: 'var(--code-box-bg)', padding: '16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '4px', fontWeight: 700, textTransform: 'uppercase' }}>
+              <div style={{ background: 'var(--neu-bg, #E0E5EC)', padding: '18px 20px', borderRadius: '24px', boxShadow: 'var(--neu-extruded-sm)', border: 'none' }}>
+                <div style={{ fontSize: '0.74rem', color: 'var(--neu-muted, #6B7280)', marginBottom: '8px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   XSS / Code Injection (CSP)
                 </div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: hasCsp ? '#10b981' : '#f59e0b', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {hasCsp ? <CheckCircle2 size={20} /> : <AlertTriangle size={20} />}
-                  <span>{hasCsp ? 'CSP ENFORCED' : 'CSP NOT CONFIGURED'}</span>
+                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--neu-foreground, #3D4852)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {hasCsp ? <CheckCircle2 size={20} color="#10B981" /> : <AlertTriangle size={20} color="#F59E0B" />}
+                  <span style={{ color: hasCsp ? '#10B981' : '#F59E0B' }}>{hasCsp ? 'CSP ENFORCED' : 'CSP NOT CONFIGURED'}</span>
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                <div style={{ fontSize: '0.76rem', color: 'var(--neu-muted, #6B7280)', marginTop: '8px', fontWeight: 500 }}>
                   {hasCsp ? 'Restricts unauthorized script execution.' : 'Missing Content-Security-Policy defense header.'}
                 </div>
               </div>
 
               {/* Transport & Email Domain Security */}
-              <div style={{ background: 'var(--code-box-bg)', padding: '16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '4px', fontWeight: 700, textTransform: 'uppercase' }}>
+              <div style={{ background: 'var(--neu-bg, #E0E5EC)', padding: '18px 20px', borderRadius: '24px', boxShadow: 'var(--neu-extruded-sm)', border: 'none' }}>
+                <div style={{ fontSize: '0.74rem', color: 'var(--neu-muted, #6B7280)', marginBottom: '8px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   Transport &amp; Email Authentication
                 </div>
-                <div style={{ fontSize: '1.2rem', fontWeight: 800, color: result.tls_valid ? '#10b981' : '#ef4444', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {result.tls_valid ? <Lock size={20} /> : <AlertTriangle size={20} />}
-                  <span>{result.tls_valid ? 'TLS VALID & ENFORCED' : 'INSECURE HTTP'}</span>
+                <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--neu-foreground, #3D4852)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {result.tls_valid ? <Lock size={20} color="#10B981" /> : <AlertTriangle size={20} color="#EF4444" />}
+                  <span style={{ color: result.tls_valid ? '#10B981' : '#EF4444' }}>{result.tls_valid ? 'TLS VALID & ENFORCED' : 'INSECURE HTTP'}</span>
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                  DMARC: <strong style={{ color: result.has_dmarc ? '#10b981' : '#ef4444' }}>{result.has_dmarc ? 'Enforced (p=reject)' : 'Missing (Spoofable)'}</strong> • SPF: <strong style={{ color: result.has_spf ? '#10b981' : '#f59e0b' }}>{result.has_spf ? 'Configured' : 'Missing'}</strong>
+                <div style={{ fontSize: '0.76rem', color: 'var(--neu-muted, #6B7280)', marginTop: '8px', fontWeight: 500 }}>
+                  DMARC: <strong style={{ color: result.has_dmarc ? '#10B981' : '#EF4444' }}>{result.has_dmarc ? 'Enforced' : 'Missing'}</strong> • SPF: <strong style={{ color: result.has_spf ? '#10B981' : '#F59E0B' }}>{result.has_spf ? 'Configured' : 'Missing'}</strong>
                 </div>
               </div>
             </div>
@@ -530,69 +525,74 @@ app.use(helmet({
                 <button
                   onClick={onUnlockDeepAudit}
                   style={{
-                    background: 'linear-gradient(135deg, #00f0ff 0%, #0284c7 100%)',
-                    color: '#070a10',
+                    background: 'linear-gradient(135deg, #6C63FF 0%, #8B84FF 100%)',
+                    color: '#ffffff',
                     border: 'none',
-                    borderRadius: '10px',
-                    padding: '12px 22px',
+                    borderRadius: '16px',
+                    padding: '12px 24px',
                     fontWeight: 800,
-                    fontSize: '0.9rem',
+                    fontSize: '0.88rem',
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    boxShadow: '0 0 20px rgba(0, 240, 255, 0.45)'
+                    boxShadow: '4px 4px 12px rgba(108, 99, 255, 0.35)'
                   }}
                 >
-                  <Zap size={16} />
+                  <Zap size={17} />
                   <span>Launch Complete Deep Audit (Free)</span>
-                  <ArrowRight size={15} />
+                  <ArrowRight size={16} />
                 </button>
               </div>
             </div>
 
-            {/* 3 Metric Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
+            {/* 3 Metric Cards -> Neumorphic Soft Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
               {/* Risk Score */}
-              <div style={{ background: 'var(--code-box-bg)', padding: '16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '4px', fontWeight: 600, textTransform: 'uppercase' }}>
+              <div style={{ background: 'var(--neu-bg, #E0E5EC)', padding: '18px 20px', borderRadius: '24px', boxShadow: 'var(--neu-extruded-sm)', border: 'none' }}>
+                <div style={{ fontSize: '0.74rem', color: 'var(--neu-muted, #6B7280)', marginBottom: '8px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   Basic Risk Score
                 </div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                  <span className="mono" style={{ fontSize: '1.8rem', fontWeight: 900, color: scoreColor }}>
+                  <span style={{ fontSize: '2rem', fontWeight: 900, color: scoreColor, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                     {result.basic_risk_score.toFixed(1)}
                   </span>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>/ 100</span>
+                  <span style={{ fontSize: '0.88rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 700 }}>/ 100</span>
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                <div style={{ fontSize: '0.76rem', color: 'var(--neu-muted, #6B7280)', marginTop: '8px', fontWeight: 500 }}>
                   {isUnregistered ? 'Unregistered Domain Profile' : 'Lexical & Infrastructure Triage'}
                 </div>
               </div>
 
               {/* Verdict */}
-              <div style={{ background: 'var(--code-box-bg)', padding: '16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '4px', fontWeight: 600, textTransform: 'uppercase' }}>
+              <div style={{ background: 'var(--neu-bg, #E0E5EC)', padding: '18px 20px', borderRadius: '24px', boxShadow: 'var(--neu-extruded-sm)', border: 'none' }}>
+                <div style={{ fontSize: '0.74rem', color: 'var(--neu-muted, #6B7280)', marginBottom: '8px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   Threat Verdict
                 </div>
-                <div style={{ fontSize: '1.4rem', fontWeight: 900, color: scoreColor, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {isUnregistered ? <Globe size={22} color="#38bdf8" /> : isPhishing ? <ShieldAlert size={22} /> : <ShieldCheck size={22} />}
-                  <span>{isUnregistered ? 'UNREGISTERED' : result.verdict}</span>
+                <div style={{ fontSize: '1.25rem', fontWeight: 900, color: scoreColor, display: 'flex', alignItems: 'center', gap: '8px', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  {isUnregistered ? <Globe size={20} color="#38B2AC" /> : isPhishing ? <ShieldAlert size={20} color="#EF4444" /> : <ShieldCheck size={20} color="#10B981" />}
+                  <span>
+                    {isUnregistered ? 'UNREGISTERED' : result.verdict}
+                  </span>
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                  Confidence: <strong>{(result.confidence * 100).toFixed(0)}%</strong>
+                <div style={{ fontSize: '0.76rem', color: 'var(--neu-muted, #6B7280)', marginTop: '8px', fontWeight: 500 }}>
+                  Confidence: <strong style={{ fontWeight: 800, color: 'var(--neu-foreground, #3D4852)' }}>{(result.confidence * 100).toFixed(0)}%</strong>
                 </div>
               </div>
 
               {/* Domain Age */}
-              <div style={{ background: 'var(--code-box-bg)', padding: '16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '4px', fontWeight: 600, textTransform: 'uppercase' }}>
+              <div style={{ background: 'var(--neu-bg, #E0E5EC)', padding: '18px 20px', borderRadius: '24px', boxShadow: 'var(--neu-extruded-sm)', border: 'none' }}>
+                <div style={{ fontSize: '0.74rem', color: 'var(--neu-muted, #6B7280)', marginBottom: '8px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                   Authoritative Domain Age
                 </div>
-                <div style={{ fontSize: '1.4rem', fontWeight: 900, color: isUnregistered ? '#9ca3af' : result.is_newly_registered ? '#ef4444' : '#10b981' }}>
-                  {isUnregistered ? 'NOT REGISTERED' : result.domain_age_days !== undefined && result.domain_age_days !== null ? `${result.domain_age_days} Days` : 'Verified Standing'}
+                <div style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--neu-foreground, #3D4852)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  <span>
+                    {isUnregistered ? 'NOT REGISTERED' : result.domain_age_days !== undefined && result.domain_age_days !== null ? `${result.domain_age_days} Days` : 'Verified Standing'}
+                  </span>
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                  Registered: <strong style={{ color: 'var(--text-primary)' }}>{isUnregistered ? 'Domain Available (NXDOMAIN)' : (result.creation_date || 'Active')}</strong>
+                <div style={{ fontSize: '0.76rem', color: 'var(--neu-muted, #6B7280)', marginTop: '8px', fontWeight: 500 }}>
+                  Registered: <strong style={{ color: 'var(--neu-foreground, #3D4852)' }}>{isUnregistered ? 'Domain Available (NXDOMAIN)' : (result.creation_date || 'Active')}</strong>
                 </div>
               </div>
             </div>

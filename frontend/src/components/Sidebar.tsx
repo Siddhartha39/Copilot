@@ -15,7 +15,7 @@ import {
   Globe,
   Bell,
   X,
-  Activity
+  Cpu
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -33,20 +33,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
   activeTab,
   setActiveTab,
   caseCount,
-  theme = 'dark',
   hasActiveReport = false,
   onLaunchScanner,
   isMobileOpen = false,
   onCloseMobile
 }) => {
-  const isLight = theme === 'light';
-
   const navItems = [
     { id: 'overview', label: 'Overview', icon: Home },
     {
       id: 'scanner',
-      label: 'Scanner',
+      label: 'Scanner (Soft UI)',
       icon: Radar,
+      badge: 'NEU',
+      badgeBg: '#C4B5FD',
       onClick: () => {
         if (activeTab !== 'scanner' && onLaunchScanner) onLaunchScanner();
         else setActiveTab('scanner');
@@ -77,71 +76,74 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const SidebarContent = () => (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '16px' }}>
-      {/* Brand Header Card with Cyber Shield */}
+      {/* Brand Header Card with Neo-brutalist Sticker Badge */}
       <div
         onClick={() => {
           setActiveTab('overview');
           if (onCloseMobile) onCloseMobile();
         }}
-        className="glass-panel"
         style={{
+          background: '#FFD93D',
+          border: '3px solid #000000',
+          borderRadius: '0px',
+          boxShadow: '4px 4px 0px 0px #000000',
           padding: '14px 16px',
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
           cursor: 'pointer',
-          position: 'relative',
-          borderRadius: '14px',
-          border: '1px solid var(--border-color)',
-          background: isLight ? '#ffffff' : 'rgba(13, 19, 31, 0.85)'
+          position: 'relative'
         }}
       >
         <div
           style={{
             width: '42px',
             height: '42px',
-            borderRadius: '10px',
-            background: isLight ? 'rgba(2, 132, 199, 0.1)' : 'rgba(0, 240, 255, 0.12)',
-            border: '1px solid var(--border-color)',
+            borderRadius: '0px',
+            background: '#000000',
+            border: '2px solid #000000',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0
           }}
         >
-          <Shield size={22} color="var(--accent-cyan)" />
+          <Shield size={24} color="#FFD93D" strokeWidth={2.6} />
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <h1
-              className="cyber-font"
               style={{
-                fontSize: '1.05rem',
+                fontSize: '1.08rem',
                 fontWeight: 900,
-                color: 'var(--text-primary)',
+                color: '#000000',
+                fontFamily: "'Space Grotesk', sans-serif",
+                textTransform: 'uppercase',
                 letterSpacing: '-0.02em',
-                lineHeight: 1.2
+                lineHeight: 1.2,
+                margin: 0
               }}
             >
-              CyberGuard <span style={{ color: 'var(--accent-cyan)' }}>AI</span>
+              CyberGuard AI
             </h1>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
             <span
-              className="mono"
               style={{
                 fontSize: '0.62rem',
-                padding: '1px 6px',
-                borderRadius: '6px',
-                background: 'rgba(16, 185, 129, 0.15)',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                fontWeight: 800,
-                color: '#10b981',
-                letterSpacing: '0.04em'
+                padding: '2px 8px',
+                borderRadius: '0px',
+                background: '#FF6B6B',
+                border: '1.5px solid #000000',
+                fontWeight: 900,
+                color: '#000000',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                fontFamily: "'Space Grotesk', sans-serif"
               }}
             >
-              FREE SOC SUITE
+              SOC SUITE // V2
             </span>
           </div>
         </div>
@@ -157,10 +159,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
             style={{
               width: '32px',
               height: '32px',
-              borderRadius: '8px',
-              background: 'transparent',
-              border: '1px solid var(--border-color)',
-              color: 'var(--text-secondary)',
+              borderRadius: '0px',
+              background: '#000000',
+              border: '2px solid #000000',
+              color: '#FFFFFF',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -178,7 +180,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          gap: '6px',
+          gap: '8px',
           overflowY: 'auto',
           paddingRight: '2px',
           paddingBottom: '8px'
@@ -191,83 +193,81 @@ export const Sidebar: React.FC<SidebarProps> = ({
           return (
             <motion.button
               key={item.id}
-              whileHover={{ x: 3 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ translateY: -2, translateX: -2, boxShadow: '5px 5px 0px 0px #000000' }}
+              whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '1px 1px 0px 0px #000000' }}
               onClick={() => handleItemClick(item)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
                 padding: '10px 14px',
-                borderRadius: '10px',
-                border: isActive ? '1px solid rgba(56, 189, 248, 0.5)' : '1px solid transparent',
-                background: isActive
-                  ? isLight
-                    ? 'rgba(2, 132, 199, 0.12)'
-                    : 'linear-gradient(135deg, rgba(6, 182, 212, 0.22) 0%, rgba(59, 130, 246, 0.15) 100%)'
-                  : 'transparent',
-                color: isActive ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                borderRadius: '0px',
+                border: '3px solid #000000',
+                background: isActive ? '#FFD93D' : '#FFFFFF',
+                boxShadow: isActive ? '5px 5px 0px 0px #000000' : '3px 3px 0px 0px #000000',
+                color: '#000000',
                 cursor: 'pointer',
                 textAlign: 'left',
                 position: 'relative',
-                transition: 'all 180ms ease',
+                transition: 'background-color 0.1s ease',
                 outline: 'none',
-                boxShadow: isActive ? '0 0 15px rgba(6, 182, 212, 0.15)' : 'none'
+                transform: isActive ? 'translate(-1px, -1px)' : 'none'
               }}
             >
-              {/* Active Neon Indicator Bar */}
-              {isActive && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: '0px',
-                    top: '8px',
-                    bottom: '8px',
-                    width: '3px',
-                    borderRadius: '0 4px 4px 0',
-                    background: 'var(--accent-cyan)',
-                    boxShadow: '0 0 10px var(--accent-cyan)'
-                  }}
-                />
-              )}
-
               {/* Icon Container */}
               <div
                 style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '8px',
-                  background: isActive
-                    ? isLight ? 'rgba(2, 132, 199, 0.18)' : 'rgba(0, 240, 255, 0.16)'
-                    : isLight ? 'rgba(15, 23, 42, 0.04)' : 'rgba(255, 255, 255, 0.04)',
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '0px',
+                  background: isActive ? '#000000' : '#FFFDF5',
+                  border: '2px solid #000000',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  flexShrink: 0,
-                  transition: 'all 180ms ease'
+                  flexShrink: 0
                 }}
               >
                 <Icon
-                  size={17}
-                  color={isActive ? 'var(--accent-cyan)' : 'var(--text-secondary)'}
-                  strokeWidth={isActive ? 2.4 : 1.8}
+                  size={16}
+                  color={isActive ? '#FFD93D' : '#000000'}
+                  strokeWidth={2.6}
                 />
               </div>
 
               <span
                 style={{
                   fontSize: '0.84rem',
-                  fontWeight: isActive ? 800 : 500,
-                  letterSpacing: '-0.01em',
+                  fontWeight: 900,
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.02em',
                   flex: 1,
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
-                  color: isActive ? (isLight ? '#0369a1' : '#ffffff') : 'var(--text-secondary)'
+                  color: '#000000'
                 }}
               >
                 {item.label}
               </span>
+
+              {item.badge && (
+                <span
+                  style={{
+                    fontSize: '0.62rem',
+                    padding: '2px 6px',
+                    borderRadius: '0px',
+                    background: item.badgeBg || '#C4B5FD',
+                    border: '1.5px solid #000000',
+                    fontWeight: 900,
+                    color: '#000000',
+                    fontFamily: "'Space Grotesk', sans-serif"
+                  }}
+                >
+                  {item.badge}
+                </span>
+              )}
             </motion.button>
           );
         })}
@@ -275,39 +275,39 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Bottom Telemetry Card */}
       <div
-        className="glass-panel"
         style={{
-          borderRadius: '12px',
+          borderRadius: '0px',
           padding: '12px 14px',
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
-          border: '1px solid var(--border-color)',
-          background: isLight ? '#ffffff' : 'rgba(13, 19, 31, 0.8)'
+          border: '3px solid #000000',
+          background: '#C4B5FD',
+          boxShadow: '3px 3px 0px 0px #000000'
         }}
       >
         <div
           style={{
-            width: '30px',
-            height: '30px',
-            borderRadius: '8px',
-            background: 'rgba(0, 240, 255, 0.1)',
-            border: '1px solid var(--border-color)',
+            width: '28px',
+            height: '28px',
+            borderRadius: '0px',
+            background: '#000000',
+            border: '2px solid #000000',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexShrink: 0
           }}
         >
-          <Activity size={15} color="var(--accent-cyan)" />
+          <Cpu size={15} color="#FFD93D" strokeWidth={2.6} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="mono" style={{ fontSize: '0.74rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+          <div style={{ fontSize: '0.74rem', fontWeight: 900, color: '#000000', fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase' }}>
             CYBER SOC CORE
           </div>
-          <div style={{ fontSize: '0.68rem', color: '#10b981', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981', display: 'inline-block', boxShadow: '0 0 6px #10b981' }} />
-            <span>Zero-Trust Stream Active</span>
+          <div style={{ fontSize: '0.66rem', color: '#000000', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '0px', backgroundColor: '#000000', display: 'inline-block' }} />
+            <span>NEO-BRUTALIST SHELL</span>
           </div>
         </div>
       </div>
@@ -320,17 +320,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <aside
         className="hidden lg:flex"
         style={{
-          width: '260px',
-          minWidth: '260px',
+          width: '270px',
+          minWidth: '270px',
           height: '100vh',
           position: 'sticky',
           top: 0,
-          background: isLight ? 'rgba(255, 255, 255, 0.95)' : 'rgba(7, 10, 16, 0.92)',
-          backdropFilter: 'blur(16px)',
-          padding: '20px 14px',
+          background: '#FFFDF5',
+          padding: '20px 16px',
           flexDirection: 'column',
           zIndex: 40,
-          borderRight: '1px solid var(--border-color)'
+          borderRight: '4px solid #000000'
         }}
       >
         <SidebarContent />
@@ -349,7 +348,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 position: 'fixed',
                 inset: 0,
                 background: 'rgba(0, 0, 0, 0.65)',
-                backdropFilter: 'blur(6px)',
+                backdropFilter: 'blur(4px)',
                 zIndex: 99990
               }}
             />
@@ -363,13 +362,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 top: 0,
                 left: 0,
                 bottom: 0,
-                width: '280px',
+                width: '290px',
                 maxWidth: '85vw',
-                background: isLight ? '#ffffff' : 'rgba(13, 19, 31, 0.98)',
-                backdropFilter: 'blur(20px)',
-                borderRight: '1px solid var(--border-color)',
-                boxShadow: '10px 0 35px rgba(0, 0, 0, 0.6)',
-                padding: '20px 14px',
+                background: '#FFFDF5',
+                borderRight: '4px solid #000000',
+                boxShadow: '10px 0px 0px 0px #000000',
+                padding: '20px 16px',
                 zIndex: 99991,
                 display: 'flex',
                 flexDirection: 'column'

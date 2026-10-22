@@ -462,9 +462,9 @@ export function App() {
 
   return (
     <AlgorandWalletProvider>
-      <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-primary)', position: 'relative' }}>
+      <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--neo-bg, #FFFDF5)', position: 'relative' }}>
         {/* Subtle Background Matrix Canvas */}
-        <MatrixBackground opacity={theme === 'dark' ? 0.22 : 0.05} themeMode={theme} />
+        <MatrixBackground opacity={theme === 'dark' ? 0.15 : 0.03} themeMode={theme} />
 
         {/* Ambient Floating Cyber Orbs */}
         <div className="ambient-orb-cyan" />
@@ -522,9 +522,9 @@ export function App() {
           />
         )}
 
-        {/* Page 2: Live Security Scanner & Embedded Results */}
+        {/* Page 2: Live Security Scanner & Embedded Results -> NEOMORPHISM (Soft UI) ONLY */}
         {activeTab === 'scanner' && (
-          <div>
+          <div className="neomorphic-scanner-zone">
             <Scanner
               onScan={handleScan}
               isLoading={isLoading}

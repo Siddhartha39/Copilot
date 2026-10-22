@@ -49,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ({
       case 'overview':
         return 'Autonomous SOC Overview';
       case 'scanner':
-        return 'Zero-Trust Domain & Website Auditor';
+        return 'Live Security Scanner (Soft UI)';
       case 'email-scanner':
         return 'Email Phishing & Link Extraction';
       case 'bulk-scanner':
@@ -87,47 +87,61 @@ export const Header: React.FC<HeaderProps> = ({
         gap: '16px',
         position: 'relative',
         zIndex: 30,
-        background: 'transparent'
+        background: '#FFFDF5',
+        borderBottom: '4px solid #000000',
+        marginBottom: '20px'
       }}
     >
       {/* Left Area: Mobile Menu Button & Desktop Breadcrumb */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
         {/* Mobile Hamburger Toggle Button */}
         <motion.button
-          whileHover={{ translateY: -1 }}
-          whileTap={{ translateY: 0.5 }}
+          whileHover={{ translateY: -2, boxShadow: '4px 4px 0px 0px #000000' }}
+          whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '0px 0px 0px 0px #000000' }}
           onClick={onToggleMobileMenu}
-          className="lg:hidden glass-panel"
+          className="lg:hidden"
           style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '10px',
-            border: '1px solid var(--border-color)',
+            width: '42px',
+            height: '42px',
+            borderRadius: '0px',
+            border: '3px solid #000000',
+            background: '#FFD93D',
+            boxShadow: '3px 3px 0px 0px #000000',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            color: 'var(--text-primary)'
+            color: '#000000'
           }}
           aria-label="Toggle navigation menu"
         >
-          <Menu size={18} />
+          <Menu size={20} strokeWidth={2.8} />
         </motion.button>
 
         {/* Section Heading & Breadcrumb */}
         <div>
-          <div className="mono" style={{ fontSize: '0.7rem', color: 'var(--accent-cyan)', fontWeight: 800, letterSpacing: '0.06em' }}>
+          <div
+            style={{
+              fontSize: '0.72rem',
+              color: '#000000',
+              fontWeight: 900,
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              fontFamily: "'Space Grotesk', sans-serif"
+            }}
+          >
             CYBERGUARD AI // CONSOLE
           </div>
           <h2
-            className="cyber-font"
             style={{
-              fontSize: '1.2rem',
-              fontWeight: 800,
-              color: 'var(--text-primary)',
+              fontSize: '1.25rem',
+              fontWeight: 900,
+              color: '#000000',
               letterSpacing: '-0.02em',
               lineHeight: 1.2,
-              marginTop: '2px'
+              marginTop: '2px',
+              fontFamily: "'Space Grotesk', sans-serif",
+              textTransform: 'uppercase'
             }}
           >
             {getTabTitle(activeTab)}
@@ -140,18 +154,20 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Copilot AI Launcher */}
         {onOpenCopilot && (
           <motion.button
-            whileHover={{ translateY: -1 }}
-            whileTap={{ translateY: 0.5 }}
+            whileHover={{ translateY: -2, boxShadow: '5px 5px 0px 0px #000000' }}
+            whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '1px 1px 0px 0px #000000' }}
             onClick={onOpenCopilot}
-            className="glass-panel"
             style={{
-              padding: '8px 14px',
-              borderRadius: '10px',
-              border: '1px solid rgba(0, 240, 255, 0.35)',
-              background: 'rgba(0, 240, 255, 0.08)',
-              color: 'var(--accent-cyan)',
+              padding: '9px 16px',
+              borderRadius: '0px',
+              border: '3px solid #000000',
+              background: '#FF6B6B',
+              boxShadow: '3px 3px 0px 0px #000000',
+              color: '#000000',
               fontSize: '0.82rem',
-              fontWeight: 700,
+              fontWeight: 900,
+              fontFamily: "'Space Grotesk', sans-serif",
+              textTransform: 'uppercase',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -160,7 +176,7 @@ export const Header: React.FC<HeaderProps> = ({
             }}
             title="Open CyberGuard AI Copilot"
           >
-            <Bot size={16} color="var(--accent-cyan)" />
+            <Bot size={17} color="#000000" strokeWidth={2.6} />
             <span>Copilot AI</span>
           </motion.button>
         )}
@@ -168,17 +184,20 @@ export const Header: React.FC<HeaderProps> = ({
         {/* User Profile & Subscription / Sign In */}
         {(onOpenProfileModal || onOpenAuthModal) && (
           <motion.button
-            whileHover={{ translateY: -1 }}
-            whileTap={{ translateY: 0.5 }}
+            whileHover={{ translateY: -2, boxShadow: '5px 5px 0px 0px #000000' }}
+            whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '1px 1px 0px 0px #000000' }}
             onClick={onOpenProfileModal || onOpenAuthModal}
-            className="glass-panel"
             style={{
-              padding: '8px 14px',
-              borderRadius: '10px',
-              border: '1px solid var(--border-color)',
-              color: 'var(--text-primary)',
+              padding: '9px 16px',
+              borderRadius: '0px',
+              border: '3px solid #000000',
+              background: '#C4B5FD',
+              boxShadow: '3px 3px 0px 0px #000000',
+              color: '#000000',
               fontSize: '0.82rem',
-              fontWeight: 700,
+              fontWeight: 900,
+              fontFamily: "'Space Grotesk', sans-serif",
+              textTransform: 'uppercase',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -192,9 +211,9 @@ export const Header: React.FC<HeaderProps> = ({
             }
           >
             {currentUser?.plan === 'premium' ? (
-              <Crown size={15} color="#eab308" />
+              <Crown size={16} color="#000000" strokeWidth={2.6} />
             ) : (
-              <User size={15} color="var(--accent-cyan)" />
+              <User size={16} color="#000000" strokeWidth={2.6} />
             )}
             <span>
               {currentUser && currentUser.email && currentUser.email !== 'operator@cyberguard.ai'
@@ -208,11 +227,11 @@ export const Header: React.FC<HeaderProps> = ({
                 style={{
                   fontSize: '0.64rem',
                   padding: '2px 6px',
-                  borderRadius: '6px',
-                  background: currentUser.plan === 'premium' ? 'rgba(234, 179, 8, 0.15)' : 'rgba(0, 240, 255, 0.15)',
-                  border: currentUser.plan === 'premium' ? '1px solid rgba(234, 179, 8, 0.3)' : '1px solid rgba(0, 240, 255, 0.3)',
-                  color: currentUser.plan === 'premium' ? '#eab308' : 'var(--accent-cyan)',
-                  fontWeight: 800
+                  borderRadius: '0px',
+                  background: '#FFD93D',
+                  border: '1.5px solid #000000',
+                  color: '#000000',
+                  fontWeight: 900
                 }}
               >
                 {currentUser.plan === 'premium' ? 'PRO' : `${currentUser.credits ?? 50} CR`}
@@ -223,18 +242,20 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Discovery Feed Button */}
         <motion.button
-          whileHover={{ translateY: -1 }}
-          whileTap={{ translateY: 0.5 }}
+          whileHover={{ translateY: -2, boxShadow: '5px 5px 0px 0px #000000' }}
+          whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '1px 1px 0px 0px #000000' }}
           onClick={() => setActiveTab('discovery')}
-          className="glass-panel"
           style={{
-            padding: '8px 14px',
-            borderRadius: '10px',
-            border: activeTab === 'discovery' ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
-            background: activeTab === 'discovery' ? 'rgba(0, 240, 255, 0.12)' : 'transparent',
-            color: activeTab === 'discovery' ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+            padding: '9px 16px',
+            borderRadius: '0px',
+            border: '3px solid #000000',
+            background: activeTab === 'discovery' ? '#FFD93D' : '#FFFFFF',
+            boxShadow: '3px 3px 0px 0px #000000',
+            color: '#000000',
             fontSize: '0.82rem',
-            fontWeight: 700,
+            fontWeight: 900,
+            fontFamily: "'Space Grotesk', sans-serif",
+            textTransform: 'uppercase',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -242,22 +263,23 @@ export const Header: React.FC<HeaderProps> = ({
           }}
           title="Discovery Feed - Real-time Certificate Transparency stream"
         >
-          <Activity size={15} color={activeTab === 'discovery' ? 'var(--accent-cyan)' : 'var(--text-secondary)'} />
+          <Activity size={16} color="#000000" strokeWidth={2.6} />
           <span className="hidden sm:inline">Live Feed</span>
         </motion.button>
 
         {/* Theme Toggle Button */}
         <motion.button
-          whileHover={{ translateY: -1 }}
-          whileTap={{ translateY: 0.5 }}
+          whileHover={{ translateY: -2, boxShadow: '5px 5px 0px 0px #000000' }}
+          whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '1px 1px 0px 0px #000000' }}
           onClick={toggleTheme}
-          className="glass-panel"
           style={{
-            width: '38px',
-            height: '38px',
-            borderRadius: '10px',
-            border: '1px solid var(--border-color)',
-            color: 'var(--text-primary)',
+            width: '42px',
+            height: '42px',
+            borderRadius: '0px',
+            border: '3px solid #000000',
+            background: '#FFFFFF',
+            boxShadow: '3px 3px 0px 0px #000000',
+            color: '#000000',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -265,7 +287,7 @@ export const Header: React.FC<HeaderProps> = ({
           }}
           title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
         >
-          {theme === 'dark' ? <Sun size={16} color="#eab308" /> : <Moon size={16} color="#0284c7" />}
+          {theme === 'dark' ? <Sun size={18} color="#000000" strokeWidth={2.6} /> : <Moon size={18} color="#000000" strokeWidth={2.6} />}
         </motion.button>
       </div>
     </header>
