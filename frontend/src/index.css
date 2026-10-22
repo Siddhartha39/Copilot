@@ -29,6 +29,7 @@
   --neu-inset: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
   --neu-inset-sm: inset 2px 2px 5px rgba(163, 177, 198, 0.5), inset -2px -2px 5px rgba(255, 255, 255, 0.8);
   --neu-inset-deep: inset 6px 6px 12px rgba(163, 177, 198, 0.7), inset -6px -6px 12px rgba(255, 255, 255, 0.85);
+  --neu-code-bg: #D8DFE8;
 
   /* Global System Variable Aliases */
   --bg-primary: #FFFDF5;
@@ -124,6 +125,20 @@
   --hero-bg: #121212;
   --code-box-bg: #1A1A1A;
   --nav-bar-bg: #121212;
+
+  /* Neumorphism (Soft UI) Tokens for Dark Mode */
+  --neu-bg: #1B1E24;
+  --neu-foreground: #F1F5F9;
+  --neu-muted: #94A3B8;
+  --neu-accent: #818CF8;
+  --neu-accent-light: #A5B4FC;
+  --neu-accent-secondary: #2DD4BF;
+  --neu-extruded: 10px 10px 22px rgba(0, 0, 0, 0.65), -8px -8px 20px rgba(255, 255, 255, 0.045);
+  --neu-extruded-sm: 5px 5px 12px rgba(0, 0, 0, 0.6), -4px -4px 10px rgba(255, 255, 255, 0.045);
+  --neu-inset: inset 4px 4px 9px rgba(0, 0, 0, 0.7), inset -4px -4px 9px rgba(255, 255, 255, 0.045);
+  --neu-inset-sm: inset 2px 2px 5px rgba(0, 0, 0, 0.6), inset -2px -2px 5px rgba(255, 255, 255, 0.045);
+  --neu-inset-deep: inset 6px 6px 14px rgba(0, 0, 0, 0.8), inset -5px -5px 12px rgba(255, 255, 255, 0.05);
+  --neu-code-bg: #13151A;
 }
 
 * {
@@ -1305,21 +1320,94 @@ body.light-theme .copilot-window-body {
 
 /* =========================================================================
    NEOMORPHISM (SOFT UI) - EXCLUSIVE SCOPE FOR SCANNER PAGE ONLY
+   Supports Full Dual Theme: Soft Light Clay & Sleek Dark Slate Soft UI
 ========================================================================= */
+
+/* Default / Root Neumorphic Zone Styling */
 .neomorphic-scanner-zone {
   --neu-bg: #E0E5EC;
-  --neu-foreground: #3D4852;
-  --neu-muted: #6B7280;
+  --neu-foreground: #2D3748;
+  --neu-muted: #718096;
   --neu-accent: #6C63FF;
+  --neu-accent-light: #8B84FF;
+  --neu-accent-secondary: #38B2AC;
+  --neu-extruded: 10px 10px 20px rgba(163, 177, 198, 0.6), -10px -10px 20px rgba(255, 255, 255, 0.8);
+  --neu-extruded-sm: 5px 5px 10px rgba(163, 177, 198, 0.5), -5px -5px 10px rgba(255, 255, 255, 0.8);
+  --neu-inset: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+  --neu-inset-sm: inset 2px 2px 5px rgba(163, 177, 198, 0.5), inset -2px -2px 5px rgba(255, 255, 255, 0.8);
+  --neu-inset-deep: inset 6px 6px 12px rgba(163, 177, 198, 0.7), inset -6px -6px 12px rgba(255, 255, 255, 0.85);
+  --neu-code-bg: #D8DFE8;
   
-  background: #E0E5EC !important;
-  color: #3D4852 !important;
+  background: var(--neu-bg) !important;
+  color: var(--neu-foreground) !important;
   border-radius: 32px !important;
   padding: 24px !important;
   margin: 0 20px 40px 20px !important;
-  box-shadow: 10px 10px 20px rgba(163, 177, 198, 0.6), -10px -10px 20px rgba(255, 255, 255, 0.8) !important;
+  box-shadow: var(--neu-extruded) !important;
   border: none !important;
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+
+  /* Scoped token overrides for embedded child components */
+  --bg-card: var(--neu-bg);
+  --bg-secondary: var(--neu-bg);
+  --text-primary: var(--neu-foreground);
+  --text-secondary: var(--neu-muted);
+  --text-muted: var(--neu-muted);
+  --code-box-bg: var(--neu-code-bg);
+  --border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Explicit Light Theme for Scanner Zone */
+[data-theme="light"] .neomorphic-scanner-zone,
+.neomorphic-scanner-zone[data-theme="light"],
+body.light-theme .neomorphic-scanner-zone {
+  --neu-bg: #E0E5EC;
+  --neu-foreground: #2D3748;
+  --neu-muted: #718096;
+  --neu-accent: #6C63FF;
+  --neu-accent-light: #8B84FF;
+  --neu-accent-secondary: #38B2AC;
+  --neu-extruded: 10px 10px 20px rgba(163, 177, 198, 0.6), -10px -10px 20px rgba(255, 255, 255, 0.8);
+  --neu-extruded-sm: 5px 5px 10px rgba(163, 177, 198, 0.5), -5px -5px 10px rgba(255, 255, 255, 0.8);
+  --neu-inset: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+  --neu-inset-sm: inset 2px 2px 5px rgba(163, 177, 198, 0.5), inset -2px -2px 5px rgba(255, 255, 255, 0.8);
+  --neu-inset-deep: inset 6px 6px 12px rgba(163, 177, 198, 0.7), inset -6px -6px 12px rgba(255, 255, 255, 0.85);
+  --neu-code-bg: #D8DFE8;
+
+  --bg-card: var(--neu-bg);
+  --bg-secondary: var(--neu-bg);
+  --text-primary: var(--neu-foreground);
+  --text-secondary: var(--neu-muted);
+  --text-muted: var(--neu-muted);
+  --code-box-bg: var(--neu-code-bg);
+  --border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Explicit Dark Theme for Scanner Zone (Sleek Dark Slate Neumorphic Surface) */
+[data-theme="dark"] .neomorphic-scanner-zone,
+.neomorphic-scanner-zone[data-theme="dark"],
+body:not(.light-theme) .neomorphic-scanner-zone {
+  --neu-bg: #1B1E24;
+  --neu-foreground: #F1F5F9;
+  --neu-muted: #94A3B8;
+  --neu-accent: #818CF8;
+  --neu-accent-light: #A5B4FC;
+  --neu-accent-secondary: #2DD4BF;
+  --neu-extruded: 10px 10px 22px rgba(0, 0, 0, 0.65), -8px -8px 20px rgba(255, 255, 255, 0.045);
+  --neu-extruded-sm: 5px 5px 12px rgba(0, 0, 0, 0.6), -4px -4px 10px rgba(255, 255, 255, 0.045);
+  --neu-inset: inset 4px 4px 9px rgba(0, 0, 0, 0.7), inset -4px -4px 9px rgba(255, 255, 255, 0.045);
+  --neu-inset-sm: inset 2px 2px 5px rgba(0, 0, 0, 0.6), inset -2px -2px 5px rgba(255, 255, 255, 0.045);
+  --neu-inset-deep: inset 6px 6px 14px rgba(0, 0, 0, 0.8), inset -5px -5px 12px rgba(255, 255, 255, 0.05);
+  --neu-code-bg: #13151A;
+
+  --bg-card: var(--neu-bg);
+  --bg-secondary: var(--neu-bg);
+  --text-primary: var(--neu-foreground);
+  --text-secondary: var(--neu-muted);
+  --text-muted: var(--neu-muted);
+  --code-box-bg: var(--neu-code-bg);
+  --border-color: rgba(255, 255, 255, 0.08);
 }
 
 .neomorphic-scanner-zone * {
@@ -1331,7 +1419,7 @@ body.light-theme .copilot-window-body {
 .neomorphic-scanner-zone h3,
 .neomorphic-scanner-zone h4 {
   font-family: 'Plus Jakarta Sans', sans-serif !important;
-  color: #3D4852 !important;
+  color: var(--neu-foreground) !important;
   font-weight: 800 !important;
 }
 
@@ -1339,30 +1427,42 @@ body.light-theme .copilot-window-body {
   font-family: 'JetBrains Mono', monospace !important;
 }
 
-/* Neutralize Neo-brutalism inside the Scanner Zone */
+/* Neutralize Neo-brutalism inside the Scanner Zone and apply pure Soft Neumorphism */
 .neomorphic-scanner-zone .glass-panel {
-  background: #E0E5EC !important;
+  background: var(--neu-bg) !important;
   border: none !important;
   border-radius: 28px !important;
-  box-shadow: 8px 8px 16px rgba(163, 177, 198, 0.6), -8px -8px 16px rgba(255, 255, 255, 0.8) !important;
-  color: #3D4852 !important;
+  box-shadow: var(--neu-extruded) !important;
+  color: var(--neu-foreground) !important;
 }
 
 .neomorphic-scanner-zone input {
-  background: #E0E5EC !important;
+  background: var(--neu-code-bg, var(--neu-bg)) !important;
   border: none !important;
-  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.8) !important;
+  box-shadow: var(--neu-inset) !important;
   border-radius: 20px !important;
-  color: #3D4852 !important;
+  color: var(--neu-foreground) !important;
   outline: none !important;
 }
 
 .neomorphic-scanner-zone input::placeholder {
-  color: #9CA3AF !important;
+  color: var(--neu-muted) !important;
+  opacity: 0.8;
+}
+
+.neomorphic-scanner-zone select {
+  background: var(--neu-bg) !important;
+  color: var(--neu-foreground) !important;
+  border: none !important;
+  box-shadow: var(--neu-inset-sm) !important;
+}
+
+.neomorphic-scanner-zone select option {
+  background: var(--neu-bg) !important;
+  color: var(--neu-foreground) !important;
 }
 
 .neomorphic-scanner-zone button {
-  box-shadow: 5px 5px 10px rgba(163, 177, 198, 0.5), -5px -5px 10px rgba(255, 255, 255, 0.8);
   border-radius: 16px;
   border: none !important;
   transition: all 0.2s ease;
@@ -1370,25 +1470,27 @@ body.light-theme .copilot-window-body {
 
 .neomorphic-scanner-zone pre,
 .neomorphic-scanner-zone code {
-  background: #E0E5EC !important;
+  background: var(--neu-code-bg) !important;
   border: none !important;
-  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.8) !important;
+  box-shadow: var(--neu-inset) !important;
   border-radius: 16px !important;
-  color: #2563EB !important;
+  color: var(--neu-accent, #818CF8) !important;
 }
 
 .neomorphic-scanner-zone .neu-well {
-  background: #E0E5EC !important;
-  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6), inset -4px -4px 8px rgba(255, 255, 255, 0.8) !important;
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-inset) !important;
   border: none !important;
   border-radius: 20px !important;
+  color: var(--neu-foreground) !important;
 }
 
 .neomorphic-scanner-zone .neu-pill {
-  background: #E0E5EC !important;
-  box-shadow: inset 2px 2px 5px rgba(163, 177, 198, 0.5), inset -2px -2px 5px rgba(255, 255, 255, 0.8) !important;
+  background: var(--neu-bg) !important;
+  box-shadow: var(--neu-inset-sm) !important;
   border: none !important;
   border-radius: 9999px !important;
+  color: var(--neu-foreground) !important;
 }
 
 

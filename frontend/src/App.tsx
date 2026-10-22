@@ -524,7 +524,7 @@ export function App() {
 
         {/* Page 2: Live Security Scanner & Embedded Results -> NEOMORPHISM (Soft UI) ONLY */}
         {activeTab === 'scanner' && (
-          <div className="neomorphic-scanner-zone">
+          <div className="neomorphic-scanner-zone" data-theme={theme}>
             <Scanner
               onScan={handleScan}
               isLoading={isLoading}
