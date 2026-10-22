@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   Zap,
   Cpu,
+  Coins,
   Search,
   LayoutGrid,
   Sparkles
@@ -29,12 +30,13 @@ export interface LandingPageProps {
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
-  theme = 'light',
+  theme = 'dark',
   onLaunchScanner,
   onOpenExtension,
   onOpenDiscovery,
   onScanUrl
 }) => {
+  const isLight = theme === 'light';
   const [quickUrl, setQuickUrl] = useState('');
   const [activePipelineStep, setActivePipelineStep] = useState<number>(0);
   const [cardViewMode, setCardViewMode] = useState<'stack' | 'grid'>('stack');
@@ -71,7 +73,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       step: 1,
       name: 'Lexical Triage',
       badge: '< 10ms',
-      color: '#6C63FF',
+      color: '#00f0ff',
       summary: 'Entropy calculation, Punycode / IDN detection, hyphen clustering, and suspicious TLD classification.',
       detail: 'Instantly tokenizes the input URL across 45 lexical dimensions. Flags excessive subdomain depth, known phishing keywords ("login", "verify", "secure", "billing"), and high Shannon entropy.'
     },
@@ -79,7 +81,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       step: 2,
       name: 'Google DoH & RDAP',
       badge: 'DNS / IP',
-      color: '#38B2AC',
+      color: '#3b82f6',
       summary: 'Direct DNS-over-HTTPS resolution, autonomous system (ASN) mapping, and registrar creation age lookup.',
       detail: 'Queries Google Cloud DoH resolvers and IANA RDAP feeds. Flags Newly Registered Domains (< 30 days) and high-risk bulletproof hosting infrastructure.'
     },
@@ -87,7 +89,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       step: 3,
       name: 'SSL/TLS & Posture',
       badge: 'HARDENING',
-      color: '#10B981',
+      color: '#00ff88',
       summary: 'Certificate Transparency log validation, HSTS, CSP, X-Frame-Options, and SPF/DMARC spoofing resistance.',
       detail: 'Audits defensive header policies to compute an exploitability grade (A+ through F). Checks if the domain is vulnerable to Clickjacking or email impersonation.'
     },
@@ -95,7 +97,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       step: 4,
       name: 'Playwright Sandbox',
       badge: 'DOM CRAWL',
-      color: '#F59E0B',
+      color: '#f59e0b',
       summary: 'Headless browser execution capturing DOM elements, password submission hooks, and redirect hops.',
       detail: 'Renders the target in an isolated sandbox. Detects credential harvesting input fields (<input type="password">), external exfiltration action URLs, and anti-analysis cloaking.'
     },
@@ -103,7 +105,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       step: 5,
       name: 'pHash Brand Vision',
       badge: 'LOGO AI',
-      color: '#EF4444',
+      color: '#ef4444',
       summary: 'Perceptual hashing (pHash) and visual logo matching comparing rendered page to verified brand catalog.',
       detail: 'Identifies brand visual assets (PayPal, Apple, Microsoft, Chase, Steam). Flags critical Brand-Domain Contradiction when trusted logos are hosted on unauthorized domains.'
     },
@@ -111,7 +113,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       step: 6,
       name: 'Multi-Signal Fusion & AI Reasoning',
       badge: '0-100 VECTOR',
-      color: '#8B5CF6',
+      color: '#c084fc',
       summary: 'Platt-scaled calibrated probability scoring fused with autonomous AI threat intelligence.',
       detail: 'Aggregates all 5 forensic vectors into a unified calibrated threat score with full attack-chain evidence, zero-trust telemetry, and instant 1-click remediation blueprints.'
     }
@@ -125,9 +127,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       subtitle: 'Visual & Identity Verification',
       badge: 'PROPRIETARY',
       description: 'Detects when a page imitates the logos and visual identity of trusted brands (e.g. PayPal, Apple, Microsoft, Chase) while operating on an unauthorized, deceptive domain.',
-      icon: <AlertTriangle size={24} color="#EF4444" />,
-      accentColor: '#EF4444',
+      iconDark: <AlertTriangle size={24} color="#f87171" />,
+      iconLight: <AlertTriangle size={24} color="#dc2626" />,
+      iconBgDark: 'rgba(239, 68, 68, 0.15)',
+      iconBgLight: '#fee2e2',
+      iconBorderDark: 'rgba(239, 68, 68, 0.4)',
+      iconBorderLight: '#fca5a5',
+      glowColorDark: 'rgba(239, 68, 68, 0.25)',
       quote: '"Imitates Bank of America, but domain is unauthorized .xyz"',
+      quoteColorDark: '#fca5a5',
+      quoteColorLight: '#991b1b',
+      quoteBgLight: '#fef2f2',
+      quoteBorderDark: '#ef4444',
+      quoteBorderLight: '#dc2626',
+      subtitleColorDark: '#f87171',
+      subtitleColorLight: '#b91c1c',
       tags: ['pHash 64-bit DCT', 'Visual Logo Catalog', 'Domain Impersonation', 'Brand Spoof Guard'],
       tooltip: {
         title: 'Brand-Domain Contradiction',
@@ -143,9 +157,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       subtitle: '7-Stage Forensic Path',
       badge: 'FORENSICS',
       description: 'Reconstructs a step-by-step forensic graph linking Ingress → DNS Infrastructure → Redirects → Landing DOM → Credential Forms → Exfiltration channels.',
-      icon: <GitCommit size={24} color="#3B82F6" />,
-      accentColor: '#3B82F6',
+      iconDark: <GitCommit size={24} color="#38bdf8" />,
+      iconLight: <GitCommit size={24} color="#0284c7" />,
+      iconBgDark: 'rgba(56, 189, 248, 0.15)',
+      iconBgLight: '#e0f2fe',
+      iconBorderDark: 'rgba(56, 189, 248, 0.4)',
+      iconBorderLight: '#bae6fd',
+      glowColorDark: 'rgba(56, 189, 248, 0.25)',
       quote: 'Step 1 (Ingress) → Step 5 (Credential Hook) → Step 7 (Verdict)',
+      quoteColorDark: '#7dd3fc',
+      quoteColorLight: '#0369a1',
+      quoteBgLight: '#f0f9ff',
+      quoteBorderDark: '#38bdf8',
+      quoteBorderLight: '#0284c7',
+      subtitleColorDark: '#38bdf8',
+      subtitleColorLight: '#0284c7',
       tags: ['Ingress Link', 'Google DoH DNS', 'HTTP Redirect Bounces', 'Credential Form Traps'],
       tooltip: {
         title: '7-Stage Attack Chain Reconstruction',
@@ -161,9 +187,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       subtitle: '0-100 Probability Vector',
       badge: 'ML CALIBRATION',
       description: 'Fuses 5 independent vectors: Lexical ML features, Domain Age & DNS, DOM password forms, Visual Brand confidence, and Threat Intel into a unified 0–100 risk score.',
-      icon: <Layers size={24} color="#6C63FF" />,
-      accentColor: '#6C63FF',
+      iconDark: <Layers size={24} color="#60a5fa" />,
+      iconLight: <Layers size={24} color="#2563eb" />,
+      iconBgDark: 'rgba(59, 130, 246, 0.15)',
+      iconBgLight: '#eff6ff',
+      iconBorderDark: 'rgba(59, 130, 246, 0.4)',
+      iconBorderLight: '#bfdbfe',
+      glowColorDark: 'rgba(59, 130, 246, 0.25)',
       quote: 'Weighted contribution breakdown (+/- pts) for every signal',
+      quoteColorDark: '#86efac',
+      quoteColorLight: '#166534',
+      quoteBgLight: '#f0fdf4',
+      quoteBorderDark: '#22c55e',
+      quoteBorderLight: '#16a34a',
+      subtitleColorDark: '#4ade80',
+      subtitleColorLight: '#15803d',
       tags: ['24-D Lexical Tensor', 'Platt Scaling Calibration', 'Shannon Entropy', 'Point Scoring Breakdown'],
       tooltip: {
         title: 'Calibrated Risk Scoring (0–100)',
@@ -179,9 +217,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       subtitle: 'Defensive Posture Rating',
       badge: 'WEBSITE DEFENSE',
       description: 'Website owners can check their own domain defense posture: Clickjacking immunity (X-Frame-Options), Email spoofing resistance (SPF/DMARC), CSP, and HSTS.',
-      icon: <Lock size={24} color="#10B981" />,
-      accentColor: '#10B981',
+      iconDark: <Lock size={24} color="#4ade80" />,
+      iconLight: <Lock size={24} color="#16a34a" />,
+      iconBgDark: 'rgba(34, 197, 94, 0.15)',
+      iconBgLight: '#f0fdf4',
+      iconBorderDark: 'rgba(34, 197, 94, 0.4)',
+      iconBorderLight: '#bbf7d0',
+      glowColorDark: 'rgba(34, 197, 94, 0.25)',
       quote: 'Security Grades (A+ to F) + Actionable Developer Fixes',
+      quoteColorDark: '#fde047',
+      quoteColorLight: '#854d0e',
+      quoteBgLight: '#fffbeb',
+      quoteBorderDark: '#eab308',
+      quoteBorderLight: '#d97706',
+      subtitleColorDark: '#fbbf24',
+      subtitleColorLight: '#b45309',
       actionText: 'Audit Your Own Domain',
       onAction: onLaunchScanner,
       tags: ['HSTS & CSP Headers', 'Clickjacking Immune', 'SPF/DMARC Spoof Defense', 'Executive Security Grade'],
@@ -199,9 +249,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       subtitle: 'High-Throughput Early-Warning',
       badge: 'STREAM FEED',
       description: 'High-throughput early-warning stream prioritizing unknown candidates hitting DNS logs and Certificate Transparency feeds before phishing campaigns go viral.',
-      icon: <Activity size={24} color="#F59E0B" />,
-      accentColor: '#F59E0B',
+      iconDark: <Activity size={24} color="#fb923c" />,
+      iconLight: <Activity size={24} color="#ea580c" />,
+      iconBgDark: 'rgba(249, 115, 22, 0.15)',
+      iconBgLight: '#fff7ed',
+      iconBorderDark: 'rgba(249, 115, 22, 0.4)',
+      iconBorderLight: '#fed7aa',
+      glowColorDark: 'rgba(249, 115, 22, 0.25)',
       quote: '< 10ms lexical triage + one-click escalation sandbox',
+      quoteColorDark: '#fdba74',
+      quoteColorLight: '#9a3412',
+      quoteBgLight: '#fff7ed',
+      quoteBorderDark: '#f97316',
+      quoteBorderLight: '#ea580c',
+      subtitleColorDark: '#fb923c',
+      subtitleColorLight: '#c2410c',
       actionText: 'Explore NRD Stream',
       onAction: onOpenDiscovery,
       tags: ['CertStream Feed', '< 30d Quarantine', 'Sub-10ms Triage', 'Playwright Sandbox Escalation'],
@@ -219,9 +281,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       subtitle: 'Endpoint Client Protection',
       badge: 'ENDPOINT AGENT',
       description: 'Manifest V3 sidecar auditing active tabs in real-time. Displays threat warning banners, visual trust gauges, and seamless 1-click inspection routing.',
-      icon: <Puzzle size={24} color="#8B5CF6" />,
-      accentColor: '#8B5CF6',
+      iconDark: <Puzzle size={24} color="#c084fc" />,
+      iconLight: <Puzzle size={24} color="#9333ea" />,
+      iconBgDark: 'rgba(192, 132, 252, 0.15)',
+      iconBgLight: '#faf5ff',
+      iconBorderDark: 'rgba(192, 132, 252, 0.4)',
+      iconBorderLight: '#e9d5ff',
+      glowColorDark: 'rgba(192, 132, 252, 0.25)',
       quote: 'Active browser background monitoring & instant badge telemetry',
+      quoteColorDark: '#d8b4fe',
+      quoteColorLight: '#581c87',
+      quoteBgLight: '#faf5ff',
+      quoteBorderDark: '#a855f7',
+      quoteBorderLight: '#9333ea',
+      subtitleColorDark: '#c084fc',
+      subtitleColorLight: '#7e22ce',
       actionText: 'Download Extension',
       onAction: onOpenExtension,
       tags: ['Manifest V3 Sidecar', 'Silent Tab Audit', 'Visual Trust Gauge', 'Instant Deep-Dive Routing'],
@@ -257,129 +331,100 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   };
 
   return (
-    <div style={{ padding: '0 28px 48px 28px', maxWidth: '1360px', margin: '0 auto', fontFamily: "'DM Sans', sans-serif" }}>
-      {/* 1. Live Threat Intelligence Marquee Ticker -> Neumorphic Soft Inset Track */}
+    <div style={{ padding: '0 24px 48px 24px', maxWidth: '1360px', margin: '0 auto' }}>
+      {/* 1. Live Threat Intelligence Marquee Ticker */}
       <div
+        className="glass-panel"
         style={{
-          marginBottom: '28px',
-          padding: '12px 20px',
+          marginBottom: '24px',
+          padding: '10px 16px',
           overflow: 'hidden',
-          borderRadius: '24px',
+          borderRadius: '10px',
           display: 'flex',
           alignItems: 'center',
-          gap: '16px',
-          background: 'var(--neu-bg, #E0E5EC)',
-          boxShadow: 'var(--neu-inset)',
-          border: 'none'
+          gap: '12px',
+          background: 'rgba(13, 19, 31, 0.75)',
+          border: '1px solid rgba(56, 189, 248, 0.2)'
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            flexShrink: 0,
-            background: 'var(--neu-bg, #E0E5EC)',
-            color: 'var(--neu-foreground, #3D4852)',
-            padding: '6px 14px',
-            borderRadius: '9999px',
-            boxShadow: 'var(--neu-extruded-sm)'
-          }}
-        >
-          <span
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: '#10B981',
-              display: 'inline-block',
-              boxShadow: '0 0 8px rgba(16, 185, 129, 0.6)'
-            }}
-          />
-          <span
-            style={{
-              fontSize: '0.74rem',
-              fontWeight: 800,
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              color: 'var(--neu-foreground, #3D4852)'
-            }}
-          >
-            LIVE TELEMETRY
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+          <span className="cyber-beacon" style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444', display: 'inline-block' }}></span>
+          <span className="cyber-font mono" style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--accent-cyan)', letterSpacing: '0.05em' }}>
+            LIVE THREAT TELEMETRY
           </span>
         </div>
 
         <div style={{ overflow: 'hidden', width: '100%', position: 'relative' }}>
           <div className="ticker-track">
+            {/* Ticker items loop */}
             {[1, 2].map((loopIdx) => (
-              <div key={loopIdx} style={{ display: 'flex', alignItems: 'center', gap: '32px', paddingRight: '32px' }}>
-                <span style={{ fontSize: '0.82rem', color: 'var(--neu-foreground, #3D4852)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <ShieldAlert size={15} color="#EF4444" />
-                  <span>INTERCEPTED: <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>login-paypal-security-verification.xyz</span> (Risk: 94.8 | Phish)</span>
+              <div key={loopIdx} style={{ display: 'flex', alignItems: 'center', gap: '28px', paddingRight: '28px' }}>
+                <span className="mono" style={{ fontSize: '0.74rem', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <ShieldAlert size={13} />
+                  <span>INTERCEPTED: login-paypal-security-verification.xyz (Risk: 94.8 | Phish)</span>
                 </span>
-                <span style={{ color: 'var(--neu-muted, #6B7280)', opacity: 0.5 }}>•</span>
-                <span style={{ fontSize: '0.82rem', color: 'var(--neu-foreground, #3D4852)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <ShieldCheck size={15} color="#10B981" />
-                  <span>VERIFIED HARDENED: <span style={{ fontFamily: "'JetBrains Mono', monospace" }}>github.com</span> (Score: 2.1 | A+ Posture)</span>
+                <span style={{ color: 'var(--border-color)' }}>•</span>
+                <span className="mono" style={{ fontSize: '0.74rem', color: '#00ff88', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <ShieldCheck size={13} />
+                  <span>VERIFIED HARDENED: github.com (Score: 2.1 | A+ Posture)</span>
                 </span>
-                <span style={{ color: 'var(--neu-muted, #6B7280)', opacity: 0.5 }}>•</span>
-                <span style={{ fontSize: '0.82rem', color: 'var(--neu-foreground, #3D4852)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Zap size={15} color="#6C63FF" />
-                  <span>ZERO-TRUST SOC: Multi-Signal Deep Forensics &amp; Brand Vision Active</span>
+                <span style={{ color: 'var(--border-color)' }}>•</span>
+                <span className="mono" style={{ fontSize: '0.74rem', color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Zap size={13} />
+                  <span>ZERO-TRUST SOC: Multi-Signal Deep Forensics &amp; Brand Vision Active (100% Free)</span>
                 </span>
-                <span style={{ color: 'var(--neu-muted, #6B7280)', opacity: 0.5 }}>•</span>
-                <span style={{ fontSize: '0.82rem', color: 'var(--neu-foreground, #3D4852)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Activity size={15} color="#38B2AC" />
+                <span style={{ color: 'var(--border-color)' }}>•</span>
+                <span className="mono" style={{ fontSize: '0.74rem', color: '#f59e0b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Activity size={13} />
                   <span>CERTSTREAM INGEST: 4,820 NRD candidates triaged in &lt;10ms</span>
                 </span>
-                <span style={{ color: 'var(--neu-muted, #6B7280)', opacity: 0.5 }}>•</span>
+                <span style={{ color: 'var(--border-color)' }}>•</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* 2. Hero Section -> Soft Raised Neumorphic Island */}
+      {/* 2. Hero Section with Staggered Framer Motion Animations */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="glass-panel"
         style={{
-          padding: '56px 36px 44px 36px',
-          marginBottom: '40px',
-          background: 'var(--neu-bg, #E0E5EC)',
-          borderRadius: '32px',
-          boxShadow: 'var(--neu-extruded)',
-          border: 'none',
+          padding: '48px 32px 36px 32px',
+          marginBottom: '32px',
+          background: 'var(--hero-bg)',
+          border: '1px solid var(--border-color)',
           textAlign: 'center',
           position: 'relative',
           overflow: 'hidden'
         }}
       >
-        {/* Soft Inset Badge */}
+        {/* Hacker Badge with Pulsing Ping */}
         <motion.div
-          initial={{ scale: 0.95, opacity: 0 }}
+          initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            background: 'var(--neu-bg, #E0E5EC)',
-            borderRadius: '9999px',
-            boxShadow: 'var(--neu-inset-sm)',
-            padding: '7px 20px',
-            fontSize: '0.78rem',
-            color: 'var(--neu-accent, #6C63FF)',
+            background: 'rgba(0, 240, 255, 0.12)',
+            border: '1px solid var(--border-color)',
+            borderRadius: '24px',
+            padding: '6px 18px',
+            fontSize: '0.76rem',
+            color: 'var(--accent-cyan)',
             fontWeight: 800,
-            letterSpacing: '0.05em',
-            marginBottom: '26px',
-            fontFamily: "'Plus Jakarta Sans', sans-serif"
+            letterSpacing: '0.08em',
+            marginBottom: '20px',
+            flexWrap: 'wrap',
+            justifyContent: 'center'
           }}
         >
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--neu-accent, #6C63FF)', display: 'inline-block', boxShadow: '0 0 8px rgba(108, 99, 255, 0.5)' }} />
-          <span>CYBER COMMAND TERMINAL // CORE V2.0</span>
+          <span className="cyber-beacon" style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent-green)', display: 'inline-block' }}></span>
+          <span className="mono cyber-font">CYBER COMMAND TERMINAL // CORE V2.0</span>
           <InfoTooltip
             title="Cyber Command Core V2.0"
             description="Antigravity-engineered zero-trust cybersecurity operating environment running real-time ML pipelines, live WHOIS RDAP resolvers, and multi-modal brand vision."
@@ -387,227 +432,208 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           />
         </motion.div>
 
-        {/* Main Headline */}
+        {/* Main Headline with High-Impact Gradient Typography (Matches Image 2) */}
         <motion.h1
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
           style={{
-            maxWidth: '1020px',
-            margin: '0 auto 20px auto',
-            lineHeight: 1.15,
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
-            fontWeight: 800,
-            letterSpacing: '-0.03em'
+            maxWidth: '1000px',
+            margin: '0 auto 16px auto',
+            lineHeight: 1.15
           }}
         >
+          <span
+            className="hero-gradient-text"
+            style={{
+              display: 'block',
+              fontSize: 'clamp(2.4rem, 6.2vw, 4.4rem)',
+              fontWeight: 900,
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              lineHeight: 1.12,
+              marginBottom: '4px'
+            }}
+          >
+            NEXT EVOLUTION
+          </span>
           <span
             style={{
               display: 'block',
-              fontSize: 'clamp(2.4rem, 5.5vw, 4.4rem)',
-              color: 'var(--neu-foreground, #3D4852)'
+              fontSize: 'clamp(2.4rem, 6.2vw, 4.4rem)',
+              fontWeight: 900,
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              lineHeight: 1.12,
+              color: isLight ? '#0f172a' : '#f8fafc'
             }}
           >
-            NEXT EVOLUTION OF
-          </span>
-          <span
-            style={{
-              display: 'inline-block',
-              fontSize: 'clamp(2.4rem, 5.5vw, 4.4rem)',
-              background: 'linear-gradient(135deg, #6C63FF 0%, #38B2AC 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              marginTop: '4px'
-            }}
-          >
-            AUTONOMOUS CYBER DEFENSE
+            OF CYBER DEFENSE.
           </span>
         </motion.h1>
 
-        {/* Subtitle */}
+        {/* Subtitle (Matches Image 2) */}
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.26 }}
+          transition={{ duration: 0.5, delay: 0.28 }}
           style={{
-            fontSize: 'clamp(1.05rem, 2vw, 1.22rem)',
-            color: 'var(--neu-muted, #6B7280)',
+            fontSize: 'clamp(1rem, 2.2vw, 1.2rem)',
+            color: isLight ? '#475569' : 'var(--text-secondary)',
             maxWidth: '760px',
-            margin: '0 auto 36px auto',
+            margin: '0 auto 30px auto',
             lineHeight: 1.6,
-            fontWeight: 500,
-            fontFamily: "'DM Sans', sans-serif"
+            fontWeight: 450
           }}
         >
-          Where human cybersecurity intelligence meets sub-second machine speed. Discover next-generation zero-trust defense, real-time phishing forensics, and autonomous threat mitigation.
+          Where human intelligence meets machine speed. Discover next-generation zero-trust defense, real-time phishing forensics, and autonomous threat mitigation.
         </motion.p>
 
-        {/* Hero Action Buttons */}
+        {/* Hero Pill Action Buttons (Matches Image 2) */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.32 }}
-          style={{ display: 'flex', justifyContent: 'center', gap: '18px', flexWrap: 'wrap', marginBottom: '40px' }}
+          transition={{ duration: 0.5, delay: 0.35 }}
+          className="hero-action-buttons"
+          style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '34px' }}
         >
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.04, y: -2 }}
+            whileTap={{ scale: 0.97 }}
             onClick={onLaunchScanner}
+            className="hero-pill-btn-primary"
             style={{
-              borderRadius: '16px',
+              borderRadius: '9999px',
               padding: '14px 34px',
-              fontSize: '0.96rem',
-              fontWeight: 800,
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: '1rem',
+              fontWeight: 700,
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '10px',
-              border: 'none',
-              background: 'linear-gradient(135deg, #6C63FF 0%, #8B84FF 100%)',
-              color: '#ffffff',
-              boxShadow: '6px 6px 16px rgba(108, 99, 255, 0.4), -6px -6px 16px rgba(255, 255, 255, 0.8)'
+              gap: '10px'
             }}
           >
-            <Zap size={18} />
-            <span>Launch Live Scanner</span>
-            <ArrowRight size={18} />
+            <Zap size={19} color="#ffffff" />
+            <span>Explore Technology</span>
+            <ArrowRight size={19} color="#ffffff" />
           </motion.button>
 
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.04, y: -2 }}
+            whileTap={{ scale: 0.97 }}
             onClick={onOpenExtension}
+            className="hero-pill-btn-secondary"
             style={{
-              borderRadius: '16px',
+              borderRadius: '9999px',
               padding: '14px 32px',
-              fontSize: '0.96rem',
-              fontWeight: 800,
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: '1rem',
+              fontWeight: 700,
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '10px',
-              border: 'none',
-              background: 'var(--neu-bg, #E0E5EC)',
-              color: 'var(--neu-foreground, #3D4852)',
-              boxShadow: 'var(--neu-extruded)'
+              gap: '10px'
             }}
           >
-            <Sparkles size={18} color="#6C63FF" />
-            <span>Get Chrome Extension</span>
+            <Sparkles size={19} color={isLight ? '#9333ea' : '#c084fc'} />
+            <span>Discover the Future</span>
           </motion.button>
         </motion.div>
 
-        {/* Interactive Quick-Audit Search Bar -> Deep Inset Well */}
+        {/* Interactive Quick-Audit Search Bar (Styled with sleek standalone pill) */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
+          initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4, delay: 0.38 }}
+          transition={{ duration: 0.45, delay: 0.4 }}
           style={{
-            maxWidth: '780px',
-            margin: '0 auto 30px auto'
+            maxWidth: '760px',
+            margin: '0 auto 28px auto'
           }}
         >
           <form
             onSubmit={handleQuickSubmit}
             style={{
-              background: 'var(--neu-bg, #E0E5EC)',
-              boxShadow: 'var(--neu-inset-deep)',
-              borderRadius: '24px',
-              padding: '8px 10px 8px 20px',
+              background: isLight ? '#ffffff' : 'var(--bg-card)',
+              border: isLight ? '1.5px solid #cbd5e1' : '1px solid rgba(56, 189, 248, 0.4)',
+              borderRadius: '9999px',
+              padding: '7px 8px 7px 20px',
+              boxShadow: isLight
+                ? '0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04)'
+                : '0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 240, 255, 0.12)',
               display: 'flex',
-              gap: '12px',
-              alignItems: 'center',
-              border: 'none'
+              gap: '10px',
+              alignItems: 'center'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--neu-accent, #6C63FF)' }}>
-              <Search size={20} />
+            <div style={{ display: 'flex', alignItems: 'center', color: 'var(--accent-cyan)' }}>
+              <Search size={19} />
             </div>
             <input
               type="text"
               value={quickUrl}
               onChange={(e) => setQuickUrl(e.target.value)}
               placeholder="Enter domain or link (e.g. login-paypal-security-verification.xyz)"
+              className="mono"
               style={{
                 flex: 1,
                 background: 'transparent',
                 border: 'none',
-                color: 'var(--neu-foreground, #3D4852)',
-                fontSize: '0.95rem',
-                fontFamily: "'DM Sans', sans-serif",
-                fontWeight: 600,
+                color: 'var(--text-primary)',
+                fontSize: '0.92rem',
                 outline: 'none',
                 padding: '8px 4px'
               }}
             />
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               type="submit"
               style={{
-                background: 'linear-gradient(135deg, #6C63FF 0%, #8B84FF 100%)',
+                background: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)',
                 color: '#ffffff',
                 border: 'none',
-                borderRadius: '16px',
-                padding: '12px 26px',
-                fontWeight: 800,
-                fontSize: '0.88rem',
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                borderRadius: '9999px',
+                padding: '11px 24px',
+                fontWeight: 700,
+                fontSize: '0.86rem',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
-                boxShadow: '4px 4px 12px rgba(108, 99, 255, 0.35)',
+                gap: '6px',
+                boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)',
                 flexShrink: 0
               }}
             >
-              <Radar size={18} />
+              <Radar size={16} />
               <span>Audit Target</span>
             </motion.button>
           </form>
 
-          {/* Quick-test Sample Chips -> Soft Raised Neumorphic Pills */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '18px', padding: '0 6px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <span style={{ fontSize: '0.76rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              QUICK SAMPLES:
-            </span>
+          {/* Quick-test Sample Chips */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '14px', padding: '0 6px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <span className="mono" style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 600 }}>QUICK SAMPLES:</span>
             {sampleTargets.map((s) => (
               <motion.button
                 key={s.url}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => handleSampleClick(s.url)}
                 type="button"
                 style={{
-                  background: 'var(--neu-bg, #E0E5EC)',
-                  border: 'none',
-                  borderRadius: '16px',
-                  padding: '6px 14px',
-                  fontSize: '0.78rem',
-                  fontFamily: "'DM Sans', sans-serif",
+                  background: 'var(--code-box-bg)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '20px',
+                  padding: '4px 12px',
+                  fontSize: '0.72rem',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
-                  color: 'var(--neu-foreground, #3D4852)',
-                  boxShadow: 'var(--neu-extruded-sm)'
+                  gap: '6px',
+                  color: 'var(--text-primary)',
+                  transition: 'all 0.2s'
                 }}
               >
-                <span style={{ fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{s.url}</span>
-                <span
-                  style={{
-                    fontSize: '0.66rem',
-                    padding: '2px 8px',
-                    borderRadius: '9999px',
-                    fontWeight: 800,
-                    boxShadow: 'var(--neu-inset-sm)',
-                    background: 'var(--neu-bg, #E0E5EC)',
-                    color: s.type === 'phish' ? '#EF4444' : s.type === 'hardened' ? '#10B981' : '#6C63FF',
-                    fontFamily: "'Plus Jakarta Sans', sans-serif"
-                  }}
-                >
+                <span className="mono" style={{ fontWeight: 600 }}>{s.url}</span>
+                <span className={`mono ${s.badgeClass}`} style={{ fontSize: '0.62rem', padding: '1px 6px', borderRadius: '10px', fontWeight: 800 }}>
                   {s.badge}
                 </span>
               </motion.button>
@@ -615,27 +641,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
 
           {/* Scan Protocol Notice */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '18px' }}>
-            <Zap size={15} color="#6C63FF" />
-            <span style={{ fontSize: '0.8rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 600 }}>
-              100% Free &amp; Open Access • Full Headless Sandbox, Brand pHash Vision &amp; CyberAI Unlocked
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '12px' }}>
+            <Zap size={13} color="var(--accent-cyan)" />
+            <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+              100% Free &amp; Open Access • Full Headless Sandbox, Brand pHash Vision &amp; CyberAI <span style={{ color: 'var(--accent-green)', fontWeight: 700 }}>Unlocked (No Paywalls)</span>
             </span>
           </div>
         </motion.div>
 
-        {/* Telemetry Status Bar -> 4 Soft Raised Metric Cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', maxWidth: '1020px', margin: '36px auto 0 auto', paddingTop: '28px' }}>
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            style={{
-              background: 'var(--neu-bg, #E0E5EC)',
-              border: 'none',
-              padding: '18px 20px',
-              borderRadius: '24px',
-              boxShadow: 'var(--neu-extruded-sm)'
-            }}
-          >
-            <div style={{ fontSize: '1.45rem', fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'var(--neu-foreground, #3D4852)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+        {/* Telemetry Status Bar with Interactive Hover Glow */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '14px', maxWidth: '940px', margin: '36px auto 0 auto', borderTop: '1px solid var(--border-color)', paddingTop: '22px' }}>
+          <motion.div whileHover={{ y: -3, scale: 1.03 }} transition={{ duration: 0.2 }}>
+            <div className="mono cyber-font neon-cyan-glow" style={{ fontSize: '1.25rem', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span>0.0 – 100</span>
               <InfoTooltip
                 title="Calibrated Risk Index"
@@ -643,22 +660,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 position="top"
               />
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '6px', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              CALIBRATED RISK INDEX
-            </div>
+            <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, letterSpacing: '0.05em' }}>CALIBRATED RISK INDEX</div>
           </motion.div>
 
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            style={{
-              background: 'var(--neu-bg, #E0E5EC)',
-              border: 'none',
-              padding: '18px 20px',
-              borderRadius: '24px',
-              boxShadow: 'var(--neu-extruded-sm)'
-            }}
-          >
-            <div style={{ fontSize: '1.45rem', fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'var(--neu-foreground, #3D4852)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+          <motion.div whileHover={{ y: -3, scale: 1.03 }} transition={{ duration: 0.2 }}>
+            <div className="mono cyber-font neon-green-glow" style={{ fontSize: '1.25rem', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span>7-STAGE</span>
               <InfoTooltip
                 title="7-Stage Attack Graph"
@@ -666,22 +672,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 position="top"
               />
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '6px', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              ATTACK-CHAIN GRAPH
-            </div>
+            <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, letterSpacing: '0.05em' }}>ATTACK-CHAIN GRAPH</div>
           </motion.div>
 
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            style={{
-              background: 'var(--neu-bg, #E0E5EC)',
-              border: 'none',
-              padding: '18px 20px',
-              borderRadius: '24px',
-              boxShadow: 'var(--neu-extruded-sm)'
-            }}
-          >
-            <div style={{ fontSize: '1.45rem', fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'var(--neu-foreground, #3D4852)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+          <motion.div whileHover={{ y: -3, scale: 1.03 }} transition={{ duration: 0.2 }}>
+            <div className="mono cyber-font" style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span>&lt; 30 DAYS</span>
               <InfoTooltip
                 title="Newly Registered Domains (NRD)"
@@ -689,32 +684,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 position="top"
               />
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '6px', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              NRD EARLY WARNING
-            </div>
+            <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, letterSpacing: '0.05em' }}>NRD EARLY WARNING</div>
           </motion.div>
 
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            style={{
-              background: 'var(--neu-bg, #E0E5EC)',
-              border: 'none',
-              padding: '18px 20px',
-              borderRadius: '24px',
-              boxShadow: 'var(--neu-extruded-sm)'
-            }}
-          >
-            <div style={{ fontSize: '1.45rem', fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'var(--neu-foreground, #3D4852)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-              <span>100% FREE</span>
+          <motion.div whileHover={{ y: -3, scale: 1.03 }} transition={{ duration: 0.2 }}>
+            <div className="mono cyber-font" style={{ fontSize: '1.25rem', fontWeight: 900, color: '#00ff88', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+              <span>ZERO PAYWALL</span>
               <InfoTooltip
                 title="100% Free & Open Access"
                 description="Community cybersecurity intelligence platform. All deep forensic audits and AI features are 100% free with zero fees."
                 position="top"
               />
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '6px', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-              COMMUNITY ACCESS
-            </div>
+            <div style={{ fontSize: '0.68rem', color: 'var(--text-secondary)', fontWeight: 600, letterSpacing: '0.05em' }}>COMMUNITY ACCESS</div>
           </motion.div>
         </div>
       </motion.div>
@@ -724,104 +706,64 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.5 }}
+        className="glass-panel"
         style={{
-          padding: '36px',
-          marginBottom: '40px',
-          background: 'var(--neu-bg, #E0E5EC)',
-          borderRadius: '32px',
-          boxShadow: 'var(--neu-extruded)',
-          border: 'none'
+          padding: '28px',
+          marginBottom: '32px',
+          borderRadius: '14px',
+          border: '1px solid rgba(56, 189, 248, 0.3)'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '26px', flexWrap: 'wrap', gap: '14px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{
-              width: '46px',
-              height: '46px',
-              borderRadius: '50%',
-              background: 'var(--neu-bg, #E0E5EC)',
-              boxShadow: 'var(--neu-inset)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <Cpu size={22} color="#6C63FF" />
-            </div>
-            <div>
-              <h2 style={{ fontSize: '1.3rem', fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'var(--neu-foreground, #3D4852)', letterSpacing: '-0.02em', margin: 0 }}>
-                Autonomous 6-Stage Inspection Pipeline
-              </h2>
-              <div style={{ fontSize: '0.82rem', color: 'var(--neu-muted, #6B7280)', marginTop: '2px' }}>
-                Multi-vector zero-trust validation executing in parallel
-              </div>
-            </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <Cpu size={22} color="var(--accent-cyan)" />
+            <h2 className="cyber-font neon-cyan-glow" style={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '0.04em' }}>
+              AUTONOMOUS 6-STAGE INSPECTION PIPELINE
+            </h2>
             <InfoTooltip
               title="6-Stage Autonomous Engine"
               description="Click any stage below to explore how CyberGuard AI analyzes domains from raw input string to deep cryptographic verification."
               position="bottom"
             />
           </div>
-          <span
-            style={{
-              fontSize: '0.74rem',
-              padding: '6px 14px',
-              borderRadius: '9999px',
-              background: 'var(--neu-bg, #E0E5EC)',
-              boxShadow: 'var(--neu-inset-sm)',
-              fontWeight: 800,
-              textTransform: 'uppercase',
-              color: 'var(--neu-accent, #6C63FF)',
-              fontFamily: "'Plus Jakarta Sans', sans-serif"
-            }}
-          >
-            CLICK STAGE TO INSPECT
+          <span className="mono badge-info" style={{ fontSize: '0.68rem', padding: '3px 10px', borderRadius: '12px' }}>
+            CLICK ANY STAGE TO INSPECT
           </span>
         </div>
 
         {/* Pipeline Stage Buttons Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px', marginBottom: '26px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '10px', marginBottom: '20px' }}>
           {pipelineStages.map((stage, idx) => {
             const isSelected = activePipelineStep === idx;
             return (
               <motion.button
                 key={stage.step}
-                whileHover={{ scale: 1.02 }}
+                whileHover={{ y: -3, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActivePipelineStep(idx)}
                 style={{
-                  background: 'var(--neu-bg, #E0E5EC)',
-                  border: 'none',
-                  borderRadius: '20px',
-                  padding: '16px 16px',
+                  background: isSelected ? 'rgba(0, 240, 255, 0.16)' : 'var(--bg-card)',
+                  border: isSelected ? `2px solid ${stage.color}` : '1px solid var(--border-color)',
+                  borderRadius: '10px',
+                  padding: '12px 14px',
                   cursor: 'pointer',
                   textAlign: 'left',
                   position: 'relative',
                   overflow: 'hidden',
-                  boxShadow: isSelected ? 'var(--neu-inset)' : 'var(--neu-extruded-sm)',
-                  transition: 'box-shadow 0.2s ease'
+                  boxShadow: isSelected ? `0 0 16px ${stage.color}33` : 'none',
+                  transition: 'all 0.2s'
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '0.76rem', fontWeight: 800, color: isSelected ? '#6C63FF' : 'var(--neu-muted, #6B7280)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <span className="mono cyber-font" style={{ fontSize: '0.72rem', fontWeight: 800, color: stage.color }}>
                     STAGE 0{stage.step}
                   </span>
-                  <span
-                    style={{
-                      fontSize: '0.64rem',
-                      color: isSelected ? '#6C63FF' : 'var(--neu-muted, #6B7280)',
-                      background: 'var(--neu-bg, #E0E5EC)',
-                      boxShadow: 'var(--neu-inset-sm)',
-                      padding: '2px 8px',
-                      borderRadius: '9999px',
-                      fontWeight: 800,
-                      textTransform: 'uppercase'
-                    }}
-                  >
+                  <span className="mono" style={{ fontSize: '0.6rem', color: stage.color, background: `${stage.color}1a`, padding: '1px 5px', borderRadius: '4px', fontWeight: 700 }}>
                     {stage.badge}
                   </span>
                 </div>
-                <div style={{ fontSize: '0.92rem', fontWeight: 800, color: isSelected ? 'var(--neu-accent, #6C63FF)' : 'var(--neu-foreground, #3D4852)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                <div style={{ fontSize: '0.85rem', fontWeight: 800, color: isSelected ? '#ffffff' : 'var(--text-primary)' }}>
                   {stage.name}
                 </div>
               </motion.button>
@@ -829,35 +771,34 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           })}
         </div>
 
-        {/* Selected Stage Detail Drawer -> Neumorphic Inset Well */}
+        {/* Selected Stage Detail Drawer */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activePipelineStep}
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25 }}
             style={{
-              background: 'var(--neu-bg, #E0E5EC)',
-              borderRadius: '24px',
-              boxShadow: 'var(--neu-inset)',
-              padding: '24px 28px',
+              background: 'var(--code-box-bg)',
+              border: `1px solid ${pipelineStages[activePipelineStep].color}55`,
+              borderRadius: '10px',
+              padding: '18px 22px',
               display: 'flex',
               flexDirection: 'column',
-              gap: '12px',
-              border: 'none'
+              gap: '10px'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: pipelineStages[activePipelineStep].color }} />
-              <span style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--neu-foreground, #3D4852)', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+              <Zap size={18} color={pipelineStages[activePipelineStep].color} />
+              <span className="cyber-font" style={{ fontSize: '0.95rem', fontWeight: 800, color: pipelineStages[activePipelineStep].color }}>
                 Stage 0{pipelineStages[activePipelineStep].step}: {pipelineStages[activePipelineStep].name}
               </span>
             </div>
-            <p style={{ fontSize: '0.94rem', color: 'var(--neu-foreground, #3D4852)', lineHeight: 1.6, fontWeight: 600 }}>
+            <p style={{ fontSize: '0.88rem', color: 'var(--text-primary)', lineHeight: 1.5, fontWeight: 600 }}>
               {pipelineStages[activePipelineStep].summary}
             </p>
-            <p style={{ fontSize: '0.88rem', color: 'var(--neu-muted, #6B7280)', lineHeight: 1.6, fontWeight: 500 }}>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
               {pipelineStages[activePipelineStep].detail}
             </p>
           </motion.div>
@@ -869,101 +810,76 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         initial={{ opacity: 0, y: 25 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.5 }}
+        className="glass-panel"
         style={{
-          padding: '36px',
-          marginBottom: '40px',
-          background: 'var(--neu-bg, #E0E5EC)',
-          borderRadius: '32px',
-          boxShadow: 'var(--neu-extruded)',
-          border: 'none'
+          padding: '28px',
+          marginBottom: '32px',
+          borderRadius: '14px',
+          border: '1px solid rgba(239, 68, 68, 0.3)'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px' }}>
-          <div style={{
-            width: '46px',
-            height: '46px',
-            borderRadius: '50%',
-            background: 'var(--neu-bg, #E0E5EC)',
-            boxShadow: 'var(--neu-inset)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <AlertTriangle size={22} color="#EF4444" />
-          </div>
-          <div>
-            <h2 style={{ fontSize: '1.3rem', fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'var(--neu-foreground, #3D4852)', letterSpacing: '-0.02em', margin: 0 }}>
-              Why Traditional Security Fails: Brand Contradiction
-            </h2>
-            <div style={{ fontSize: '0.82rem', color: 'var(--neu-muted, #6B7280)', marginTop: '2px' }}>
-              Detecting logo impersonation on deceptive infrastructure
-            </div>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+          <AlertTriangle size={22} color="#ef4444" />
+          <h2 className="cyber-font neon-red-glow" style={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '0.04em' }}>
+            WHY TRADITIONAL SECURITY FAILS: BRAND CONTRADICTION
+          </h2>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '22px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '18px' }}>
           {/* Legitimate Brand Card */}
           <div style={{
-            background: 'var(--neu-bg, #E0E5EC)',
-            borderRadius: '24px',
-            padding: '24px',
-            boxShadow: 'var(--neu-extruded-sm)',
-            border: 'none'
+            background: isLight ? '#f0fdf4' : 'rgba(0, 255, 136, 0.08)',
+            border: `1.5px solid ${isLight ? '#86efac' : 'rgba(0, 255, 136, 0.35)'}`,
+            borderRadius: '12px',
+            padding: '20px',
+            boxShadow: isLight ? '0 2px 8px rgba(15, 23, 42, 0.04)' : 'none'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", textTransform: 'uppercase' }}>
-                AUTHORIZED OFFICIAL SITE
-              </span>
-              <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '9999px', background: 'var(--neu-bg, #E0E5EC)', boxShadow: 'var(--neu-inset-sm)', fontWeight: 800, color: '#10B981', textTransform: 'uppercase' }}>
-                100% MATCH
-              </span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <span className="mono cyber-font" style={{ fontSize: '0.78rem', color: isLight ? '#15803d' : '#00ff88', fontWeight: 900 }}>AUTHORIZED OFFICIAL SITE</span>
+              <span className="mono badge-safe" style={{ fontSize: '0.64rem', padding: '2px 8px', borderRadius: '6px', fontWeight: 800 }}>100% MATCH</span>
             </div>
-            <div style={{ fontSize: '1rem', color: 'var(--neu-foreground, #3D4852)', fontWeight: 800, marginBottom: '12px', fontFamily: "'JetBrains Mono', monospace" }}>
+            <div className="mono" style={{ fontSize: '0.92rem', color: isLight ? '#0f172a' : 'var(--text-primary)', fontWeight: 800, marginBottom: '8px' }}>
               https://www.paypal.com/signin
             </div>
-            <div style={{ fontSize: '0.88rem', color: 'var(--neu-muted, #6B7280)', lineHeight: 1.7, fontWeight: 500 }}>
-              • Rendered Visual: <strong style={{ color: 'var(--neu-foreground, #3D4852)' }}>PayPal</strong> logo verified<br />
-              • Domain Match: <strong style={{ color: 'var(--neu-foreground, #3D4852)' }}>paypal.com</strong> (Officially Authorized)<br />
-              • Verdict: <strong style={{ color: '#10B981' }}>SAFE (Risk: 2.4/100)</strong>
+            <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6, fontWeight: 500 }}>
+              • Rendered Visual: <strong style={{ color: 'var(--text-primary)' }}>PayPal</strong> logo verified<br />
+              • Domain Match: <strong style={{ color: 'var(--text-primary)' }}>paypal.com</strong> (Officially Authorized)<br />
+              • Verdict: <strong style={{ color: isLight ? '#15803d' : '#00ff88', fontWeight: 800 }}>SAFE (Risk: 2.4/100)</strong>
             </div>
           </div>
 
           {/* Adversary Impersonator Card */}
           <div style={{
-            background: 'var(--neu-bg, #E0E5EC)',
-            borderRadius: '24px',
-            padding: '24px',
-            boxShadow: 'var(--neu-extruded-sm)',
-            border: 'none'
+            background: isLight ? '#fef2f2' : 'rgba(239, 68, 68, 0.1)',
+            border: `1.5px solid ${isLight ? '#fca5a5' : 'rgba(239, 68, 68, 0.45)'}`,
+            borderRadius: '12px',
+            padding: '20px',
+            boxShadow: isLight ? '0 2px 8px rgba(15, 23, 42, 0.04)' : 'none'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", textTransform: 'uppercase' }}>
-                ADVERSARY PHISHING HARVESTER
-              </span>
-              <span style={{ fontSize: '0.7rem', padding: '3px 10px', borderRadius: '9999px', background: 'var(--neu-bg, #E0E5EC)', boxShadow: 'var(--neu-inset-sm)', fontWeight: 800, color: '#EF4444', textTransform: 'uppercase' }}>
-                CRITICAL CONTRADICTION
-              </span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <span className="mono cyber-font" style={{ fontSize: '0.78rem', color: isLight ? '#b91c1c' : '#f87171', fontWeight: 900 }}>ADVERSARY PHISHING HARVESTER</span>
+              <span className="mono badge-critical" style={{ fontSize: '0.64rem', padding: '2px 8px', borderRadius: '6px', fontWeight: 800 }}>CRITICAL CONTRADICTION</span>
             </div>
-            <div style={{ fontSize: '1rem', color: 'var(--neu-foreground, #3D4852)', fontWeight: 800, marginBottom: '12px', fontFamily: "'JetBrains Mono', monospace" }}>
+            <div className="mono" style={{ fontSize: '0.92rem', color: isLight ? '#b91c1c' : '#f87171', fontWeight: 800, marginBottom: '8px' }}>
               https://login-paypal-security-verify.xyz
             </div>
-            <div style={{ fontSize: '0.88rem', color: 'var(--neu-muted, #6B7280)', lineHeight: 1.7, fontWeight: 500 }}>
-              • Rendered Visual: <strong style={{ color: 'var(--neu-foreground, #3D4852)' }}>PayPal</strong> logo matched via pHash (99.4%)<br />
-              • Domain Match: <strong style={{ color: 'var(--neu-foreground, #3D4852)' }}>login-paypal-security-verify.xyz</strong> (UNAUTHORIZED)<br />
-              • Verdict: <strong style={{ color: '#EF4444' }}>BLOCKED (Risk: 96.2/100 | Phish)</strong>
+            <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.6, fontWeight: 500 }}>
+              • Rendered Visual: <strong style={{ color: 'var(--text-primary)' }}>PayPal</strong> logo matched via pHash (99.4%)<br />
+              • Domain Match: <strong style={{ color: isLight ? '#b91c1c' : '#f87171' }}>login-paypal-security-verify.xyz</strong> (UNAUTHORIZED)<br />
+              • Verdict: <strong style={{ color: isLight ? '#b91c1c' : '#f87171', fontWeight: 800 }}>BLOCKED (Risk: 96.2/100 | Phish)</strong>
             </div>
           </div>
         </div>
       </motion.div>
 
       {/* 5. Cyber Defense Capabilities Header with Card View Mode Switcher */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '26px', flexWrap: 'wrap', gap: '16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Terminal size={22} color="#6C63FF" />
-            <h2 style={{ fontSize: '1.3rem', fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'var(--neu-foreground, #3D4852)', letterSpacing: '-0.02em', margin: 0 }}>
-              Cyber Defense Capability Stack
+            <Terminal size={22} color="var(--accent-cyan)" />
+            <h2 className="cyber-font neon-cyan-glow" style={{ fontSize: '1.2rem', fontWeight: 900, letterSpacing: '0.04em' }}>
+              CYBER DEFENSE CAPABILITY STACK
             </h2>
             <InfoTooltip
               title="Cyber Defense Capability Stack"
@@ -971,157 +887,170 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               position="right"
             />
           </div>
-          <p style={{ fontSize: '0.86rem', color: 'var(--neu-muted, #6B7280)', marginTop: '4px', fontWeight: 500 }}>
+          <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
             Scroll through the 6 defensive modules or select any layer to inspect technical forensics
           </p>
         </div>
 
-        {/* View Mode Toggle Switcher -> Inset Track with Soft Raised Active Button */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          background: 'var(--neu-bg, #E0E5EC)',
-          boxShadow: 'var(--neu-inset)',
-          padding: '5px',
-          borderRadius: '9999px',
-          border: 'none'
-        }}>
+        {/* View Mode Toggle Switcher */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--code-box-bg)', border: '1px solid var(--border-color)', padding: '4px', borderRadius: '12px' }}>
           <motion.button
-            whileTap={{ scale: 0.96 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setCardViewMode('stack')}
             style={{
-              background: 'var(--neu-bg, #E0E5EC)',
-              color: cardViewMode === 'stack' ? 'var(--neu-accent, #6C63FF)' : 'var(--neu-muted, #6B7280)',
+              background: cardViewMode === 'stack' ? 'linear-gradient(135deg, #00f0ff 0%, #0284c7 100%)' : 'transparent',
+              color: cardViewMode === 'stack' ? '#070a10' : 'var(--text-secondary)',
               border: 'none',
-              borderRadius: '9999px',
-              padding: '8px 18px',
-              fontSize: '0.8rem',
+              borderRadius: '8px',
+              padding: '7px 16px',
+              fontSize: '0.78rem',
               fontWeight: 800,
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              boxShadow: cardViewMode === 'stack' ? 'var(--neu-extruded-sm)' : 'none',
-              transition: 'box-shadow 0.2s ease'
+              boxShadow: cardViewMode === 'stack' ? '0 0 16px rgba(0, 240, 255, 0.4)' : 'none',
+              transition: 'all 0.2s'
             }}
           >
-            <Layers size={16} />
-            <span>Stacked Scroll Deck</span>
+            <Layers size={15} />
+            <span className="cyber-font">STACKED SCROLL DECK</span>
           </motion.button>
 
           <motion.button
-            whileTap={{ scale: 0.96 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => setCardViewMode('grid')}
             style={{
-              background: 'var(--neu-bg, #E0E5EC)',
-              color: cardViewMode === 'grid' ? 'var(--neu-accent, #6C63FF)' : 'var(--neu-muted, #6B7280)',
+              background: cardViewMode === 'grid' ? 'linear-gradient(135deg, #00f0ff 0%, #0284c7 100%)' : 'transparent',
+              color: cardViewMode === 'grid' ? '#070a10' : 'var(--text-secondary)',
               border: 'none',
-              borderRadius: '9999px',
-              padding: '8px 18px',
-              fontSize: '0.8rem',
+              borderRadius: '8px',
+              padding: '7px 16px',
+              fontSize: '0.78rem',
               fontWeight: 800,
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              boxShadow: cardViewMode === 'grid' ? 'var(--neu-extruded-sm)' : 'none',
-              transition: 'box-shadow 0.2s ease'
+              boxShadow: cardViewMode === 'grid' ? '0 0 16px rgba(0, 240, 255, 0.4)' : 'none',
+              transition: 'all 0.2s'
             }}
           >
-            <LayoutGrid size={16} />
-            <span>Expanded Grid</span>
+            <LayoutGrid size={15} />
+            <span className="cyber-font">EXPANDED 3D GRID</span>
           </motion.button>
         </div>
       </div>
 
       {/* Quick Jump Navigator Pills */}
       {cardViewMode === 'stack' && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', overflowX: 'auto', paddingBottom: '14px', marginBottom: '26px', flexWrap: 'nowrap' }}>
-          <span style={{ fontSize: '0.76rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, textTransform: 'uppercase', flexShrink: 0, letterSpacing: '0.04em', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-            QUICK JUMP:
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflowX: 'auto', paddingBottom: '14px', marginBottom: '24px', flexWrap: 'nowrap' }}>
+          <span className="mono" style={{ fontSize: '0.72rem', color: isLight ? '#475569' : '#94a3b8', fontWeight: 800, flexShrink: 0 }}>
+            QUICK SCROLL JUMP:
           </span>
           {capabilityCards.map((c, idx) => (
             <motion.button
               key={c.id}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => {
                 const el = document.getElementById(`stack-card-${c.id}`);
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }}
               style={{
-                background: 'var(--neu-bg, #E0E5EC)',
-                border: 'none',
-                color: 'var(--neu-foreground, #3D4852)',
-                borderRadius: '9999px',
-                padding: '6px 16px',
-                fontSize: '0.78rem',
-                fontFamily: "'DM Sans', sans-serif",
-                fontWeight: 700,
+                background: isLight ? '#ffffff' : 'var(--code-box-bg)',
+                border: `1.5px solid ${isLight ? c.iconBorderLight : c.iconBorderDark}`,
+                color: isLight ? c.quoteColorLight : c.quoteColorDark,
+                borderRadius: '16px',
+                padding: '6px 14px',
+                fontSize: '0.76rem',
+                fontWeight: 800,
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
                 flexShrink: 0,
-                boxShadow: 'var(--neu-extruded-sm)'
+                boxShadow: isLight ? '0 2px 8px rgba(15, 23, 42, 0.06)' : `0 0 10px ${c.glowColorDark}`,
+                transition: 'all 0.2s'
               }}
             >
-              <span>0{idx + 1} {c.title.split(' ')[0]}</span>
+              <span className="mono">0{idx + 1} {c.title.split(' ')[0]}</span>
             </motion.button>
           ))}
         </div>
       )}
 
-      {/* 6. Card Scroll Animation Stacking Deck or Grid -> Soft Raised Neumorphic Cards */}
+      {/* 6. Card Scroll Animation Stacking Deck or Grid */}
       {cardViewMode === 'stack' ? (
         <div className="card-stack-container" style={{ position: 'relative', marginTop: '10px' }}>
           {capabilityCards.map((card, index) => {
+            const cardBg = isLight
+              ? '#ffffff'
+              : `radial-gradient(circle at 50% 0%, ${card.glowColorDark} 0%, rgba(13, 19, 31, 0.98) 85%)`;
+            const cardBorder = isLight
+              ? card.iconBorderLight
+              : card.iconBorderDark;
+            const cardShadow = isLight
+              ? '0 10px 30px rgba(15, 23, 42, 0.08), 0 1px 4px rgba(15, 23, 42, 0.04)'
+              : `0 20px 50px rgba(0, 0, 0, 0.85), 0 0 25px ${card.glowColorDark}`;
+            const iconBg = isLight ? card.iconBgLight : card.iconBgDark;
+            const iconBorder = isLight ? card.iconBorderLight : card.iconBorderDark;
+            const iconElement = isLight ? card.iconLight : card.iconDark;
+            const subtitleColor = isLight ? card.subtitleColorLight : card.subtitleColorDark;
+            const quoteColor = isLight ? card.quoteColorLight : card.quoteColorDark;
+            const quoteBg = isLight ? card.quoteBgLight : 'rgba(0, 0, 0, 0.65)';
+            const quoteBorder = isLight ? card.quoteBorderLight : card.quoteBorderDark;
+            const rightBoxBg = isLight ? '#f8fafc' : 'rgba(7, 10, 16, 0.75)';
+            const rightBoxBorder = isLight ? '1px solid #e2e8f0' : '1px solid var(--border-color)';
+            const tagBg = isLight ? '#f1f5f9' : 'rgba(255, 255, 255, 0.08)';
+            const tagBorder = isLight ? '1px solid #cbd5e1' : '1px solid rgba(255, 255, 255, 0.16)';
+            const labelColor = isLight ? '#475569' : '#94a3b8';
+
             return (
               <motion.div
                 id={`stack-card-${card.id}`}
                 key={card.id}
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.4, delay: index * 0.04 }}
-                className="card-stack-item"
+                transition={{ duration: 0.5, delay: index * 0.04 }}
+                className="glass-panel card-stack-item"
                 style={{
                   top: `${90 + index * 24}px`,
                   zIndex: 10 + index,
-                  background: 'var(--neu-bg, #E0E5EC)',
-                  border: 'none',
-                  borderRadius: '32px',
-                  padding: '36px 32px',
+                  background: cardBg,
+                  border: `1.5px solid ${cardBorder}`,
+                  borderRadius: '20px',
+                  padding: '30px 28px',
                   marginBottom: index === capabilityCards.length - 1 ? '70px' : '45px',
-                  boxShadow: 'var(--neu-extruded)'
+                  boxShadow: cardShadow
                 }}
               >
                 {/* Card Header Row */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '20px', marginBottom: '24px', flexWrap: 'wrap', gap: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: isLight ? '1px solid #e2e8f0' : '1px solid var(--border-color)', paddingBottom: '16px', marginBottom: '22px', flexWrap: 'wrap', gap: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <div style={{
-                      width: '54px',
-                      height: '54px',
-                      borderRadius: '50%',
-                      background: 'var(--neu-bg, #E0E5EC)',
-                      boxShadow: 'var(--neu-inset)',
+                      background: iconBg,
+                      border: `1.5px solid ${iconBorder}`,
+                      padding: '12px',
+                      borderRadius: '14px',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      boxShadow: isLight ? '0 2px 8px rgba(15, 23, 42, 0.06)' : `0 0 16px ${card.glowColorDark}`
                     }}>
-                      {card.icon}
+                      {iconElement}
                     </div>
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '0.8rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        <span className="mono cyber-font" style={{ fontSize: '0.8rem', color: subtitleColor, fontWeight: 900 }}>
                           MODULE // 0{index + 1} OF 06
                         </span>
-                        <span style={{ fontSize: '0.68rem', padding: '2px 10px', borderRadius: '9999px', fontWeight: 800, background: 'var(--neu-bg, #E0E5EC)', boxShadow: 'var(--neu-inset-sm)', color: card.accentColor, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        <span className="mono badge-info" style={{ fontSize: '0.64rem', padding: '2px 8px', borderRadius: '8px', fontWeight: 800 }}>
                           {card.badge}
                         </span>
                       </div>
-                      <h3 style={{ fontSize: '1.4rem', fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'var(--neu-foreground, #3D4852)', marginTop: '4px', letterSpacing: '-0.02em' }}>
+                      <h3 className="cyber-font" style={{ fontSize: '1.3rem', fontWeight: 900, color: 'var(--text-primary)', marginTop: '4px' }}>
                         {card.title}
                       </h3>
                     </div>
@@ -1137,52 +1066,52 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 </div>
 
                 {/* Card Body - 2 Columns */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '26px', alignItems: 'start' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', alignItems: 'start' }}>
                   {/* Left Side: Subtitle, Description & Tags */}
                   <div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.04em', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    <div className="mono" style={{ fontSize: '0.8rem', color: subtitleColor, fontWeight: 800, marginBottom: '10px' }}>
                       // {card.subtitle.toUpperCase()}
                     </div>
-                    <p style={{ fontSize: '0.96rem', color: 'var(--neu-foreground, #3D4852)', lineHeight: 1.65, marginBottom: '20px', fontWeight: 500 }}>
+                    <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: '18px', fontWeight: 500 }}>
                       {card.description}
                     </p>
 
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '18px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
                       {card.tags?.map((tag, tIdx) => (
-                        <span key={tIdx} style={{
-                          background: 'var(--neu-bg, #E0E5EC)',
-                          boxShadow: 'var(--neu-inset-sm)',
-                          borderRadius: '9999px',
-                          padding: '5px 14px',
-                          fontSize: '0.74rem',
+                        <span key={tIdx} className="mono" style={{
+                          background: tagBg,
+                          border: tagBorder,
+                          borderRadius: '6px',
+                          padding: '4px 10px',
+                          fontSize: '0.72rem',
                           fontWeight: 700,
-                          color: 'var(--neu-muted, #6B7280)',
-                          border: 'none'
+                          color: 'var(--text-primary)'
                         }}>
                           #{tag}
                         </span>
                       ))}
                     </div>
 
-                    <div style={{ fontSize: '0.78rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 700 }}>
-                      • Status: <span style={{ color: '#10B981', fontWeight: 800 }}>ACTIVE FORENSIC LAYER</span> // Latency: <span style={{ color: '#6C63FF', fontWeight: 800 }}>Sub-second</span>
+                    <div className="mono" style={{ fontSize: '0.74rem', color: labelColor, fontWeight: 600 }}>
+                      • Status: <span style={{ color: isLight ? '#15803d' : '#00ff88', fontWeight: 800 }}>ACTIVE FORENSIC LAYER</span> // Latency: <span style={{ color: isLight ? '#0284c7' : 'var(--accent-cyan)', fontWeight: 800 }}>Sub-second</span>
                     </div>
                   </div>
 
-                  {/* Right Side: Threat Interception Criteria Well */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', background: 'var(--neu-bg, #E0E5EC)', padding: '22px', borderRadius: '24px', boxShadow: 'var(--neu-inset)', border: 'none' }}>
+                  {/* Right Side: Adversary Quote, Impact & Action */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', background: rightBoxBg, padding: '20px', borderRadius: '14px', border: rightBoxBorder }}>
                     <div>
-                      <div style={{ fontSize: '0.74rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, marginBottom: '6px', letterSpacing: '0.04em', textTransform: 'uppercase', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                      <div className="mono" style={{ fontSize: '0.72rem', color: labelColor, fontWeight: 800, marginBottom: '6px', letterSpacing: '0.04em' }}>
                         THREAT INTERCEPTION CRITERIA:
                       </div>
-                      <div style={{
-                        fontSize: '0.88rem',
+                      <div className="mono" style={{
+                        fontSize: '0.84rem',
                         fontWeight: 700,
-                        color: 'var(--neu-foreground, #3D4852)',
+                        color: quoteColor,
                         padding: '12px 16px',
-                        background: 'var(--neu-bg, #E0E5EC)',
-                        borderRadius: '16px',
-                        boxShadow: 'var(--neu-extruded-sm)',
+                        background: quoteBg,
+                        borderRadius: '10px',
+                        borderLeft: `4px solid ${quoteBorder}`,
+                        border: isLight ? `1px solid ${quoteBorder}` : '1px solid rgba(255, 255, 255, 0.08)',
                         lineHeight: 1.55
                       }}>
                         {card.quote}
@@ -1190,38 +1119,41 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     </div>
 
                     <div>
-                      <div style={{ fontSize: '0.74rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 800, marginBottom: '4px', letterSpacing: '0.04em', textTransform: 'uppercase', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                      <div className="mono" style={{ fontSize: '0.72rem', color: labelColor, fontWeight: 800, marginBottom: '4px', letterSpacing: '0.04em' }}>
                         SECURITY IMPACT:
                       </div>
-                      <div style={{ fontSize: '0.88rem', color: 'var(--neu-muted, #6B7280)', lineHeight: 1.6, fontWeight: 500 }}>
+                      <div style={{ fontSize: '0.86rem', color: 'var(--text-primary)', lineHeight: 1.55, fontWeight: 500 }}>
                         {card.tooltip.securityImpact}
                       </div>
                     </div>
 
                     {card.actionText && (
                       <motion.button
-                        whileHover={{ scale: 1.02 }}
+                        whileHover={{ scale: 1.02, x: 4 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => card.onAction && card.onAction()}
                         style={{
-                          background: 'linear-gradient(135deg, #6C63FF 0%, #8B84FF 100%)',
-                          border: 'none',
-                          color: '#ffffff',
-                          borderRadius: '16px',
-                          padding: '12px 20px',
-                          fontSize: '0.88rem',
-                          fontFamily: "'Plus Jakarta Sans', sans-serif",
+                          background: isLight
+                            ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)'
+                            : 'linear-gradient(135deg, rgba(0, 240, 255, 0.2) 0%, rgba(2, 132, 199, 0.2) 100%)',
+                          border: isLight ? 'none' : '1px solid var(--accent-cyan)',
+                          color: isLight ? '#ffffff' : 'var(--accent-cyan)',
+                          borderRadius: '10px',
+                          padding: '11px 18px',
+                          fontSize: '0.84rem',
                           fontWeight: 800,
                           cursor: 'pointer',
                           display: 'inline-flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          marginTop: '6px',
-                          boxShadow: '4px 4px 12px rgba(108, 99, 255, 0.35)'
+                          marginTop: '4px',
+                          boxShadow: isLight
+                            ? '0 4px 14px rgba(2, 132, 199, 0.25)'
+                            : '0 0 14px rgba(0, 240, 255, 0.2)'
                         }}
                       >
-                        <span>{card.actionText}</span>
-                        <ArrowRight size={17} />
+                        <span className="cyber-font">{card.actionText}</span>
+                        <ArrowRight size={15} />
                       </motion.button>
                     )}
                   </div>
@@ -1231,48 +1163,57 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           })}
         </div>
       ) : (
-        /* Expanded Grid View -> Soft Raised Neumorphic Grid */
-        <div className="feature-cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+        /* Expanded 3D Grid View */
+        <div className="feature-cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
           {capabilityCards.map((card, index) => {
+            const iconBg = isLight ? card.iconBgLight : card.iconBgDark;
+            const iconBorder = isLight ? card.iconBorderLight : card.iconBorderDark;
+            const iconElement = isLight ? card.iconLight : card.iconDark;
+            const subtitleColor = isLight ? card.subtitleColorLight : card.subtitleColorDark;
+            const quoteColor = isLight ? card.quoteColorLight : card.quoteColorDark;
+            const quoteBg = isLight ? card.quoteBgLight : 'var(--code-box-bg)';
+            const quoteBorder = isLight ? card.quoteBorderLight : card.quoteBorderDark;
+
             return (
               <motion.div
                 key={card.id}
-                initial={{ opacity: 0, y: 25 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.4, delay: index * 0.06 }}
-                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.45, delay: index * 0.08 }}
+                whileHover={{ y: -6, scale: 1.02, transition: { duration: 0.2 } }}
+                className="glass-panel cyber-card-hover"
                 style={{
-                  background: 'var(--neu-bg, #E0E5EC)',
-                  boxShadow: 'var(--neu-extruded)',
-                  padding: '28px',
-                  borderRadius: '32px',
+                  background: isLight ? '#ffffff' : undefined,
+                  border: isLight ? `1.5px solid ${card.iconBorderLight}` : undefined,
+                  boxShadow: isLight ? '0 8px 24px rgba(15, 23, 42, 0.06)' : undefined,
+                  padding: '24px',
+                  borderRadius: '16px',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  position: 'relative',
-                  border: 'none'
+                  position: 'relative'
                 }}
               >
                 <div>
                   {/* Card Top Row */}
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '18px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '14px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <div style={{
-                        width: '48px',
-                        height: '48px',
-                        borderRadius: '50%',
-                        background: 'var(--neu-bg, #E0E5EC)',
-                        boxShadow: 'var(--neu-inset)',
+                        background: iconBg,
+                        border: `1.5px solid ${iconBorder}`,
+                        padding: '10px',
+                        borderRadius: '12px',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        boxShadow: isLight ? '0 2px 8px rgba(15, 23, 42, 0.06)' : `0 0 10px ${card.glowColorDark}`
                       }}>
-                        {card.icon}
+                        {iconElement}
                       </div>
                       <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                          <h3 style={{ fontSize: '1.15rem', fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif", color: 'var(--neu-foreground, #3D4852)', lineHeight: 1.25, margin: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+                          <h3 style={{ fontSize: '1.04rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.3 }}>
                             {card.title}
                           </h3>
                           <InfoTooltip
@@ -1283,46 +1224,43 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                             position="bottom"
                           />
                         </div>
-                        <div style={{ fontSize: '0.76rem', color: 'var(--neu-muted, #6B7280)', fontWeight: 700, marginTop: '2px', textTransform: 'uppercase' }}>
+                        <div className="mono" style={{ fontSize: '0.72rem', color: subtitleColor, fontWeight: 700, marginTop: '2px' }}>
                           {card.subtitle}
                         </div>
                       </div>
                     </div>
 
-                    <span style={{
-                      fontSize: '0.66rem',
+                    <span className="mono badge-info" style={{
+                      fontSize: '0.62rem',
                       fontWeight: 800,
-                      padding: '3px 10px',
-                      borderRadius: '9999px',
-                      background: 'var(--neu-bg, #E0E5EC)',
-                      boxShadow: 'var(--neu-inset-sm)',
-                      color: card.accentColor,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.04em',
-                      fontFamily: "'Plus Jakarta Sans', sans-serif"
+                      padding: '2px 8px',
+                      borderRadius: '10px',
+                      letterSpacing: '0.04em'
                     }}>
                       {card.badge}
                     </span>
                   </div>
 
                   {/* Description */}
-                  <p style={{ fontSize: '0.9rem', color: 'var(--neu-foreground, #3D4852)', lineHeight: 1.6, marginBottom: '18px', fontWeight: 500 }}>
+                  <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '16px', fontWeight: 500 }}>
                     {card.description}
                   </p>
                 </div>
 
                 <div>
-                  {/* Inset Quote Well */}
+                  {/* Quote */}
                   <div
+                    className="mono"
                     style={{
-                      fontSize: '0.82rem',
+                      fontSize: '0.76rem',
                       fontWeight: 700,
-                      color: 'var(--neu-foreground, #3D4852)',
-                      background: 'var(--neu-bg, #E0E5EC)',
-                      padding: '12px 16px',
-                      borderRadius: '16px',
-                      boxShadow: 'var(--neu-inset)',
-                      marginBottom: card.actionText ? '14px' : '0'
+                      color: quoteColor,
+                      background: quoteBg,
+                      padding: '10px 14px',
+                      borderRadius: '8px',
+                      borderLeft: `4px solid ${quoteBorder}`,
+                      border: isLight ? `1px solid ${quoteBorder}` : undefined,
+                      marginBottom: card.actionText ? '12px' : '0'
                     }}
                   >
                     {card.quote}
@@ -1331,29 +1269,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   {/* Action Button */}
                   {card.actionText && (
                     <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                      whileHover={{ x: 4 }}
                       onClick={() => card.onAction && card.onAction()}
                       style={{
                         display: 'inline-flex',
                         alignItems: 'center',
-                        justifyContent: 'space-between',
-                        width: '100%',
-                        color: '#ffffff',
-                        fontSize: '0.86rem',
-                        fontFamily: "'Plus Jakarta Sans', sans-serif",
+                        gap: '6px',
+                        color: isLight ? '#0284c7' : 'var(--accent-cyan)',
+                        fontSize: '0.8rem',
                         fontWeight: 800,
                         cursor: 'pointer',
-                        marginTop: '12px',
-                        background: 'linear-gradient(135deg, #6C63FF 0%, #8B84FF 100%)',
-                        padding: '10px 18px',
-                        borderRadius: '16px',
-                        boxShadow: '4px 4px 12px rgba(108, 99, 255, 0.35)',
-                        border: 'none'
+                        marginTop: '10px'
                       }}
                     >
                       <span>{card.actionText}</span>
-                      <ArrowRight size={15} />
+                      <ArrowRight size={14} />
                     </motion.div>
                   )}
                 </div>

@@ -462,12 +462,20 @@ export function App() {
 
   return (
     <AlgorandWalletProvider>
-      <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--neu-bg, #E0E5EC)', position: 'relative' }}>
-        {/* Left Neumorphic Sidebar */}
+      <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-primary)', position: 'relative' }}>
+        {/* Subtle Background Matrix Canvas */}
+        <MatrixBackground opacity={theme === 'dark' ? 0.22 : 0.05} themeMode={theme} />
+
+        {/* Ambient Floating Cyber Orbs */}
+        <div className="ambient-orb-cyan" />
+        <div className="ambient-orb-purple" />
+
+        {/* Left Cyber Sidebar */}
         <Sidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           caseCount={cases.length}
+          theme={theme}
           hasActiveReport={!!report}
           onLaunchScanner={handleLaunchScanner}
           isMobileOpen={isMobileSidebarOpen}
@@ -475,10 +483,7 @@ export function App() {
         />
 
         {/* Right Main Console Area */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, position: 'relative' }}>
-          {/* Subtle Background Matrix Canvas */}
-          <MatrixBackground opacity={theme === 'dark' ? 0.22 : 0.04} themeMode={theme} />
-
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, position: 'relative', zIndex: 1 }}>
           <Header
             activeTab={activeTab}
             setActiveTab={setActiveTab}
