@@ -5,6 +5,7 @@ import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { LandingPage } from './components/LandingPage';
 import { Scanner } from './components/Scanner';
+import { ScannerTelemetryMetrics } from './components/ScannerTelemetryMetrics';
 import { PipelineStepper } from './components/PipelineStepper';
 import type { PipelineStep } from './components/PipelineStepper';
 import { RiskSummaryCard } from './components/RiskSummaryCard';
@@ -522,9 +523,16 @@ export function App() {
           />
         )}
 
-        {/* Page 2: Live Security Scanner & Embedded Results -> NEOMORPHISM (Soft UI) ONLY */}
+        {/* Page 2: Live Security Scanner & Embedded Results */}
         {activeTab === 'scanner' && (
           <div className="neomorphic-scanner-zone" data-theme={theme}>
+            {/* Live Threat Intelligence & Stat Metric Boxes */}
+            <ScannerTelemetryMetrics
+              theme={theme}
+              cases={cases}
+              onSelectFocus={(focus) => setScannerFocus(focus)}
+            />
+
             <Scanner
               onScan={handleScan}
               isLoading={isLoading}
