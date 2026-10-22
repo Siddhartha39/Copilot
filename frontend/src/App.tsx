@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MatrixBackground } from './components/MatrixBackground';
 import { Header } from './components/Header';
+import { Sidebar } from './components/Sidebar';
 import { LandingPage } from './components/LandingPage';
 import { Scanner } from './components/Scanner';
 import { PipelineStepper } from './components/PipelineStepper';
@@ -116,6 +117,7 @@ export function App() {
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => getStoredUser());
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const [showProfileModal, setShowProfileModal] = useState<boolean>(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState<boolean>(false);
 
   // Validate authentication session on mount (Firebase Auth + backend)
   useEffect(() => {
@@ -460,32 +462,42 @@ export function App() {
 
   return (
     <AlgorandWalletProvider>
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', paddingBottom: '40px', position: 'relative' }}>
-        {/* Subtle Background Matrix Canvas */}
-        <MatrixBackground opacity={0.22} themeMode={theme} />
-
-        {/* Ambient Floating Cyber Orbs */}
-        <div className="ambient-orb-cyan" />
-        <div className="ambient-orb-purple" />
-
-        <Header
+      <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--neu-bg, #E0E5EC)', position: 'relative' }}>
+        {/* Left Neumorphic Sidebar */}
+        <Sidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           caseCount={cases.length}
-          theme={theme}
-          toggleTheme={toggleTheme}
-          onOpenAbout={() => setShowAboutModal(true)}
-          onOpenWalletModal={() => setShowWalletModal(true)}
-          onLaunchScanner={handleLaunchScanner}
           hasActiveReport={!!report}
-          onOpenCopilot={() => setShowCopilotChat(true)}
-          currentUser={currentUser}
-          onOpenAuthModal={() => setShowAuthModal(true)}
-          onOpenProfileModal={() => setShowProfileModal(true)}
+          onLaunchScanner={handleLaunchScanner}
+          isMobileOpen={isMobileSidebarOpen}
+          onCloseMobile={() => setIsMobileSidebarOpen(false)}
         />
 
-        {/* Main Content Area */}
-        <main style={{ flex: 1, position: 'relative', zIndex: 1 }}>
+        {/* Right Main Console Area */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, position: 'relative' }}>
+          {/* Subtle Background Matrix Canvas */}
+          <MatrixBackground opacity={theme === 'dark' ? 0.22 : 0.04} themeMode={theme} />
+
+          <Header
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            caseCount={cases.length}
+            theme={theme}
+            toggleTheme={toggleTheme}
+            onOpenAbout={() => setShowAboutModal(true)}
+            onOpenWalletModal={() => setShowWalletModal(true)}
+            onLaunchScanner={handleLaunchScanner}
+            hasActiveReport={!!report}
+            onOpenCopilot={() => setShowCopilotChat(true)}
+            currentUser={currentUser}
+            onOpenAuthModal={() => setShowAuthModal(true)}
+            onOpenProfileModal={() => setShowProfileModal(true)}
+            onToggleMobileMenu={() => setIsMobileSidebarOpen((prev) => !prev)}
+          />
+
+          {/* Main Content Area */}
+          <main style={{ flex: 1, position: 'relative', zIndex: 1, paddingBottom: '40px' }}>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
@@ -1043,6 +1055,7 @@ export function App() {
           onOpenAuthModal={() => setShowAuthModal(true)}
           theme={theme}
         />
+        </div>
       </div>
     </AlgorandWalletProvider>
   );
