@@ -632,11 +632,19 @@ async def chat_with_copilot(req: ChatRequest):
         report=req.report,
         history=req.history,
         api_key=req.api_key,
-        scan_history=req.scan_history
+        scan_history=req.scan_history,
+        mode=req.mode,
+        session_id=req.session_id
     )
     return ChatResponse(
         reply=result.get("reply", "No response generated."),
-        suggested_actions=result.get("suggested_actions", [])
+        suggested_actions=result.get("suggested_actions", []),
+        intent=result.get("intent", "general_security_question"),
+        tool_calls=result.get("tool_calls", []),
+        evidence=result.get("evidence", []),
+        code_blocks=result.get("code_blocks", []),
+        citations=result.get("citations", []),
+        status=result.get("status", "completed")
     )
 
 @router.post("/scan/bulk", response_model=BulkScanResponse)

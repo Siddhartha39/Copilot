@@ -260,9 +260,17 @@ export interface ChatRequest {
   message: string;
   report?: any;
   history?: { role: string; content: string }[];
+  mode?: string;
+  session_id?: string;
 }
 
 export interface ChatResponse {
   reply: string;
   suggested_actions?: string[];
+  intent?: string;
+  tool_calls?: any[];
+  evidence?: any[];
+  code_blocks?: any[];
+  citations?: string[];
+  status?: string;
 }

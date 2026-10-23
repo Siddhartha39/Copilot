@@ -1388,7 +1388,9 @@ export async function sendChatMessage(
   report?: any,
   history?: { role: string; content: string }[],
   apiKey?: string,
-  scanHistory?: any[]
+  scanHistory?: any[],
+  mode?: string,
+  sessionId?: string
 ): Promise<ChatResponse> {
   const effectiveApiKey = (
     apiKey ||
@@ -1414,7 +1416,9 @@ export async function sendChatMessage(
         report,
         api_key: effectiveApiKey || undefined,
         history: history?.map(h => ({ role: h.role, content: h.content })),
-        scan_history: effectiveScanHistory || []
+        scan_history: effectiveScanHistory || [],
+        mode: mode || 'security-analyst',
+        session_id: sessionId
       }),
     });
     if (res && res.ok) {
@@ -1600,8 +1604,9 @@ function generateClientChatResponse(message: string, report?: any): ChatResponse
     };
   }
 
-  // 0. Sandbox Launch Request
-  const isSandboxQuery = /\b(open\s+sandbox|launch\s+sandbox|show\s+sandbox|view\s+sandbox|run\s+sandbox|interactive\s+sandbox|playwright\s+sandbox|\bsandbox\b)\b/i.test(msgLower);
+  // 0. Sandbox Launch Request (Requires explicit intent to launch sandbox, not general questions about sandboxes)
+  const isSandboxQuery = /\b(?:open|launch|show|view|start|run)\s+(?:the\s+)?(?:browser\s+|chromium\s+|live\s+)?sandbox\b/i.test(msgLower) ||
+    /^(?:open\s+sandbox|launch\s+sandbox)$/i.test(msgLower);
   if (isSandboxQuery) {
     const targetHost = domain || 'campuskart.shop';
     const targetUrl = report?.target_url || `https://${targetHost}`;

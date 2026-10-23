@@ -60,6 +60,13 @@ import {
   type UserProfile
 } from '../services/api';
 
+export type CopilotMode =
+  | 'security-analyst'
+  | 'developer-assistant'
+  | 'soc-investigator'
+  | 'security-tutor'
+  | 'incident-responder';
+
 export interface ChatSession {
   id: string;
   title: string;
@@ -67,7 +74,7 @@ export interface ChatSession {
   updatedAt: number;
   messages: ChatMessage[];
   domain?: string | null;
-  securityMode?: 'soc-forensics' | 'speed-triage' | 'code-hardening' | 'general-cyber';
+  securityMode?: CopilotMode;
   isPinned?: boolean;
 }
 
@@ -143,7 +150,7 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [securityMode, setSecurityMode] = useState<'soc-forensics' | 'speed-triage' | 'code-hardening' | 'general-cyber'>('soc-forensics');
+  const [securityMode, setSecurityMode] = useState<CopilotMode>('security-analyst');
   const [showApiKeyModal, setShowApiKeyModal] = useState(false);
   const [showToolsMenu, setShowToolsMenu] = useState(false);
   const [showPlaybooksModal, setShowPlaybooksModal] = useState(false);
@@ -338,12 +345,12 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
     if (targetDomain) {
       return {
         role: 'assistant',
-        content: `👋 **CyberGuard AI Copilot Active**\n\nI have loaded live forensic intelligence for **\`${targetDomain}\`**:\n- **Verdict:** \`${verdict || 'ANALYZED'}\`\n- **Risk Score:** \`${riskScore !== undefined ? `${riskScore}/100` : 'Evaluated'}\`\n- **Security Grade:** \`${grade || 'Active'}\`\n\n${scannedCount > 0 ? `🧠 *Persistent Memory: I remember all ${scannedCount} domains you have audited till now! Ask "which domain I scanned till now" at any time.*\n\n` : ''}Ask me anything: Is it easily hackable? How do I harden Nginx headers? What vulnerabilities does it expose? Or type **\`open sandbox\`** to inspect it in a live headless viewport.`
+        content: `👋 **CyberGuard AI Copilot Active**\n\nI have loaded live forensic intelligence for **\`${targetDomain}\`**:\n- **Verdict:** \`${verdict || 'ANALYZED'}\`\n- **Risk Score:** \`${riskScore !== undefined ? `${riskScore}/100` : 'Evaluated'}\`\n- **Security Grade:** \`${grade || 'Active'}\`\n\n${scannedCount > 0 ? `🧠 *Persistent Memory: I remember all ${scannedCount} domains you have audited till now! Ask "which domain I scanned till now" at any time.*\n\n` : ''}You can ask me to explain the risk score, provide hardening configurations for Nginx/Apache, review code for vulnerabilities, or run a re-audit.`
       };
     }
     return {
       role: 'assistant',
-      content: `👋 **CyberGuard AI Copilot Online**\n\nI am your autonomous defensive cybersecurity analyst and technical AI assistant with live internet telemetry and cross-session scan memory.\n\n${scannedCount > 0 ? `🧠 **Audit Memory Active:** I remember all **${scannedCount}** domains you have scanned till now! Ask **\`which domain I scanned till now\`** to see your complete scan history.\n\n` : ''}Type **\`analyze amazon.in\`** (or any domain) for an instant live audit, ask me to **\`open sandbox\`** to preview any link, or ask any question on web security, DevSecOps, and secure coding!`
+      content: `👋 **CyberGuard AI Copilot Online**\n\nI am your cybersecurity AI analyst and security engineering assistant.\n\n${scannedCount > 0 ? `🧠 **Audit Memory Active:** I remember all **${scannedCount}** domains you have scanned till now!\n\n` : ''}Ask me any cybersecurity question (e.g. *"What is SQL injection?"*, *"Explain XSS"*, *"Write secure FastAPI auth middleware"*), or type **\`Audit example.com\`** for an instant domain security audit!`
     };
   }
 
@@ -730,44 +737,9 @@ Plan Tier | Quota Allocation
 
     let currentContextReport = activeReport;
 
-    // Check if query is asking to audit a domain or contains any domain
-    const domainExtractRegex = /(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9][-a-zA-Z0-9]*\.(?:[a-zA-Z]{2,}|in|co|org|net|com|gov|edu|io|ai|xyz|top|shop|dev|app|cloud|site|tech|online|store)(?:\.[a-zA-Z]{2,})?)/i;
-    const domainMatch = query.match(domainExtractRegex);
-
-    if (domainMatch) {
-      const candidateDomain = domainMatch[1].toLowerCase().replace(/^www\./, '');
-      const currentActiveDomain = ((currentContextReport as any)?.canonical_domain || (currentContextReport as any)?.domain || '').toLowerCase();
-
-      if (candidateDomain && candidateDomain !== currentActiveDomain) {
-        setStatusNotice(`Interrogating authoritative DNS & WHOIS records for ${candidateDomain}...`);
-        try {
-          const freshScanResult = await executeFreeScan(candidateDomain);
-          if (freshScanResult) {
-            currentContextReport = freshScanResult;
-            setActiveReport(freshScanResult);
-            if (onScanReportLoaded) {
-              onScanReportLoaded(freshScanResult);
-            }
-          }
-        } catch (e) {
-          console.warn('Live scan error in chat:', e);
-        }
-      }
-    }
-
     try {
       setStatusNotice(null);
       const chatHistory = newMessages.map(m => ({ role: m.role, content: m.content }));
-      
-      // Prefix prompt with security mode directive if specialized
-      let processedQuery = query;
-      if (securityMode === 'code-hardening') {
-        processedQuery = `[MODE: CODE HARDENING & DEFENSIVE REMEDIATION] ${query}`;
-      } else if (securityMode === 'speed-triage') {
-        processedQuery = `[MODE: RAPID PHISHING TRIAGE & URL SCORING] ${query}`;
-      } else if (securityMode === 'general-cyber') {
-        processedQuery = `[MODE: COMPREHENSIVE CYBERSECURITY EXPERT] ${query}`;
-      }
 
       let scanHistory: any[] = [];
       try {
@@ -775,8 +747,28 @@ Plan Tier | Quota Allocation
         if (raw) scanHistory = JSON.parse(raw);
       } catch {}
 
-      const response = await sendChatMessage(processedQuery, currentContextReport, chatHistory, geminiApiKey, scanHistory);
+      const response = await sendChatMessage(
+        query,
+        currentContextReport,
+        chatHistory,
+        geminiApiKey,
+        scanHistory,
+        securityMode,
+        activeSessionId
+      );
       deductUserCredit().catch(() => {});
+
+      // If the backend executed an explicit domain audit tool, update the active report and notify parent
+      if (response.intent === 'domain_audit' && response.evidence && response.evidence.length > 0) {
+        const scanEvidence = response.evidence.find((e: any) => e.status === 'completed' && e.domain);
+        if (scanEvidence) {
+          setActiveReport(scanEvidence);
+          currentContextReport = scanEvidence;
+          if (onScanReportLoaded) {
+            onScanReportLoaded(scanEvidence as any);
+          }
+        }
+      }
 
       await streamAssistantMessage(response.reply, newMessages, updatedTitle);
     } catch (err) {
@@ -853,24 +845,58 @@ Plan Tier | Quota Allocation
     }
   ];
 
-  // Quick prompt chips
-  const quickPrompts = hasScannedSite && domain ? [
-    { label: 'Show my account & quota details', icon: <User size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
-    { label: `Is ${domain} easily hackable?`, icon: <Shield size={12} color="#ef4444" />, colorClass: 'copilot-chip-rose' },
-    { label: `Give steps to fix ${domain}`, icon: <Terminal size={12} color="#10b981" />, colorClass: 'copilot-chip-emerald' },
-    { label: `Hardening headers for ${domain}`, icon: <Terminal size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
-    { label: `Explain ${domain} risk score`, icon: <Zap size={12} color="#f59e0b" />, colorClass: 'copilot-chip-amber' },
-    { label: 'How to prevent code injection & SQLi?', icon: <Lock size={12} color="#a855f7" />, colorClass: 'copilot-chip-purple' },
-    { label: 'Launch live Chromium sandbox', icon: <Sparkles size={12} color="#38bdf8" />, colorClass: 'copilot-chip-sky' }
-  ] : [
-    { label: 'Show my account & quota details', icon: <User size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
-    { label: 'How do I audit my website?', icon: <Shield size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
-    { label: 'What vulnerabilities does CyberGuard test for?', icon: <Zap size={12} color="#f59e0b" />, colorClass: 'copilot-chip-amber' },
-    { label: 'Show general Nginx hardening config', icon: <Terminal size={12} color="#10b981" />, colorClass: 'copilot-chip-emerald' },
-    { label: 'How to prevent code injection & SQLi?', icon: <Lock size={12} color="#a855f7" />, colorClass: 'copilot-chip-purple' },
-    { label: 'How does DNS Spoofing / Rebinding work?', icon: <Globe size={12} color="#38bdf8" />, colorClass: 'copilot-chip-sky' },
-    { label: 'Launch live Chromium sandbox', icon: <Sparkles size={12} color="#ec4899" />, colorClass: 'copilot-chip-rose' }
-  ];
+  // Context-Aware Quick Prompt Chips
+  const quickPrompts = (() => {
+    if (securityMode === 'developer-assistant') {
+      return [
+        { label: 'Write secure FastAPI auth middleware', icon: <Terminal size={12} color="#10b981" />, colorClass: 'copilot-chip-emerald' },
+        { label: 'Generate strict CSP header', icon: <Shield size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
+        { label: 'Show SQL injection defense in Python', icon: <Lock size={12} color="#a855f7" />, colorClass: 'copilot-chip-purple' },
+        { label: 'Generate hardened Nginx config', icon: <Terminal size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
+        { label: 'Review this code for vulnerabilities', icon: <Zap size={12} color="#f59e0b" />, colorClass: 'copilot-chip-amber' }
+      ];
+    }
+    if (securityMode === 'incident-responder') {
+      return [
+        { label: 'Ransomware containment checklist', icon: <Shield size={12} color="#ef4444" />, colorClass: 'copilot-chip-rose' },
+        { label: 'Volatile memory acquisition steps', icon: <Terminal size={12} color="#10b981" />, colorClass: 'copilot-chip-emerald' },
+        { label: 'Revoking compromised AWS IAM keys', icon: <Lock size={12} color="#a855f7" />, colorClass: 'copilot-chip-purple' },
+        { label: 'Post-incident evidence preservation', icon: <Zap size={12} color="#f59e0b" />, colorClass: 'copilot-chip-amber' }
+      ];
+    }
+    if (securityMode === 'soc-investigator') {
+      return [
+        { label: 'Show threat stats', icon: <Zap size={12} color="#f59e0b" />, colorClass: 'copilot-chip-amber' },
+        { label: 'Correlate SIEM Event IDs for Kerberoasting', icon: <Shield size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
+        { label: 'Analyze phishing email indicators', icon: <Lock size={12} color="#a855f7" />, colorClass: 'copilot-chip-purple' },
+        { label: 'Which domains have I scanned?', icon: <User size={12} color="#10b981" />, colorClass: 'copilot-chip-emerald' }
+      ];
+    }
+    if (securityMode === 'security-tutor') {
+      return [
+        { label: 'Explain SQL injection from scratch', icon: <Lock size={12} color="#a855f7" />, colorClass: 'copilot-chip-purple' },
+        { label: 'What is Zero Trust architecture?', icon: <Shield size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
+        { label: 'How does DNS rebinding work?', icon: <Globe size={12} color="#38bdf8" />, colorClass: 'copilot-chip-sky' },
+        { label: 'Explain RSA vs ECC cryptography', icon: <Zap size={12} color="#f59e0b" />, colorClass: 'copilot-chip-amber' }
+      ];
+    }
+    if (hasScannedSite && domain) {
+      return [
+        { label: `Is ${domain} easily hackable?`, icon: <Shield size={12} color="#ef4444" />, colorClass: 'copilot-chip-rose' },
+        { label: `Give steps to fix ${domain}`, icon: <Terminal size={12} color="#10b981" />, colorClass: 'copilot-chip-emerald' },
+        { label: `Hardening headers for ${domain}`, icon: <Terminal size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
+        { label: `Explain ${domain} risk score`, icon: <Zap size={12} color="#f59e0b" />, colorClass: 'copilot-chip-amber' },
+        { label: 'Compare with previous scan', icon: <User size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' }
+      ];
+    }
+    return [
+      { label: 'What is SQL injection?', icon: <Lock size={12} color="#a855f7" />, colorClass: 'copilot-chip-purple' },
+      { label: 'Explain XSS and CSP defenses', icon: <Shield size={12} color="var(--accent-cyan)" />, colorClass: 'copilot-chip-cyan' },
+      { label: 'Write secure FastAPI auth middleware', icon: <Terminal size={12} color="#10b981" />, colorClass: 'copilot-chip-emerald' },
+      { label: 'What is Zero Trust architecture?', icon: <Zap size={12} color="#f59e0b" />, colorClass: 'copilot-chip-amber' },
+      { label: 'Audit example.com', icon: <Globe size={12} color="#38bdf8" />, colorClass: 'copilot-chip-sky' }
+    ];
+  })();
 
   // Interactive Live Chromium Sandbox Component
   const InteractiveChatSandbox: React.FC<{ initialUrl: string }> = ({ initialUrl }) => {
@@ -2138,10 +2164,11 @@ Plan Tier | Quota Allocation
             }}
             title="Switch Copilot Intelligence Mode"
           >
-            <option value="soc-forensics">🛡️ SOC Forensics</option>
-            <option value="speed-triage">⚡ Phishing Triage</option>
-            <option value="code-hardening">🛠️ Code & Hardening</option>
-            <option value="general-cyber">🧠 General Cyber AI</option>
+            <option value="security-analyst">🛡️ Security Analyst</option>
+            <option value="developer-assistant">💻 Developer Assistant</option>
+            <option value="soc-investigator">🔍 SOC Investigator</option>
+            <option value="security-tutor">🎓 Security Tutor</option>
+            <option value="incident-responder">🚨 Incident Responder</option>
           </select>
 
           {/* Export Chat */}

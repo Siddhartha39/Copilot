@@ -245,10 +245,18 @@ class ChatRequest(BaseModel):
     history: Optional[List[ChatMessage]] = Field(default_factory=list)
     api_key: Optional[str] = None
     scan_history: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
+    mode: Optional[str] = "security-analyst"
+    session_id: Optional[str] = None
 
 class ChatResponse(BaseModel):
     reply: str
     suggested_actions: Optional[List[str]] = Field(default_factory=list)
+    intent: Optional[str] = "general_security_question"
+    tool_calls: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
+    evidence: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
+    code_blocks: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
+    citations: Optional[List[str]] = Field(default_factory=list)
+    status: Optional[str] = "completed"
 
 class BulkScanRequest(BaseModel):
     urls: List[str]
