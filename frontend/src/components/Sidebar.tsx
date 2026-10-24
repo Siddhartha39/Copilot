@@ -83,7 +83,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           if (onCloseMobile) onCloseMobile();
         }}
         style={{
-          background: '#FFD93D',
+          background: '#38BDF8',
           border: '3px solid #000000',
           borderRadius: '0px',
           boxShadow: '4px 4px 0px 0px #000000',
@@ -108,7 +108,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             flexShrink: 0
           }}
         >
-          <Shield size={24} color="#FFD93D" strokeWidth={2.6} />
+          <Shield size={24} color="#38BDF8" strokeWidth={2.6} />
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -205,7 +205,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 padding: '10px 14px',
                 borderRadius: '0px',
                 border: '3px solid #000000',
-                background: isActive ? '#FFD93D' : '#FFFFFF',
+                background: isActive ? '#38BDF8' : '#FFFFFF',
                 boxShadow: isActive ? '5px 5px 0px 0px #000000' : '3px 3px 0px 0px #000000',
                 color: '#000000',
                 cursor: 'pointer',
@@ -232,7 +232,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               >
                 <Icon
                   size={16}
-                  color={isActive ? '#FFD93D' : '#000000'}
+                  color={isActive ? '#38BDF8' : '#000000'}
                   strokeWidth={2.6}
                 />
               </div>
@@ -301,7 +301,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             flexShrink: 0
           }}
         >
-          <Cpu size={15} color="#FFD93D" strokeWidth={2.6} />
+          <Cpu size={15} color="#38BDF8" strokeWidth={2.6} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: '0.74rem', fontWeight: 900, color: '#000000', fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase' }}>

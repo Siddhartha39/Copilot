@@ -166,7 +166,7 @@ async function handleRequest(request) {
             Security Assessment: {result.canonical_domain}
           </h2>
           <div className="mono" style={{ fontSize: '0.78rem', color: '#334155', marginTop: '2px' }}>
-            Target: <span style={{ color: '#000000', background: '#FFD93D', padding: '1px 6px', border: '1px solid #000000', fontWeight: 800 }}>{result.target_url}</span>
+            Target: <span style={{ color: '#000000', background: '#38BDF8', padding: '1px 6px', border: '1px solid #000000', fontWeight: 800 }}>{result.target_url}</span>
           </div>
         </div>
 
@@ -174,7 +174,7 @@ async function handleRequest(request) {
           <button
             onClick={onUnlockDeepAudit}
             style={{
-              background: '#FFD93D',
+              background: '#38BDF8',
               color: '#000000',
               border: '2.5px solid #000000',
               borderRadius: '0px',
@@ -239,7 +239,7 @@ async function handleRequest(request) {
             <span style={{ fontSize: '2rem', fontWeight: 900, color: gradeColor }}>
               {securityGrade}
             </span>
-            <span style={{ fontSize: '0.78rem', background: '#FFD93D', border: '1.5px solid #000000', padding: '3px 8px', fontWeight: 900 }}>
+            <span style={{ fontSize: '0.78rem', background: '#38BDF8', border: '1.5px solid #000000', padding: '3px 8px', fontWeight: 900 }}>
               {audit ? `${audit.score_percentage}% Pass` : (hasHsts ? 'Standard TLS' : 'Hardening Req.')}
             </span>
           </div>
@@ -363,7 +363,7 @@ async function handleRequest(request) {
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span className="mono" style={{ fontWeight: 800, fontSize: '0.88rem', color: '#000000' }}>Content-Security-Policy (CSP)</span>
-                  <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '0px', fontWeight: 900, border: '1.5px solid #000000', background: hasCsp ? '#6BCB77' : '#FFD93D', color: '#000000' }}>
+                  <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '0px', fontWeight: 900, border: '1.5px solid #000000', background: hasCsp ? '#6BCB77' : '#38BDF8', color: '#000000' }}>
                     {hasCsp ? 'PASS' : 'WARNING'}
                   </span>
                 </div>
@@ -454,7 +454,7 @@ async function handleRequest(request) {
                   key={tab}
                   onClick={() => setSelectedSnippetTab(tab)}
                   style={{
-                    background: selectedSnippetTab === tab ? '#FFD93D' : '#FFFDF5',
+                    background: selectedSnippetTab === tab ? '#38BDF8' : '#FFFDF5',
                     color: '#000000',
                     border: '2px solid #000000',
                     borderRadius: '0px',
@@ -497,7 +497,7 @@ async function handleRequest(request) {
                 position: 'absolute',
                 top: '12px',
                 right: '12px',
-                background: copiedKey === selectedSnippetTab ? '#6BCB77' : '#FFD93D',
+                background: copiedKey === selectedSnippetTab ? '#6BCB77' : '#38BDF8',
                 color: '#000000',
                 border: '2px solid #000000',
                 boxShadow: '2px 2px 0px 0px #000000',
@@ -716,7 +716,7 @@ async function handleRequest(request) {
           <button
             onClick={onUnlockDeepAudit}
             style={{
-              background: '#FFD93D',
+              background: '#38BDF8',
               color: '#000000',
               border: '3px solid #000000',
               borderRadius: '0px',

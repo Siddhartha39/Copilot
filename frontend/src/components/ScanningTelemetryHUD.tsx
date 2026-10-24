@@ -162,7 +162,7 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           {/* Animated Pulsing Radar Spinner */}
           <div style={{
-            background: '#FFD93D',
+            background: '#38BDF8',
             border: '2.5px solid #000000',
             padding: '10px',
             borderRadius: '0px',
@@ -182,7 +182,7 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
               </h3>
               <span className="mono" style={{
                 fontSize: '0.7rem',
-                background: isDeep ? '#C4B5FD' : '#FFD93D',
+                background: isDeep ? '#C4B5FD' : '#38BDF8',
                 border: '2px solid #000000',
                 color: '#000000',
                 padding: '3px 10px',
@@ -196,7 +196,7 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
             </div>
 
             <div className="mono" style={{ fontSize: '0.8rem', color: '#334155', marginTop: '4px' }}>
-              INSPECTING TARGET: <span style={{ color: '#000000', background: '#FFD93D', padding: '1px 6px', border: '1px solid #000000', fontWeight: 800 }}>{targetUrl}</span>
+              INSPECTING TARGET: <span style={{ color: '#000000', background: '#38BDF8', padding: '1px 6px', border: '1px solid #000000', fontWeight: 800 }}>{targetUrl}</span>
             </div>
           </div>
         </div>
@@ -297,7 +297,7 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #333333', paddingBottom: '6px', marginBottom: '8px' }}>
-            <span style={{ color: '#FFD93D', fontWeight: 800, fontSize: '0.74rem' }}>
+            <span style={{ color: '#38BDF8', fontWeight: 800, fontSize: '0.74rem' }}>
               &gt; CYBERGUARD EXECUTION LOG
             </span>
             <span style={{ color: '#10b981', fontSize: '0.7rem', fontWeight: 800 }}>STREAM ACTIVE</span>
@@ -334,7 +334,7 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
           transition={{ duration: 0.2, ease: 'easeOut' }}
           style={{
             height: '100%',
-            background: 'linear-gradient(90deg, #4D96FF 0%, #FFD93D 50%, #6BCB77 100%)',
+            background: 'linear-gradient(90deg, #4D96FF 0%, #38BDF8 50%, #6BCB77 100%)',
             borderRight: '2px solid #000000'
           }}
         />

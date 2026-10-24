@@ -342,12 +342,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           display: 'flex',
           alignItems: 'center',
           gap: '14px',
-          background: '#FFD93D',
+          background: '#38BDF8',
           border: '4px solid #000000',
           boxShadow: '6px 6px 0px 0px #000000'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, background: '#000000', color: '#FFD93D', padding: '4px 10px', border: '2px solid #000000' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, background: '#000000', color: '#38BDF8', padding: '4px 10px', border: '2px solid #000000' }}>
           <span style={{ width: '8px', height: '8px', borderRadius: '0px', backgroundColor: '#FF6B6B', display: 'inline-block' }}></span>
           <span style={{ fontSize: '0.76rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '0.06em', textTransform: 'uppercase' }}>
             LIVE THREAT TELEMETRY
@@ -411,7 +411,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            background: '#FFD93D',
+            background: '#38BDF8',
             border: '3px solid #000000',
             boxShadow: '4px 4px 0px 0px #000000',
             borderRadius: '0px',
@@ -611,7 +611,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '0px 0px 0px 0px #000000' }}
               type="submit"
               style={{
-                background: '#FFD93D',
+                background: '#38BDF8',
                 color: '#000000',
                 border: '3px solid #000000',
                 borderRadius: '0px',
@@ -667,7 +667,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     borderRadius: '0px',
                     fontWeight: 900,
                     border: '1.5px solid #000000',
-                    background: s.type === 'phish' ? '#FF6B6B' : s.type === 'hardened' ? '#FFD93D' : '#C4B5FD',
+                    background: s.type === 'phish' ? '#FF6B6B' : s.type === 'hardened' ? '#38BDF8' : '#C4B5FD',
                     color: '#000000'
                   }}
                 >
@@ -681,7 +681,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '14px' }}>
             <Zap size={15} color="#000000" strokeWidth={2.8} />
             <span style={{ fontSize: '0.78rem', color: '#000000', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.03em' }}>
-              100% Free &amp; Open Access • Full Headless Sandbox, Brand pHash Vision &amp; CyberAI <span style={{ background: '#FFD93D', padding: '1px 6px', border: '1.5px solid #000000' }}>Unlocked (No Paywalls)</span>
+              100% Free &amp; Open Access • Full Headless Sandbox, Brand pHash Vision &amp; CyberAI <span style={{ background: '#38BDF8', padding: '1px 6px', border: '1.5px solid #000000' }}>Unlocked (No Paywalls)</span>
             </span>
           </div>
         </motion.div>
@@ -806,7 +806,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               fontSize: '0.74rem',
               padding: '4px 12px',
               borderRadius: '0px',
-              background: '#FFD93D',
+              background: '#38BDF8',
               border: '2px solid #000000',
               boxShadow: '2px 2px 0px 0px #000000',
               fontWeight: 900,
@@ -829,7 +829,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '1px 1px 0px 0px #000000' }}
                 onClick={() => setActivePipelineStep(idx)}
                 style={{
-                  background: isSelected ? '#FFD93D' : '#FFFDF5',
+                  background: isSelected ? '#38BDF8' : '#FFFDF5',
                   border: isSelected ? '4px solid #000000' : '3px solid #000000',
                   borderRadius: '0px',
                   padding: '14px 14px',
@@ -998,7 +998,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             whileTap={{ transform: 'translate(2px, 2px)' }}
             onClick={() => setCardViewMode('stack')}
             style={{
-              background: cardViewMode === 'stack' ? '#FFD93D' : 'transparent',
+              background: cardViewMode === 'stack' ? '#38BDF8' : 'transparent',
               color: '#000000',
               border: cardViewMode === 'stack' ? '2px solid #000000' : 'none',
               borderRadius: '0px',
@@ -1023,7 +1023,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             whileTap={{ transform: 'translate(2px, 2px)' }}
             onClick={() => setCardViewMode('grid')}
             style={{
-              background: cardViewMode === 'grid' ? '#FFD93D' : 'transparent',
+              background: cardViewMode === 'grid' ? '#38BDF8' : 'transparent',
               color: '#000000',
               border: cardViewMode === 'grid' ? '2px solid #000000' : 'none',
               borderRadius: '0px',
@@ -1089,7 +1089,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           {capabilityCards.map((card, index) => {
             const subtitleColor = '#000000';
             const quoteColor = '#000000';
-            const quoteBg = '#FFD93D';
+            const quoteBg = '#38BDF8';
             const rightBoxBg = '#FFFDF5';
             const rightBoxBorder = '3px solid #000000';
             const tagBg = '#FFFDF5';
@@ -1120,7 +1120,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px solid #000000', paddingBottom: '16px', marginBottom: '22px', flexWrap: 'wrap', gap: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <div style={{
-                      background: '#FFD93D',
+                      background: '#38BDF8',
                       border: '3px solid #000000',
                       padding: '12px',
                       borderRadius: '0px',
@@ -1184,7 +1184,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     </div>
 
                     <div style={{ fontSize: '0.76rem', color: labelColor, fontWeight: 800, textTransform: 'uppercase' }}>
-                      • Status: <span style={{ background: '#FFD93D', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>ACTIVE FORENSIC LAYER</span> // Latency: <span style={{ background: '#C4B5FD', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>Sub-second</span>
+                      • Status: <span style={{ background: '#38BDF8', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>ACTIVE FORENSIC LAYER</span> // Latency: <span style={{ background: '#C4B5FD', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>Sub-second</span>
                     </div>
                   </div>
 
@@ -1280,7 +1280,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '14px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <div style={{
-                        background: '#FFD93D',
+                        background: '#38BDF8',
                         border: '3px solid #000000',
                         padding: '10px',
                         borderRadius: '0px',
@@ -1338,7 +1338,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       fontSize: '0.8rem',
                       fontWeight: 900,
                       color: '#000000',
-                      background: '#FFD93D',
+                      background: '#38BDF8',
                       padding: '10px 14px',
                       borderRadius: '0px',
                       border: '2px solid #000000',

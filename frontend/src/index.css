@@ -5,7 +5,7 @@
   --neo-bg: #FFFDF5;
   --neo-ink: #000000;
   --neo-accent: #FF6B6B;     /* Hot Red */
-  --neo-secondary: #FFD93D;  /* Vivid Yellow */
+  --neo-secondary: #38BDF8;  /* Sky Blue */
   --neo-muted: #C4B5FD;      /* Soft Violet */
   --neo-blue: #4D96FF;       /* Electric Blue */
   --neo-green: #6BCB77;      /* Vivid Green */
@@ -26,11 +26,11 @@
   --border-focus: #000000;
 
   --accent-cyan: #000000;
-  --accent-green: #FFD93D;
+  --accent-green: #38BDF8;
   --accent-blue: #C4B5FD;
   --threat-critical: #FF6B6B;
   --threat-high: #FF6B6B;
-  --threat-medium: #FFD93D;
+  --threat-medium: #38BDF8;
   --threat-safe: #C4B5FD;
 
   --text-primary: #000000;
@@ -56,11 +56,11 @@
   --border-focus: #000000;
 
   --accent-cyan: #000000;
-  --accent-green: #FFD93D;
+  --accent-green: #38BDF8;
   --accent-blue: #C4B5FD;
   --threat-critical: #FF6B6B;
   --threat-high: #FF6B6B;
-  --threat-medium: #FFD93D;
+  --threat-medium: #38BDF8;
   --threat-safe: #C4B5FD;
 
   --text-primary: #000000;
@@ -79,34 +79,34 @@
   --neo-bg: #121212;
   --neo-ink: #FFFFFF;
   --neo-accent: #FF6B6B;
-  --neo-secondary: #FFD93D;
+  --neo-secondary: #38BDF8;
   --neo-muted: #C4B5FD;
   --neo-white: #1A1A1A;
   --neo-border: 4px solid #FFFFFF;
-  --neo-shadow-sm: 4px 4px 0px 0px #FFD93D;
-  --neo-shadow-md: 8px 8px 0px 0px #FFD93D;
-  --neo-shadow-lg: 12px 12px 0px 0px #FFD93D;
+  --neo-shadow-sm: 4px 4px 0px 0px #38BDF8;
+  --neo-shadow-md: 8px 8px 0px 0px #38BDF8;
+  --neo-shadow-lg: 12px 12px 0px 0px #38BDF8;
 
   --bg-primary: #121212;
   --bg-secondary: #1E1E1E;
   --bg-card: #1A1A1A;
   --bg-card-hover: #222222;
   --border-color: #FFFFFF;
-  --border-focus: #FFD93D;
+  --border-focus: #38BDF8;
 
-  --accent-cyan: #FFD93D;
-  --accent-green: #FFD93D;
+  --accent-cyan: #38BDF8;
+  --accent-green: #38BDF8;
   --accent-blue: #C4B5FD;
   --threat-critical: #FF6B6B;
   --threat-high: #FF6B6B;
-  --threat-medium: #FFD93D;
+  --threat-medium: #38BDF8;
   --threat-safe: #C4B5FD;
 
   --text-primary: #FFFFFF;
   --text-secondary: #F3F4F6;
   --text-muted: #E5E7EB;
 
-  --panel-shadow: 8px 8px 0px 0px #FFD93D;
+  --panel-shadow: 8px 8px 0px 0px #38BDF8;
   --panel-shadow-hover: 12px 12px 0px 0px #FFFFFF;
   --hero-bg: #121212;
   --code-box-bg: #1A1A1A;
@@ -312,7 +312,7 @@ button:active {
 }
 
 .badge-medium {
-  background: #FFD93D !important;
+  background: #38BDF8 !important;
   color: #000000 !important;
   border: 3px solid #000000 !important;
   border-radius: 0px !important;
@@ -334,7 +334,7 @@ button:active {
 }
 
 .badge-info {
-  background: #FFD93D !important;
+  background: #38BDF8 !important;
   color: #000000 !important;
   border: 3px solid #000000 !important;
   border-radius: 0px !important;
@@ -361,7 +361,7 @@ body.light-theme .badge-high {
 
 [data-theme="light"] .badge-medium,
 body.light-theme .badge-medium {
-  background: #FFD93D !important;
+  background: #38BDF8 !important;
   color: #000000 !important;
   border: 3px solid #000000 !important;
 }
@@ -375,7 +375,7 @@ body.light-theme .badge-safe {
 
 [data-theme="light"] .badge-info,
 body.light-theme .badge-info {
-  background: #FFD93D !important;
+  background: #38BDF8 !important;
   color: #000000 !important;
   border: 3px solid #000000 !important;
 }
@@ -603,7 +603,7 @@ body.light-theme .card-stack-item:hover {
 }
 
 .neo-btn-secondary {
-  background: #FFD93D;
+  background: #38BDF8;
   color: #000000;
 }
 .neo-btn-secondary:hover {
@@ -656,7 +656,7 @@ body.light-theme .card-stack-item:hover {
   transition: background 0.1s ease, box-shadow 0.1s ease;
 }
 .neo-input:focus {
-  background: #FFD93D;
+  background: #38BDF8;
   box-shadow: 6px 6px 0px 0px #000000;
 }
 
@@ -788,7 +788,7 @@ body.light-theme ::-webkit-scrollbar-thumb {
 
 /* Chatbot Floating Launcher */
 .copilot-launcher-btn {
-  background: #FFD93D !important;
+  background: #38BDF8 !important;
   color: #000000 !important;
   border: 4px solid #000000 !important;
   border-radius: 0px !important;
@@ -815,16 +815,16 @@ body.light-theme ::-webkit-scrollbar-thumb {
 
 [data-theme="dark"]:not(.light-theme) .copilot-launcher-btn,
 body:not(.light-theme) .copilot-launcher-btn {
-  background: #FFD93D !important;
+  background: #38BDF8 !important;
   color: #000000 !important;
   border: 4px solid #FFFFFF !important;
-  box-shadow: 6px 6px 0px 0px #FFD93D !important;
+  box-shadow: 6px 6px 0px 0px #38BDF8 !important;
 }
 
 [data-theme="dark"]:not(.light-theme) .copilot-launcher-btn:hover,
 body:not(.light-theme) .copilot-launcher-btn:hover {
   transform: translateY(-3px) !important;
-  box-shadow: 8px 8px 0px 0px #FFD93D !important;
+  box-shadow: 8px 8px 0px 0px #38BDF8 !important;
 }
 
 /* Chatbot Window */
@@ -842,7 +842,7 @@ body:not(.light-theme) .copilot-launcher-btn:hover {
 body:not(.light-theme) .copilot-chat-window {
   background: #181818 !important;
   border: 4px solid #FFFFFF !important;
-  box-shadow: 12px 12px 0px 0px #FFD93D !important;
+  box-shadow: 12px 12px 0px 0px #38BDF8 !important;
 }
 
 /* Top Hazard / Neo-Brutalist Border Bar */
@@ -850,19 +850,19 @@ body:not(.light-theme) .copilot-chat-window {
   height: 6px !important;
   width: 100% !important;
   flex-shrink: 0 !important;
-  background: repeating-linear-gradient(45deg, #000000, #000000 8px, #FFD93D 8px, #FFD93D 16px) !important;
+  background: repeating-linear-gradient(45deg, #000000, #000000 8px, #38BDF8 8px, #38BDF8 16px) !important;
   border-bottom: 2px solid #000000 !important;
 }
 
 [data-theme="dark"]:not(.light-theme) .copilot-top-prismatic-bar,
 body:not(.light-theme) .copilot-top-prismatic-bar {
-  background: repeating-linear-gradient(45deg, #FFFFFF, #FFFFFF 8px, #FFD93D 8px, #FFD93D 16px) !important;
+  background: repeating-linear-gradient(45deg, #FFFFFF, #FFFFFF 8px, #38BDF8 8px, #38BDF8 16px) !important;
   border-bottom: 2px solid #FFFFFF !important;
 }
 
 /* Chatbot Header */
 .copilot-header-bar {
-  background: #FFD93D !important;
+  background: #38BDF8 !important;
   border-bottom: 3.5px solid #000000 !important;
   color: #000000 !important;
   backdrop-filter: none !important;
@@ -871,7 +871,7 @@ body:not(.light-theme) .copilot-top-prismatic-bar {
 
 [data-theme="dark"]:not(.light-theme) .copilot-header-bar,
 body:not(.light-theme) .copilot-header-bar {
-  background: #FFD93D !important;
+  background: #38BDF8 !important;
   border-bottom: 3.5px solid #FFFFFF !important;
   color: #000000 !important;
 }
@@ -901,7 +901,7 @@ body:not(.light-theme) .copilot-user-bubble {
   background: #4D96FF !important;
   color: #000000 !important;
   border: 3px solid #FFFFFF !important;
-  box-shadow: 4px 4px 0px 0px #FFD93D !important;
+  box-shadow: 4px 4px 0px 0px #38BDF8 !important;
 }
 
 /* Message Bubbles: Assistant (Copilot) */
@@ -920,7 +920,7 @@ body:not(.light-theme) .copilot-assistant-bubble {
   background: #1E1E1E !important;
   color: #FFFFFF !important;
   border: 3px solid #FFFFFF !important;
-  box-shadow: 4px 4px 0px 0px #FFD93D !important;
+  box-shadow: 4px 4px 0px 0px #38BDF8 !important;
 }
 
 /* ChatGPT-Style Streaming Cursor */
@@ -941,7 +941,7 @@ body:not(.light-theme) .copilot-assistant-bubble {
 
 [data-theme="dark"]:not(.light-theme) .copilot-stream-cursor,
 body:not(.light-theme) .copilot-stream-cursor {
-  background: #FFD93D;
+  background: #38BDF8;
 }
 
 /* Quick Prompt Chip Pills */
@@ -974,12 +974,12 @@ body:not(.light-theme) .copilot-stream-cursor {
 [data-theme="dark"]:not(.light-theme) .copilot-prompt-chip,
 body:not(.light-theme) .copilot-prompt-chip {
   border: 2.5px solid #FFFFFF !important;
-  box-shadow: 3px 3px 0px 0px #FFD93D !important;
+  box-shadow: 3px 3px 0px 0px #38BDF8 !important;
 }
 
 [data-theme="dark"]:not(.light-theme) .copilot-prompt-chip:hover,
 body:not(.light-theme) .copilot-prompt-chip:hover {
-  box-shadow: 4px 4px 0px 0px #FFD93D !important;
+  box-shadow: 4px 4px 0px 0px #38BDF8 !important;
 }
 
 /* Color variations for chips (Neo-Brutalism palette) */
@@ -992,7 +992,7 @@ body:not(.light-theme) .copilot-prompt-chip:hover {
   color: #000000 !important;
 }
 .copilot-chip-amber {
-  background: #FFD93D !important;
+  background: #38BDF8 !important;
   color: #000000 !important;
 }
 .copilot-chip-purple {
@@ -1083,7 +1083,7 @@ body:not(.light-theme) .copilot-history-item:hover {
 }
 
 .copilot-history-item.active {
-  background: #FFD93D !important;
+  background: #38BDF8 !important;
   border: 2px solid #000000 !important;
   box-shadow: 3px 3px 0px 0px #000000 !important;
   color: #000000 !important;
@@ -1092,9 +1092,9 @@ body:not(.light-theme) .copilot-history-item:hover {
 
 [data-theme="dark"]:not(.light-theme) .copilot-history-item.active,
 body:not(.light-theme) .copilot-history-item.active {
-  background: #FFD93D !important;
+  background: #38BDF8 !important;
   border: 2px solid #FFFFFF !important;
-  box-shadow: 3px 3px 0px 0px #FFD93D !important;
+  box-shadow: 3px 3px 0px 0px #38BDF8 !important;
   color: #000000 !important;
 }
 
@@ -1208,7 +1208,7 @@ body:not(.light-theme) .neomorphic-scanner-zone .glass-panel,
 body:not(.light-theme) .neo-scanner-zone .glass-panel {
   background: #1A1A1A !important;
   border: 4px solid #FFFFFF !important;
-  box-shadow: 8px 8px 0px 0px #FFD93D !important;
+  box-shadow: 8px 8px 0px 0px #38BDF8 !important;
   color: #FFFFFF !important;
 }
 
@@ -1227,7 +1227,7 @@ body:not(.light-theme) .neo-scanner-zone .glass-panel {
 body:not(.light-theme) .neomorphic-scanner-zone input,
 body:not(.light-theme) .neo-scanner-zone input {
   border: 3px solid #FFFFFF !important;
-  box-shadow: 4px 4px 0px 0px #FFD93D !important;
+  box-shadow: 4px 4px 0px 0px #38BDF8 !important;
   background: #1A1A1A !important;
   color: #FFFFFF !important;
 }
@@ -1246,7 +1246,7 @@ body:not(.light-theme) .neo-scanner-zone input {
 body:not(.light-theme) .neomorphic-scanner-zone select,
 body:not(.light-theme) .neo-scanner-zone select {
   border: 2px solid #FFFFFF !important;
-  box-shadow: 3px 3px 0px 0px #FFD93D !important;
+  box-shadow: 3px 3px 0px 0px #38BDF8 !important;
   background: #1A1A1A !important;
   color: #FFFFFF !important;
 }
@@ -1271,7 +1271,7 @@ body:not(.light-theme) .neomorphic-scanner-zone code,
 body:not(.light-theme) .neo-scanner-zone pre,
 body:not(.light-theme) .neo-scanner-zone code {
   border: 2px solid #FFFFFF !important;
-  box-shadow: 3px 3px 0px 0px #FFD93D !important;
+  box-shadow: 3px 3px 0px 0px #38BDF8 !important;
 }
 
 

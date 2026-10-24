@@ -38,7 +38,7 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, current
               width: '34px',
               height: '34px',
               borderRadius: '0px',
-              background: '#FFD93D',
+              background: '#38BDF8',
               border: '2.5px solid #000000',
               boxShadow: '2px 2px 0px 0px #000000',
               display: 'flex',
@@ -95,12 +95,12 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, current
 
           if (isRunning) {
             StatusIcon = Loader2;
-            iconColor = '#FFD93D';
+            iconColor = '#38BDF8';
             iconBg = '#000000';
           } else if (isWarning) {
             StatusIcon = AlertTriangle;
             iconColor = '#000000';
-            iconBg = '#FFD93D';
+            iconBg = '#38BDF8';
           } else if (isLocked) {
             StatusIcon = Lock;
             iconColor = '#000000';

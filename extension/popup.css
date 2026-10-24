@@ -28,7 +28,7 @@ body {
   align-items: center;
   margin-bottom: 10px;
   gap: 8px;
-  background: #FFD93D;
+  background: #38BDF8;
   border: 3px solid #000000;
   box-shadow: 4px 4px 0px 0px #000000;
   padding: 8px 10px;
@@ -131,7 +131,7 @@ body {
 }
 
 .badge-warning {
-  background: #FFD93D;
+  background: #38BDF8;
 }
 
 .badge-danger {
@@ -526,7 +526,7 @@ body {
 }
 
 .btn-secondary {
-  background: #FFD93D;
+  background: #38BDF8;
   color: #000000;
   box-shadow: 3.5px 3.5px 0px 0px #000000;
 }
@@ -540,7 +540,7 @@ body {
   bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
-  background: #FFD93D;
+  background: #38BDF8;
   color: #000000;
   border: 2.5px solid #000000;
   box-shadow: 3px 3px 0px 0px #000000;

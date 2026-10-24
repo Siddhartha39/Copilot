@@ -98,7 +98,7 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
               width: '46px',
               height: '46px',
               borderRadius: '0px',
-              background: '#FFD93D',
+              background: '#38BDF8',
               border: '3px solid #000000',
               boxShadow: '3px 3px 0px 0px #000000',
               display: 'flex',
@@ -140,7 +140,7 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
               </span>
             </div>
             <div style={{ fontSize: '0.8rem', color: '#334155', marginTop: '4px', fontWeight: 600 }}>
-              Target: <span style={{ color: '#000000', fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", background: '#FFD93D', padding: '2px 8px', border: '1.5px solid #000000' }}>{targetUrl || 'Ready for URL analysis'}</span>
+              Target: <span style={{ color: '#000000', fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", background: '#38BDF8', padding: '2px 8px', border: '1.5px solid #000000' }}>{targetUrl || 'Ready for URL analysis'}</span>
             </div>
           </div>
         </div>
@@ -181,12 +181,12 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
 
           if (isRunning) {
             StatusIcon = Loader2;
-            iconColor = '#FFD93D';
+            iconColor = '#38BDF8';
             iconBg = '#000000';
           } else if (step.status === 'paused_for_payment') {
             StatusIcon = Coins;
             iconColor = '#000000';
-            iconBg = '#FFD93D';
+            iconBg = '#38BDF8';
           } else if (!isCompleted) {
             StatusIcon = Cpu;
             iconColor = '#64748B';
@@ -216,7 +216,7 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
                       fontSize: '0.7rem',
                       fontWeight: 900,
                       color: isRunning ? '#000000' : (isCompleted ? '#000000' : '#FFFFFF'),
-                      background: isRunning ? '#FFD93D' : (isCompleted ? '#6BCB77' : '#000000'),
+                      background: isRunning ? '#38BDF8' : (isCompleted ? '#6BCB77' : '#000000'),
                       border: '1.5px solid #000000',
                       boxShadow: '2px 2px 0px 0px #000000',
                       padding: '2px 8px',

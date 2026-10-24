@@ -1122,7 +1122,7 @@ Plan Tier | Quota Allocation
               justifyContent: 'space-between',
               alignItems: 'center',
               padding: '6px 12px',
-              background: '#FFD93D',
+              background: '#38BDF8',
               borderBottom: '2px solid #000000',
               fontSize: '0.72rem',
               color: '#000000',
@@ -1258,7 +1258,7 @@ Plan Tier | Quota Allocation
             key={`${inlineKeyPrefix}-cd-${tIdx}`}
             className="mono"
             style={{
-              background: '#FFD93D',
+              background: '#38BDF8',
               border: '1.5px solid #000000',
               padding: '1px 6px',
               borderRadius: '0px',
@@ -1312,7 +1312,7 @@ Plan Tier | Quota Allocation
       const score = parseInt(riskScoreMatch[1], 10);
       const isSafe = score < 30;
       const isWarning = score >= 30 && score < 70;
-      const badgeBg = isSafe ? '#6BCB77' : isWarning ? '#FFD93D' : '#FF6B6B';
+      const badgeBg = isSafe ? '#6BCB77' : isWarning ? '#38BDF8' : '#FF6B6B';
       const statusText = isSafe ? 'SAFE' : isWarning ? 'SUSPICIOUS' : 'HIGH RISK';
 
       return (
@@ -1344,7 +1344,7 @@ Plan Tier | Quota Allocation
       const verdict = verdictMatch[1].trim();
       const isSafe = /benign|safe|clean/i.test(verdict);
       const isPhish = /phish|malicious|danger|critical/i.test(verdict);
-      const badgeBg = isSafe ? '#6BCB77' : isPhish ? '#FF6B6B' : '#FFD93D';
+      const badgeBg = isSafe ? '#6BCB77' : isPhish ? '#FF6B6B' : '#38BDF8';
 
       return (
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
@@ -1371,7 +1371,7 @@ Plan Tier | Quota Allocation
     if (gradeMatch) {
       const grade = gradeMatch[1].trim();
       const isGood = /^(A\+|A|B)/i.test(grade);
-      const badgeBg = isGood ? '#6BCB77' : '#FFD93D';
+      const badgeBg = isGood ? '#6BCB77' : '#38BDF8';
 
       return (
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
@@ -1462,7 +1462,7 @@ Plan Tier | Quota Allocation
             >
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.76rem', textAlign: 'left' }}>
                 <thead>
-                  <tr style={{ background: '#FFD93D', borderBottom: '2px solid #000000' }}>
+                  <tr style={{ background: '#38BDF8', borderBottom: '2px solid #000000' }}>
                     {headerRow.map((h, hIdx) => (
                       <th
                         key={hIdx}
@@ -1708,7 +1708,7 @@ Plan Tier | Quota Allocation
           alignItems: 'center',
           gap: '12px',
           cursor: 'pointer',
-          background: '#FFD93D',
+          background: '#38BDF8',
           border: '4px solid #000000',
           borderRadius: '0px',
           boxShadow: '6px 6px 0px 0px #000000',
@@ -1849,7 +1849,7 @@ Plan Tier | Quota Allocation
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ background: '#FFD93D', border: '2px solid #000000', padding: '4px', display: 'flex' }}>
+                <div style={{ background: '#38BDF8', border: '2px solid #000000', padding: '4px', display: 'flex' }}>
                   <Sparkles size={18} color="#000000" />
                 </div>
                 <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#000000', textTransform: 'uppercase' }}>
@@ -1987,7 +1987,7 @@ Plan Tier | Quota Allocation
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ background: '#FFD93D', border: '2px solid #000000', padding: '4px', display: 'flex' }}>
+                <div style={{ background: '#38BDF8', border: '2px solid #000000', padding: '4px', display: 'flex' }}>
                   <BookOpen size={18} color="#000000" />
                 </div>
                 <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#000000', textTransform: 'uppercase' }}>
@@ -2071,7 +2071,7 @@ Plan Tier | Quota Allocation
           justifyContent: 'space-between',
           flexShrink: 0,
           gap: '10px',
-          background: '#FFD93D',
+          background: '#38BDF8',
           color: '#000000'
         }}
       >
@@ -2407,7 +2407,7 @@ Plan Tier | Quota Allocation
                           padding: '7px 9px',
                           borderRadius: '0px',
                           border: isActive ? '2px solid #000000' : '2px solid transparent',
-                          background: isActive ? '#FFD93D' : 'transparent',
+                          background: isActive ? '#38BDF8' : 'transparent',
                           boxShadow: isActive ? '3px 3px 0px 0px #000000' : 'none',
                           color: '#000000',
                           cursor: isEditing ? 'default' : 'pointer',
@@ -2594,7 +2594,7 @@ Plan Tier | Quota Allocation
                               width: '32px',
                               height: '32px',
                               borderRadius: '0px',
-                              background: '#FFD93D',
+                              background: '#38BDF8',
                               border: '2px solid #000000',
                               display: 'flex',
                               alignItems: 'center',
@@ -2797,7 +2797,7 @@ Plan Tier | Quota Allocation
                     width: '56px',
                     height: '56px',
                     borderRadius: '0px',
-                    background: '#FFD93D',
+                    background: '#38BDF8',
                     border: '3.5px solid #000000',
                     display: 'flex',
                     alignItems: 'center',
@@ -2982,7 +2982,7 @@ Plan Tier | Quota Allocation
                       width: '30px',
                       height: '30px',
                       borderRadius: '0px',
-                      background: isUser ? '#4D96FF' : '#FFD93D',
+                      background: isUser ? '#4D96FF' : '#38BDF8',
                       border: '2px solid #000000',
                       boxShadow: '2px 2px 0px 0px #000000',
                       display: 'flex',
@@ -3111,7 +3111,7 @@ Plan Tier | Quota Allocation
                     width: '30px',
                     height: '30px',
                     borderRadius: '0px',
-                    background: '#FFD93D',
+                    background: '#38BDF8',
                     border: '2px solid #000000',
                     boxShadow: '2px 2px 0px 0px #000000',
                     display: 'flex',
@@ -3364,7 +3364,7 @@ Plan Tier | Quota Allocation
                 type="button"
                 onClick={() => setShowToolsMenu(prev => !prev)}
                 style={{
-                  background: showToolsMenu ? '#4D96FF' : '#FFD93D',
+                  background: showToolsMenu ? '#4D96FF' : '#38BDF8',
                   border: '2px solid #000000',
                   borderRadius: '0px',
                   boxShadow: '2px 2px 0px 0px #000000',

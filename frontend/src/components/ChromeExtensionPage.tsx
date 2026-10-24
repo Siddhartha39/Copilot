@@ -55,7 +55,7 @@ export const ChromeExtensionPage: React.FC<ChromeExtensionPageProps> = ({ onLaun
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              background: '#FFD93D',
+              background: '#38BDF8',
               border: '2.5px solid #000000',
               boxShadow: '2.5px 2.5px 0px 0px #000000',
               borderRadius: '0px',
@@ -134,7 +134,7 @@ export const ChromeExtensionPage: React.FC<ChromeExtensionPageProps> = ({ onLaun
               <button
                 onClick={() => onLaunchScanner('campuskart.shop')}
                 style={{
-                  background: '#FFD93D',
+                  background: '#38BDF8',
                   color: '#000000',
                   border: '3px solid #000000',
                   borderRadius: '0px',
@@ -178,7 +178,7 @@ export const ChromeExtensionPage: React.FC<ChromeExtensionPageProps> = ({ onLaun
           {/* Top Browser Bar Mockup */}
           <div
             style={{
-              background: '#FFD93D',
+              background: '#38BDF8',
               borderBottom: '3px solid #000000',
               padding: '10px 14px',
               display: 'flex',
@@ -321,7 +321,7 @@ export const ChromeExtensionPage: React.FC<ChromeExtensionPageProps> = ({ onLaun
       {/* 3-Step Setup Instructions */}
       <div style={{ marginTop: '20px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-          <div style={{ background: '#FFD93D', border: '2.5px solid #000000', padding: '6px', display: 'flex' }}>
+          <div style={{ background: '#38BDF8', border: '2.5px solid #000000', padding: '6px', display: 'flex' }}>
             <Terminal size={18} color="#000000" strokeWidth={2.8} />
           </div>
           <h2 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#000000', textTransform: 'uppercase', margin: 0 }}>
@@ -345,7 +345,7 @@ export const ChromeExtensionPage: React.FC<ChromeExtensionPageProps> = ({ onLaun
                 width: '36px',
                 height: '36px',
                 borderRadius: '0px',
-                background: '#FFD93D',
+                background: '#38BDF8',
                 border: '2.5px solid #000000',
                 boxShadow: '2.5px 2.5px 0px 0px #000000',
                 color: '#000000',
@@ -363,7 +363,7 @@ export const ChromeExtensionPage: React.FC<ChromeExtensionPageProps> = ({ onLaun
               Download &amp; Unzip
             </h3>
             <p style={{ fontSize: '0.85rem', color: '#000000', lineHeight: 1.55, fontWeight: 500, margin: 0 }}>
-              Click the download button above to retrieve the package, and extract <code className="mono" style={{ background: '#FFD93D', border: '1px solid #000000', padding: '1px 5px', fontWeight: 700 }}>CyberGuard-AI-Chrome-Extension.zip</code> into an accessible folder.
+              Click the download button above to retrieve the package, and extract <code className="mono" style={{ background: '#38BDF8', border: '1px solid #000000', padding: '1px 5px', fontWeight: 700 }}>CyberGuard-AI-Chrome-Extension.zip</code> into an accessible folder.
             </p>
           </div>
 
@@ -400,7 +400,7 @@ export const ChromeExtensionPage: React.FC<ChromeExtensionPageProps> = ({ onLaun
               Open Extensions Page
             </h3>
             <p style={{ fontSize: '0.85rem', color: '#000000', lineHeight: 1.55, fontWeight: 500, marginBottom: '10px' }}>
-              Open Google Chrome and navigate to <code className="mono" style={{ background: '#FFD93D', border: '1px solid #000000', padding: '1px 5px', fontWeight: 700 }}>chrome://extensions</code>, then toggle on <strong>Developer mode</strong> in the top-right corner.
+              Open Google Chrome and navigate to <code className="mono" style={{ background: '#38BDF8', border: '1px solid #000000', padding: '1px 5px', fontWeight: 700 }}>chrome://extensions</code>, then toggle on <strong>Developer mode</strong> in the top-right corner.
             </p>
             <button
               onClick={handleCopyChromeUrl}

@@ -101,7 +101,7 @@ export const Scanner: React.FC<ScannerProps> = ({
                   type="button"
                   onClick={() => setUrl('')}
                   style={{
-                    background: '#FFD93D',
+                    background: '#38BDF8',
                     boxShadow: '2px 2px 0px 0px #000000',
                     border: '2px solid #000000',
                     color: '#000000',
@@ -228,7 +228,7 @@ export const Scanner: React.FC<ScannerProps> = ({
                 type="button"
                 onClick={() => { setUrl(tgt.url); }}
                 style={{
-                  background: url === tgt.url ? '#FFD93D' : '#FFFDF5',
+                  background: url === tgt.url ? '#38BDF8' : '#FFFDF5',
                   boxShadow: '2px 2px 0px 0px #000000',
                   color: '#000000',
                   borderRadius: '0px',
