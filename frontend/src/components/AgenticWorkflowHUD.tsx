@@ -16,6 +16,7 @@ interface AgenticWorkflowHUDProps {
   isPaid: boolean;
   onOpenPaymentModal: () => void;
   txId?: string;
+  theme?: 'dark' | 'light';
 }
 
 export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
@@ -23,8 +24,10 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
   targetUrl,
   isPaid,
   onOpenPaymentModal,
-  txId
+  txId,
+  theme = 'light'
 }) => {
+  const isDark = theme === 'dark';
   const steps: AgenticStep[] = [
     {
       id: 'step-1',
@@ -80,17 +83,17 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
   return (
     <div
       style={{
-        background: 'var(--bg-card, #FFFFFF)',
+        background: isDark ? '#1A1A1A' : '#FFFFFF',
         borderRadius: '0px',
-        boxShadow: '8px 8px 0px 0px #000000',
-        border: '4px solid #000000',
+        boxShadow: isDark ? '8px 8px 0px 0px #38BDF8' : '8px 8px 0px 0px #000000',
+        border: isDark ? '4px solid #FFFFFF' : '4px solid #000000',
         padding: '24px 26px',
         margin: '0 0 24px 0',
         fontFamily: "'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif"
       }}
     >
       {/* Header Row -> Neo-Brutalist Sticker Badges & Header Bar */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px solid #000000', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: isDark ? '3px solid #333333' : '3px solid #000000', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           {/* Square Bot Icon Box */}
           <div
@@ -99,8 +102,8 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
               height: '46px',
               borderRadius: '0px',
               background: '#38BDF8',
-              border: '3px solid #000000',
-              boxShadow: '3px 3px 0px 0px #000000',
+              border: isDark ? '3px solid #FFFFFF' : '3px solid #000000',
+              boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -116,7 +119,7 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
                 style={{
                   fontSize: '1.08rem',
                   fontWeight: 900,
-                  color: '#000000',
+                  color: isDark ? '#FFFFFF' : '#000000',
                   fontFamily: "'Space Grotesk', sans-serif",
                   letterSpacing: '-0.01em'
                 }}
@@ -129,8 +132,8 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
                   padding: '3px 10px',
                   borderRadius: '0px',
                   background: '#6BCB77',
-                  border: '2px solid #000000',
-                  boxShadow: '2px 2px 0px 0px #000000',
+                  border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
+                  boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                   fontWeight: 900,
                   color: '#000000',
                   fontFamily: "'Space Grotesk', sans-serif"
@@ -139,8 +142,8 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
                 100% FREE &amp; OPEN
               </span>
             </div>
-            <div style={{ fontSize: '0.8rem', color: '#334155', marginTop: '4px', fontWeight: 600 }}>
-              Target: <span style={{ color: '#000000', fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", background: '#38BDF8', padding: '2px 8px', border: '1.5px solid #000000' }}>{targetUrl || 'Ready for URL analysis'}</span>
+            <div style={{ fontSize: '0.8rem', color: isDark ? '#94A3B8' : '#334155', marginTop: '4px', fontWeight: 600 }}>
+              Target: <span style={{ color: '#000000', fontWeight: 800, fontFamily: "'JetBrains Mono', monospace", background: '#38BDF8', padding: '2px 8px', border: isDark ? '1.5px solid #FFFFFF' : '1.5px solid #000000' }}>{targetUrl || 'Ready for URL analysis'}</span>
             </div>
           </div>
         </div>
@@ -153,10 +156,10 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
               alignItems: 'center',
               gap: '8px',
               fontSize: '0.76rem',
-              color: '#000000',
-              background: '#FFFFFF',
-              border: '2px solid #000000',
-              boxShadow: '3px 3px 0px 0px #000000',
+              color: isDark ? '#FFFFFF' : '#000000',
+              background: isDark ? '#121212' : '#FFFFFF',
+              border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
+              boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
               padding: '6px 14px',
               borderRadius: '0px',
               fontWeight: 800,
@@ -182,25 +185,31 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
           if (isRunning) {
             StatusIcon = Loader2;
             iconColor = '#38BDF8';
-            iconBg = '#000000';
+            iconBg = isDark ? '#111827' : '#000000';
           } else if (step.status === 'paused_for_payment') {
             StatusIcon = Coins;
             iconColor = '#000000';
             iconBg = '#38BDF8';
           } else if (!isCompleted) {
             StatusIcon = Cpu;
-            iconColor = '#64748B';
-            iconBg = '#F1F5F9';
+            iconColor = isDark ? '#94A3B8' : '#64748B';
+            iconBg = isDark ? '#1E293B' : '#F1F5F9';
           }
+
+          const cardBg = isDark
+            ? (isRunning ? '#2A2008' : (isCompleted ? '#14291E' : '#1E1E1E'))
+            : (isRunning ? '#FFFBEB' : (isCompleted ? '#F0FDF4' : '#FFFFFF'));
 
           return (
             <div
               key={step.id}
               style={{
-                background: isRunning ? '#FFFBEB' : (isCompleted ? '#F0FDF4' : '#FFFFFF'),
-                boxShadow: isRunning ? '5px 5px 0px 0px #000000' : '4px 4px 0px 0px #000000',
+                background: cardBg,
+                boxShadow: isRunning
+                  ? (isDark ? '5px 5px 0px 0px #38BDF8' : '5px 5px 0px 0px #000000')
+                  : (isDark ? '4px 4px 0px 0px #38BDF8' : '4px 4px 0px 0px #000000'),
                 borderRadius: '0px',
-                border: '3px solid #000000',
+                border: isDark ? '3px solid #FFFFFF' : '3px solid #000000',
                 padding: '16px 18px',
                 display: 'flex',
                 flexDirection: 'column',
@@ -216,9 +225,9 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
                       fontSize: '0.7rem',
                       fontWeight: 900,
                       color: isRunning ? '#000000' : (isCompleted ? '#000000' : '#FFFFFF'),
-                      background: isRunning ? '#38BDF8' : (isCompleted ? '#6BCB77' : '#000000'),
-                      border: '1.5px solid #000000',
-                      boxShadow: '2px 2px 0px 0px #000000',
+                      background: isRunning ? '#38BDF8' : (isCompleted ? '#6BCB77' : (isDark ? '#334155' : '#000000')),
+                      border: isDark ? '1.5px solid #FFFFFF' : '1.5px solid #000000',
+                      boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                       padding: '2px 8px',
                       borderRadius: '0px',
                       letterSpacing: '0.04em',
@@ -236,8 +245,8 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
                       height: '28px',
                       borderRadius: '0px',
                       background: iconBg,
-                      border: '2px solid #000000',
-                      boxShadow: '2px 2px 0px 0px #000000',
+                      border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
+                      boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -256,7 +265,9 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
                   style={{
                     fontSize: '0.86rem',
                     fontWeight: 800,
-                    color: isRunning ? '#B45309' : '#000000',
+                    color: isRunning
+                      ? (isDark ? '#FBBF24' : '#B45309')
+                      : (isDark ? '#FFFFFF' : '#000000'),
                     marginBottom: '6px',
                     lineHeight: 1.35,
                     fontFamily: "'Space Grotesk', sans-serif"
@@ -269,7 +280,7 @@ export const AgenticWorkflowHUD: React.FC<AgenticWorkflowHUDProps> = ({
               <div
                 style={{
                   fontSize: '0.74rem',
-                  color: '#334155',
+                  color: isDark ? '#94A3B8' : '#334155',
                   lineHeight: 1.45,
                   marginTop: '10px',
                   fontWeight: 500

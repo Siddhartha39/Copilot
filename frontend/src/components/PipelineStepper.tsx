@@ -13,19 +13,22 @@ interface PipelineStepperProps {
   steps: PipelineStep[];
   currentStepIndex: number;
   onUnlock?: () => void;
+  theme?: 'dark' | 'light';
 }
 
-export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, currentStepIndex, onUnlock }) => {
+export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, currentStepIndex, onUnlock, theme = 'light' }) => {
+  const isDark = theme === 'dark';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       style={{
-        background: 'var(--bg-card, #FFFFFF)',
+        background: isDark ? '#1A1A1A' : '#FFFFFF',
         borderRadius: '0px',
-        boxShadow: '8px 8px 0px 0px #000000',
-        border: '4px solid #000000',
+        boxShadow: isDark ? '8px 8px 0px 0px #38BDF8' : '8px 8px 0px 0px #000000',
+        border: isDark ? '4px solid #FFFFFF' : '4px solid #000000',
         padding: '22px 24px',
         margin: '0 0 24px 0',
         fontFamily: "'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif"
@@ -39,8 +42,8 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, current
               height: '34px',
               borderRadius: '0px',
               background: '#38BDF8',
-              border: '2.5px solid #000000',
-              boxShadow: '2px 2px 0px 0px #000000',
+              border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
+              boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
@@ -52,7 +55,7 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, current
             style={{
               fontSize: '0.94rem',
               fontWeight: 900,
-              color: '#000000',
+              color: isDark ? '#FFFFFF' : '#000000',
               letterSpacing: '0.02em',
               fontFamily: "'Space Grotesk', sans-serif",
               margin: 0
@@ -67,8 +70,8 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, current
             color: '#000000',
             fontWeight: 800,
             background: '#C4B5FD',
-            border: '2px solid #000000',
-            boxShadow: '3px 3px 0px 0px #000000',
+            border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
+            boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
             padding: '4px 12px',
             borderRadius: '0px',
             fontFamily: "'Space Grotesk', sans-serif"
@@ -96,20 +99,24 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, current
           if (isRunning) {
             StatusIcon = Loader2;
             iconColor = '#38BDF8';
-            iconBg = '#000000';
+            iconBg = isDark ? '#111827' : '#000000';
           } else if (isWarning) {
             StatusIcon = AlertTriangle;
             iconColor = '#000000';
             iconBg = '#38BDF8';
           } else if (isLocked) {
             StatusIcon = Lock;
-            iconColor = '#000000';
-            iconBg = '#E2E8F0';
+            iconColor = isDark ? '#94A3B8' : '#000000';
+            iconBg = isDark ? '#334155' : '#E2E8F0';
           } else if (!isCompleted) {
             StatusIcon = CircleDot;
-            iconColor = '#64748B';
-            iconBg = '#F8FAFC';
+            iconColor = isDark ? '#94A3B8' : '#64748B';
+            iconBg = isDark ? '#1E293B' : '#F8FAFC';
           }
+
+          const cardBg = isDark
+            ? (isRunning ? '#2A2008' : (isCompleted ? '#14291E' : '#1E1E1E'))
+            : (isRunning ? '#FFFBEB' : (isCompleted ? '#F0FDF4' : '#FFFFFF'));
 
           return (
             <motion.div
@@ -122,9 +129,11 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, current
               style={{
                 padding: '14px 14px',
                 borderRadius: '0px',
-                border: '3px solid #000000',
-                background: isRunning ? '#FFFBEB' : (isCompleted ? '#F0FDF4' : '#FFFFFF'),
-                boxShadow: isRunning ? '5px 5px 0px 0px #000000' : '4px 4px 0px 0px #000000',
+                border: isDark ? '3px solid #FFFFFF' : '3px solid #000000',
+                background: cardBg,
+                boxShadow: isRunning
+                  ? (isDark ? '5px 5px 0px 0px #38BDF8' : '5px 5px 0px 0px #000000')
+                  : (isDark ? '4px 4px 0px 0px #38BDF8' : '4px 4px 0px 0px #000000'),
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '10px',
@@ -137,8 +146,8 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, current
                   height: '28px',
                   borderRadius: '0px',
                   background: iconBg,
-                  border: '2px solid #000000',
-                  boxShadow: '2px 2px 0px 0px #000000',
+                  border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
+                  boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -154,7 +163,9 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, current
                   style={{
                     fontSize: '0.84rem',
                     fontWeight: 800,
-                    color: isRunning ? '#B45309' : '#000000',
+                    color: isRunning
+                      ? (isDark ? '#FBBF24' : '#B45309')
+                      : (isDark ? '#FFFFFF' : '#000000'),
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
@@ -163,7 +174,7 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, current
                 >
                   <span>0{idx + 1}. {step.name}</span>
                 </div>
-                <div style={{ fontSize: '0.72rem', color: '#334155', marginTop: '3px', lineHeight: 1.35, fontWeight: 500 }}>
+                <div style={{ fontSize: '0.72rem', color: isDark ? '#94A3B8' : '#334155', marginTop: '3px', lineHeight: 1.35, fontWeight: 500 }}>
                   {step.detail}
                 </div>
               </div>

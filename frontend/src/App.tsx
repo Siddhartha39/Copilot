@@ -528,12 +528,13 @@ export function App() {
               benchmarkSamples={benchmarkSamples}
               scannerFocus={scannerFocus}
               onScannerFocusChange={setScannerFocus}
+              theme={theme}
             />
 
             {/* Real-time Scanning Telemetry HUD with Animation */}
             <AnimatePresence mode="wait">
               {isLoading && currentScanningUrl && (
-                <ScanningTelemetryHUD targetUrl={currentScanningUrl} isDeep={agentIsPaid} />
+                <ScanningTelemetryHUD targetUrl={currentScanningUrl} isDeep={agentIsPaid} theme={theme} />
               )}
             </AnimatePresence>
 
@@ -543,6 +544,7 @@ export function App() {
                 steps={pipelineSteps}
                 currentStepIndex={currentScanningUrl && currentAgentStage >= 0 ? currentAgentStage : pipelineSteps.length}
                 onUnlock={handleOpenPaymentForFreeScan}
+                theme={theme}
               />
             )}
 
@@ -553,6 +555,7 @@ export function App() {
               isPaid={true}
               onOpenPaymentModal={() => {}}
               txId={report?.tx_id}
+              theme={theme}
             />
 
             {/* Error Banner */}
@@ -589,6 +592,7 @@ export function App() {
                     onOpenAbout={handleOpenAboutTopic}
                     scannerFocus={scannerFocus}
                     onScannerFocusChange={setScannerFocus}
+                    theme={theme}
                   />
                 </motion.div>
               )}

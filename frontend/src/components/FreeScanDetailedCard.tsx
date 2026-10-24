@@ -27,12 +27,15 @@ interface FreeScanDetailedCardProps {
   onOpenAbout?: (topicId?: string) => void;
   scannerFocus?: 'developer' | 'phishing';
   onScannerFocusChange?: (focus: 'developer' | 'phishing') => void;
+  theme?: 'dark' | 'light';
 }
 
 export const FreeScanDetailedCard: React.FC<FreeScanDetailedCardProps> = ({
   result,
-  onUnlockDeepAudit
+  onUnlockDeepAudit,
+  theme = 'light'
 }) => {
+  const isDark = theme === 'dark';
   const [selectedSnippetTab, setSelectedSnippetTab] = useState<'nginx' | 'apache' | 'nextjs' | 'node' | 'cloudflare'>('nginx');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
@@ -152,21 +155,21 @@ async function handleRequest(request) {
   return (
     <div style={{ margin: '0 0 24px 0', display: 'flex', flexDirection: 'column', gap: '24px', fontFamily: "'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif" }}>
       {/* 1. Unified Assessment Header Banner */}
-      <div className="glass-panel" style={{ padding: '22px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px', borderRadius: '0px', boxShadow: '6px 6px 0px 0px #000000', border: '3px solid #000000', background: '#FFFFFF' }}>
+      <div className="glass-panel" style={{ padding: '22px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px', borderRadius: '0px', boxShadow: isDark ? '6px 6px 0px 0px #38BDF8' : '6px 6px 0px 0px #000000', border: isDark ? '3px solid #FFFFFF' : '3px solid #000000', background: isDark ? '#1A1A1A' : '#FFFFFF' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '0.74rem', background: '#6BCB77', border: '1.5px solid #000000', color: '#000000', padding: '3px 10px', borderRadius: '0px', fontWeight: 900, boxShadow: '2px 2px 0px 0px #000000' }}>
+            <span style={{ fontSize: '0.74rem', background: '#6BCB77', border: isDark ? '1.5px solid #FFFFFF' : '1.5px solid #000000', color: '#000000', padding: '3px 10px', borderRadius: '0px', fontWeight: 900, boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000' }}>
               COMPLETE UNIFIED SECURITY DOSSIER
             </span>
-            <span className="mono" style={{ fontSize: '0.74rem', color: '#000000' }}>
+            <span className="mono" style={{ fontSize: '0.74rem', color: isDark ? '#94A3B8' : '#000000' }}>
               {new Date(result.timestamp).toLocaleTimeString()}
             </span>
           </div>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#000000', marginTop: '6px', fontFamily: "'Space Grotesk', sans-serif" }}>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: isDark ? '#FFFFFF' : '#000000', marginTop: '6px', fontFamily: "'Space Grotesk', sans-serif" }}>
             Security Assessment: {result.canonical_domain}
           </h2>
-          <div className="mono" style={{ fontSize: '0.78rem', color: '#334155', marginTop: '2px' }}>
-            Target: <span style={{ color: '#000000', background: '#38BDF8', padding: '1px 6px', border: '1px solid #000000', fontWeight: 800 }}>{result.target_url}</span>
+          <div className="mono" style={{ fontSize: '0.78rem', color: isDark ? '#94A3B8' : '#334155', marginTop: '2px' }}>
+            Target: <span style={{ color: '#000000', background: '#38BDF8', padding: '1px 6px', border: isDark ? '1px solid #FFFFFF' : '1px solid #000000', fontWeight: 800 }}>{result.target_url}</span>
           </div>
         </div>
 
@@ -176,7 +179,7 @@ async function handleRequest(request) {
             style={{
               background: '#38BDF8',
               color: '#000000',
-              border: '2.5px solid #000000',
+              border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
               borderRadius: '0px',
               padding: '10px 22px',
               fontWeight: 900,
@@ -186,7 +189,7 @@ async function handleRequest(request) {
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              boxShadow: '3px 3px 0px 0px #000000'
+              boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000'
             }}
           >
             <Zap size={16} />
@@ -199,8 +202,8 @@ async function handleRequest(request) {
       {/* 2. Top Combined 4-Metric Overview Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
         {/* Threat Verdict */}
-        <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
-          <div style={{ fontSize: '0.72rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+        <div style={{ background: isDark ? '#1E1E1E' : '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000', border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000' }}>
+          <div style={{ fontSize: '0.72rem', color: isDark ? '#FFFFFF' : '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Threat Verdict (Feature 2)
           </div>
           <div style={{ fontSize: '1.2rem', fontWeight: 900, color: scoreColor, display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -209,14 +212,14 @@ async function handleRequest(request) {
               {isUnregistered ? 'UNREGISTERED' : result.verdict}
             </span>
           </div>
-          <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
-            Confidence: <strong style={{ fontWeight: 800, color: '#000000' }}>{(result.confidence * 100).toFixed(0)}%</strong>
+          <div style={{ fontSize: '0.76rem', color: isDark ? '#94A3B8' : '#334155', marginTop: '8px', fontWeight: 500 }}>
+            Confidence: <strong style={{ fontWeight: 800, color: isDark ? '#FFFFFF' : '#000000' }}>{(result.confidence * 100).toFixed(0)}%</strong>
           </div>
         </div>
 
         {/* Basic Risk Score */}
-        <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
-          <div style={{ fontSize: '0.72rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+        <div style={{ background: isDark ? '#1E1E1E' : '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000', border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000' }}>
+          <div style={{ fontSize: '0.72rem', color: isDark ? '#FFFFFF' : '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Risk Score (Feature 2)
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
@@ -225,41 +228,41 @@ async function handleRequest(request) {
             </span>
             <span style={{ fontSize: '0.88rem', color: '#64748B', fontWeight: 800 }}>/ 100</span>
           </div>
-          <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
+          <div style={{ fontSize: '0.76rem', color: isDark ? '#94A3B8' : '#334155', marginTop: '8px', fontWeight: 500 }}>
             {isUnregistered ? 'Unregistered Profile' : 'Lexical & Infrastructure Triage'}
           </div>
         </div>
 
         {/* Security Grade */}
-        <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
-          <div style={{ fontSize: '0.72rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+        <div style={{ background: isDark ? '#1E1E1E' : '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000', border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000' }}>
+          <div style={{ fontSize: '0.72rem', color: isDark ? '#FFFFFF' : '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Security Grade (Feature 1)
           </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <span style={{ fontSize: '2rem', fontWeight: 900, color: gradeColor }}>
               {securityGrade}
             </span>
-            <span style={{ fontSize: '0.78rem', background: '#38BDF8', border: '1.5px solid #000000', padding: '3px 8px', fontWeight: 900 }}>
+            <span style={{ fontSize: '0.78rem', background: '#38BDF8', color: '#000000', border: isDark ? '1.5px solid #FFFFFF' : '1.5px solid #000000', padding: '3px 8px', fontWeight: 900 }}>
               {audit ? `${audit.score_percentage}% Pass` : (hasHsts ? 'Standard TLS' : 'Hardening Req.')}
             </span>
           </div>
-          <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
+          <div style={{ fontSize: '0.76rem', color: isDark ? '#94A3B8' : '#334155', marginTop: '8px', fontWeight: 500 }}>
             Defense Posture &amp; Server Immunity
           </div>
         </div>
 
         {/* Domain Age */}
-        <div style={{ background: '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: '3px 3px 0px 0px #000000', border: '2.5px solid #000000' }}>
-          <div style={{ fontSize: '0.72rem', color: '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+        <div style={{ background: isDark ? '#1E1E1E' : '#FFFDF5', padding: '18px 20px', borderRadius: '0px', boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000', border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000' }}>
+          <div style={{ fontSize: '0.72rem', color: isDark ? '#FFFFFF' : '#000000', marginBottom: '8px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Domain Standing
           </div>
-          <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#000000' }}>
+          <div style={{ fontSize: '1.2rem', fontWeight: 900, color: isDark ? '#FFFFFF' : '#000000' }}>
             <span>
               {isUnregistered ? 'NOT REGISTERED' : result.domain_age_days !== undefined && result.domain_age_days !== null ? `${result.domain_age_days} Days` : 'Verified Standing'}
             </span>
           </div>
-          <div style={{ fontSize: '0.76rem', color: '#334155', marginTop: '8px', fontWeight: 500 }}>
-            Registered: <strong style={{ color: '#000000' }}>{isUnregistered ? 'Available (NXDOMAIN)' : (result.creation_date || 'Active')}</strong>
+          <div style={{ fontSize: '0.76rem', color: isDark ? '#94A3B8' : '#334155', marginTop: '8px', fontWeight: 500 }}>
+            Registered: <strong style={{ color: isDark ? '#FFFFFF' : '#000000' }}>{isUnregistered ? 'Available (NXDOMAIN)' : (result.creation_date || 'Active')}</strong>
           </div>
         </div>
       </div>

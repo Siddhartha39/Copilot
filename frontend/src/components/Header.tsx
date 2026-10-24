@@ -87,8 +87,8 @@ export const Header: React.FC<HeaderProps> = ({
         gap: '16px',
         position: 'relative',
         zIndex: 30,
-        background: '#FFFDF5',
-        borderBottom: '4px solid #000000',
+        background: theme === 'dark' ? '#121212' : '#FFFDF5',
+        borderBottom: theme === 'dark' ? '4px solid #333333' : '4px solid #000000',
         marginBottom: '20px'
       }}
     >
@@ -123,7 +123,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div
             style={{
               fontSize: '0.72rem',
-              color: '#000000',
+              color: theme === 'dark' ? '#94A3B8' : '#000000',
               fontWeight: 900,
               letterSpacing: '0.06em',
               textTransform: 'uppercase',
@@ -136,7 +136,7 @@ export const Header: React.FC<HeaderProps> = ({
             style={{
               fontSize: '1.25rem',
               fontWeight: 900,
-              color: '#000000',
+              color: theme === 'dark' ? '#FFFFFF' : '#000000',
               letterSpacing: '-0.02em',
               lineHeight: 1.2,
               marginTop: '2px',
@@ -248,10 +248,10 @@ export const Header: React.FC<HeaderProps> = ({
           style={{
             padding: '9px 16px',
             borderRadius: '0px',
-            border: '3px solid #000000',
-            background: activeTab === 'discovery' ? '#38BDF8' : '#FFFFFF',
-            boxShadow: '3px 3px 0px 0px #000000',
-            color: '#000000',
+            border: theme === 'dark' ? '3px solid #FFFFFF' : '3px solid #000000',
+            background: activeTab === 'discovery' ? '#38BDF8' : (theme === 'dark' ? '#1E1E1E' : '#FFFFFF'),
+            boxShadow: theme === 'dark' ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
+            color: activeTab === 'discovery' ? '#000000' : (theme === 'dark' ? '#FFFFFF' : '#000000'),
             fontSize: '0.82rem',
             fontWeight: 900,
             fontFamily: "'Space Grotesk', sans-serif",
@@ -263,23 +263,23 @@ export const Header: React.FC<HeaderProps> = ({
           }}
           title="Discovery Feed - Real-time Certificate Transparency stream"
         >
-          <Activity size={16} color="#000000" strokeWidth={2.6} />
+          <Activity size={16} color={activeTab === 'discovery' ? '#000000' : (theme === 'dark' ? '#FFFFFF' : '#000000')} strokeWidth={2.6} />
           <span className="hidden sm:inline">Live Feed</span>
         </motion.button>
 
         {/* Theme Toggle Button */}
         <motion.button
-          whileHover={{ translateY: -2, boxShadow: '5px 5px 0px 0px #000000' }}
+          whileHover={{ translateY: -2, boxShadow: theme === 'dark' ? '5px 5px 0px 0px #38BDF8' : '5px 5px 0px 0px #000000' }}
           whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '1px 1px 0px 0px #000000' }}
           onClick={toggleTheme}
           style={{
             width: '42px',
             height: '42px',
             borderRadius: '0px',
-            border: '3px solid #000000',
-            background: '#FFFFFF',
-            boxShadow: '3px 3px 0px 0px #000000',
-            color: '#000000',
+            border: theme === 'dark' ? '3px solid #FFFFFF' : '3px solid #000000',
+            background: theme === 'dark' ? '#1E1E1E' : '#FFFFFF',
+            boxShadow: theme === 'dark' ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
+            color: theme === 'dark' ? '#FFFFFF' : '#000000',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -287,7 +287,7 @@ export const Header: React.FC<HeaderProps> = ({
           }}
           title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
         >
-          {theme === 'dark' ? <Sun size={18} color="#000000" strokeWidth={2.6} /> : <Moon size={18} color="#000000" strokeWidth={2.6} />}
+          {theme === 'dark' ? <Sun size={18} color="#FFD93D" strokeWidth={2.6} /> : <Moon size={18} color="#000000" strokeWidth={2.6} />}
         </motion.button>
       </div>
     </header>

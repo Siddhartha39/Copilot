@@ -21,9 +21,11 @@ import {
 interface ScanningTelemetryHUDProps {
   targetUrl: string;
   isDeep: boolean;
+  theme?: 'dark' | 'light';
 }
 
-export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targetUrl, isDeep }) => {
+export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targetUrl, isDeep, theme = 'light' }) => {
+  const isDark = theme === 'dark';
   const [elapsedMs, setElapsedMs] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [activeLogIndex, setActiveLogIndex] = useState(0);
@@ -135,9 +137,9 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
       style={{
         padding: '28px 24px',
         margin: '0 0 24px 0',
-        background: 'var(--bg-card, #FFFFFF)',
-        border: '4px solid #000000',
-        boxShadow: '8px 8px 0px 0px #000000',
+        background: isDark ? '#1A1A1A' : '#FFFFFF',
+        border: isDark ? '4px solid #FFFFFF' : '4px solid #000000',
+        boxShadow: isDark ? '8px 8px 0px 0px #38BDF8' : '8px 8px 0px 0px #000000',
         borderRadius: '0px',
         position: 'relative',
         overflow: 'hidden',
@@ -158,16 +160,16 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
       />
 
       {/* Header Row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px solid #000000', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: isDark ? '3px solid #333333' : '3px solid #000000', paddingBottom: '16px', marginBottom: '20px', flexWrap: 'wrap', gap: '14px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           {/* Animated Pulsing Radar Spinner */}
           <div style={{
             background: '#38BDF8',
-            border: '2.5px solid #000000',
+            border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
             padding: '10px',
             borderRadius: '0px',
             color: '#000000',
-            boxShadow: '3px 3px 0px 0px #000000',
+            boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
@@ -177,17 +179,17 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
 
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              <h3 className="cyber-font" style={{ fontSize: '1.15rem', fontWeight: 900, letterSpacing: '0.02em', color: '#000000', margin: 0 }}>
+              <h3 className="cyber-font" style={{ fontSize: '1.15rem', fontWeight: 900, letterSpacing: '0.02em', color: isDark ? '#FFFFFF' : '#000000', margin: 0 }}>
                 ACTIVE CYBER THREAT TELEMETRY ENGINE
               </h3>
               <span className="mono" style={{
                 fontSize: '0.7rem',
                 background: isDeep ? '#C4B5FD' : '#38BDF8',
-                border: '2px solid #000000',
+                border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                 color: '#000000',
                 padding: '3px 10px',
                 borderRadius: '0px',
-                boxShadow: '2px 2px 0px 0px #000000',
+                boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                 fontWeight: 900,
                 letterSpacing: '0.04em'
               }}>
@@ -195,23 +197,23 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
               </span>
             </div>
 
-            <div className="mono" style={{ fontSize: '0.8rem', color: '#334155', marginTop: '4px' }}>
-              INSPECTING TARGET: <span style={{ color: '#000000', background: '#38BDF8', padding: '1px 6px', border: '1px solid #000000', fontWeight: 800 }}>{targetUrl}</span>
+            <div className="mono" style={{ fontSize: '0.8rem', color: isDark ? '#94A3B8' : '#334155', marginTop: '4px' }}>
+              INSPECTING TARGET: <span style={{ color: '#000000', background: '#38BDF8', padding: '1px 6px', border: isDark ? '1px solid #FFFFFF' : '1px solid #000000', fontWeight: 800 }}>{targetUrl}</span>
             </div>
           </div>
         </div>
 
         {/* Live Counters */}
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
-          <div className="mono" style={{ background: '#FFFFFF', border: '2px solid #000000', boxShadow: '2px 2px 0px 0px #000000', borderRadius: '0px', padding: '6px 12px', fontSize: '0.74rem' }}>
+          <div className="mono" style={{ background: isDark ? '#121212' : '#FFFFFF', border: isDark ? '2px solid #FFFFFF' : '2px solid #000000', boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000', borderRadius: '0px', padding: '6px 12px', fontSize: '0.74rem' }}>
             <span style={{ color: '#64748B' }}>TIME: </span>
-            <span style={{ color: '#000000', fontWeight: 800 }}>{(elapsedMs / 1000).toFixed(1)}s</span>
+            <span style={{ color: isDark ? '#FFFFFF' : '#000000', fontWeight: 800 }}>{(elapsedMs / 1000).toFixed(1)}s</span>
           </div>
-          <div className="mono" style={{ background: '#FFFFFF', border: '2px solid #000000', boxShadow: '2px 2px 0px 0px #000000', borderRadius: '0px', padding: '6px 12px', fontSize: '0.74rem' }}>
+          <div className="mono" style={{ background: isDark ? '#121212' : '#FFFFFF', border: isDark ? '2px solid #FFFFFF' : '2px solid #000000', boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000', borderRadius: '0px', padding: '6px 12px', fontSize: '0.74rem' }}>
             <span style={{ color: '#64748B' }}>STAGE: </span>
             <span style={{ color: '#16A34A', fontWeight: 900 }}>{currentStep + 1} / {steps.length}</span>
           </div>
-          <div className="mono" style={{ background: '#FFFFFF', border: '2px solid #000000', boxShadow: '2px 2px 0px 0px #000000', borderRadius: '0px', padding: '6px 12px', fontSize: '0.74rem' }}>
+          <div className="mono" style={{ background: isDark ? '#121212' : '#FFFFFF', border: isDark ? '2px solid #FFFFFF' : '2px solid #000000', boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000', borderRadius: '0px', padding: '6px 12px', fontSize: '0.74rem' }}>
             <span style={{ color: '#64748B' }}>ADDR: </span>
             <span style={{ color: '#7C3AED', fontWeight: 800 }}>{activeHex}</span>
           </div>
@@ -223,9 +225,9 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
         {/* Radar Sonar Visualizer Card */}
         <div
           style={{
-            background: '#FFFFFF',
-            border: '3px solid #000000',
-            boxShadow: '4px 4px 0px 0px #000000',
+            background: isDark ? '#121212' : '#FFFFFF',
+            border: isDark ? '3px solid #FFFFFF' : '3px solid #000000',
+            boxShadow: isDark ? '4px 4px 0px 0px #38BDF8' : '4px 4px 0px 0px #000000',
             borderRadius: '0px',
             padding: '16px',
             display: 'flex',
@@ -241,14 +243,14 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
           <div style={{ position: 'relative', width: '160px', height: '160px' }}>
             <svg width="160" height="160" viewBox="0 0 160 160">
               {/* Concentric Circles */}
-              <circle cx="80" cy="80" r="70" stroke="#000000" strokeWidth="1.5" fill="none" />
-              <circle cx="80" cy="80" r="50" stroke="#000000" strokeWidth="1.5" fill="none" />
-              <circle cx="80" cy="80" r="30" stroke="#000000" strokeWidth="1.5" fill="none" />
-              <circle cx="80" cy="80" r="10" stroke="#000000" strokeWidth="1.5" fill="none" />
+              <circle cx="80" cy="80" r="70" stroke={isDark ? '#475569' : '#000000'} strokeWidth="1.5" fill="none" />
+              <circle cx="80" cy="80" r="50" stroke={isDark ? '#475569' : '#000000'} strokeWidth="1.5" fill="none" />
+              <circle cx="80" cy="80" r="30" stroke={isDark ? '#475569' : '#000000'} strokeWidth="1.5" fill="none" />
+              <circle cx="80" cy="80" r="10" stroke={isDark ? '#475569' : '#000000'} strokeWidth="1.5" fill="none" />
               
               {/* Crosshairs */}
-              <line x1="10" y1="80" x2="150" y2="80" stroke="#000000" strokeWidth="1.5" strokeDasharray="3 3" />
-              <line x1="80" y1="10" x2="80" y2="150" stroke="#000000" strokeWidth="1.5" strokeDasharray="3 3" />
+              <line x1="10" y1="80" x2="150" y2="80" stroke={isDark ? '#64748B' : '#000000'} strokeWidth="1.5" strokeDasharray="3 3" />
+              <line x1="80" y1="10" x2="80" y2="150" stroke={isDark ? '#64748B' : '#000000'} strokeWidth="1.5" strokeDasharray="3 3" />
               
               {/* Target Blip 1 */}
               <circle cx="115" cy="55" r="4" fill="#ef4444" className="cyber-beacon" />
@@ -263,7 +265,7 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
                 y1="80"
                 x2="80"
                 y2="10"
-                stroke="#000000"
+                stroke={isDark ? '#38BDF8' : '#000000'}
                 strokeWidth="2.5"
                 style={{
                   transformOrigin: '80px 80px',
@@ -273,8 +275,8 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
             </svg>
           </div>
 
-          <div className="mono" style={{ fontSize: '0.74rem', color: '#000000', marginTop: '10px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 800 }}>
-            <span className="cyber-beacon" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', border: '1px solid #000000' }} />
+          <div className="mono" style={{ fontSize: '0.74rem', color: isDark ? '#FFFFFF' : '#000000', marginTop: '10px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 800 }}>
+            <span className="cyber-beacon" style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', border: isDark ? '1px solid #FFFFFF' : '1px solid #000000' }} />
             <span>INTERCEPTOR ENCLAVE // LIVE SONAR SWEEP</span>
           </div>
         </div>
@@ -284,8 +286,8 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
           className="mono"
           style={{
             background: '#1A1A1A',
-            border: '3px solid #000000',
-            boxShadow: '4px 4px 0px 0px #000000',
+            border: isDark ? '3px solid #FFFFFF' : '3px solid #000000',
+            boxShadow: isDark ? '4px 4px 0px 0px #38BDF8' : '4px 4px 0px 0px #000000',
             borderRadius: '0px',
             padding: '14px 16px',
             display: 'flex',
@@ -328,14 +330,14 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
       </div>
 
       {/* Progress Bar */}
-      <div style={{ width: '100%', background: '#E2E8F0', border: '2px solid #000000', boxShadow: '2px 2px 0px 0px #000000', height: '12px', borderRadius: '0px', overflow: 'hidden', position: 'relative', marginBottom: '18px' }}>
+      <div style={{ width: '100%', background: isDark ? '#2D3748' : '#E2E8F0', border: isDark ? '2px solid #FFFFFF' : '2px solid #000000', boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000', height: '12px', borderRadius: '0px', overflow: 'hidden', position: 'relative', marginBottom: '18px' }}>
         <motion.div
           animate={{ width: `${progressPercent}%` }}
           transition={{ duration: 0.2, ease: 'easeOut' }}
           style={{
             height: '100%',
             background: 'linear-gradient(90deg, #4D96FF 0%, #38BDF8 50%, #6BCB77 100%)',
-            borderRight: '2px solid #000000'
+            borderRight: isDark ? '2px solid #FFFFFF' : '2px solid #000000'
           }}
         />
       </div>
@@ -347,20 +349,20 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
           const isCurrent = currentStep === idx;
           const IconComponent = st.icon;
 
-          let cardBorder = '2px solid #000000';
-          let cardBg = '#FFFFFF';
-          let iconColor = '#64748B';
+          let cardBorder = isDark ? '2px solid #FFFFFF' : '2px solid #000000';
+          let cardBg = isDark ? '#1E1E1E' : '#FFFFFF';
+          let iconColor = isDark ? '#94A3B8' : '#64748B';
           let statusText = 'QUEUED';
 
           if (isDone) {
-            cardBorder = '2.5px solid #000000';
-            cardBg = '#F0FDF4';
+            cardBorder = isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000';
+            cardBg = isDark ? '#14291E' : '#F0FDF4';
             iconColor = '#16A34A';
             statusText = `DONE (${st.latency})`;
           } else if (isCurrent) {
-            cardBorder = '2.5px solid #000000';
-            cardBg = '#FFFBEB';
-            iconColor = '#000000';
+            cardBorder = isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000';
+            cardBg = isDark ? '#2A2008' : '#FFFBEB';
+            iconColor = isDark ? '#FBBF24' : '#000000';
             statusText = 'INSPECTION ACTIVE...';
           }
 
@@ -379,7 +381,9 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
                 display: 'flex',
                 alignItems: 'flex-start',
                 gap: '12px',
-                boxShadow: isCurrent ? '4px 4px 0px 0px #000000' : '2px 2px 0px 0px #000000'
+                boxShadow: isCurrent
+                  ? (isDark ? '4px 4px 0px 0px #38BDF8' : '4px 4px 0px 0px #000000')
+                  : (isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000')
               }}
             >
               <div style={{ marginTop: '2px', color: iconColor }}>
@@ -394,17 +398,17 @@ export const ScanningTelemetryHUD: React.FC<ScanningTelemetryHUDProps> = ({ targ
 
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '3px' }}>
-                  <span className="mono" style={{ fontSize: '0.7rem', fontWeight: 900, color: '#000000', letterSpacing: '0.04em' }}>
+                  <span className="mono" style={{ fontSize: '0.7rem', fontWeight: 900, color: isDark ? '#38BDF8' : '#000000', letterSpacing: '0.04em' }}>
                     PHASE 0{idx + 1}
                   </span>
-                  <span className="mono" style={{ fontSize: '0.64rem', color: isDone ? '#16A34A' : '#000000', fontWeight: 800 }}>
+                  <span className="mono" style={{ fontSize: '0.64rem', color: isDone ? '#16A34A' : (isDark ? '#FBBF24' : '#000000'), fontWeight: 800 }}>
                     {statusText}
                   </span>
                 </div>
-                <div style={{ fontSize: '0.84rem', fontWeight: 800, color: '#000000', marginBottom: '3px' }}>
+                <div style={{ fontSize: '0.84rem', fontWeight: 800, color: isDark ? '#FFFFFF' : '#000000', marginBottom: '3px' }}>
                   {st.title}
                 </div>
-                <div style={{ fontSize: '0.72rem', color: '#475569', lineHeight: 1.35, fontWeight: 500 }}>
+                <div style={{ fontSize: '0.72rem', color: isDark ? '#94A3B8' : '#475569', lineHeight: 1.35, fontWeight: 500 }}>
                   {st.detail}
                 </div>
               </div>

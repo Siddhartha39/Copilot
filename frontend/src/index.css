@@ -1212,45 +1212,6 @@ body:not(.light-theme) .neo-scanner-zone .glass-panel {
   color: #FFFFFF !important;
 }
 
-.neomorphic-scanner-zone input,
-.neo-scanner-zone input {
-  background: var(--bg-card, #FFFFFF) !important;
-  border: 3px solid #000000 !important;
-  border-radius: 0px !important;
-  box-shadow: 4px 4px 0px 0px #000000 !important;
-  color: var(--text-primary, #000000) !important;
-  outline: none !important;
-}
-
-[data-theme="dark"] .neomorphic-scanner-zone input,
-[data-theme="dark"] .neo-scanner-zone input,
-body:not(.light-theme) .neomorphic-scanner-zone input,
-body:not(.light-theme) .neo-scanner-zone input {
-  border: 3px solid #FFFFFF !important;
-  box-shadow: 4px 4px 0px 0px #38BDF8 !important;
-  background: #1A1A1A !important;
-  color: #FFFFFF !important;
-}
-
-.neomorphic-scanner-zone select,
-.neo-scanner-zone select {
-  background: var(--bg-card, #FFFFFF) !important;
-  border: 2px solid #000000 !important;
-  border-radius: 0px !important;
-  box-shadow: 3px 3px 0px 0px #000000 !important;
-  color: var(--text-primary, #000000) !important;
-}
-
-[data-theme="dark"] .neomorphic-scanner-zone select,
-[data-theme="dark"] .neo-scanner-zone select,
-body:not(.light-theme) .neomorphic-scanner-zone select,
-body:not(.light-theme) .neo-scanner-zone select {
-  border: 2px solid #FFFFFF !important;
-  box-shadow: 3px 3px 0px 0px #38BDF8 !important;
-  background: #1A1A1A !important;
-  color: #FFFFFF !important;
-}
-
 .neomorphic-scanner-zone pre,
 .neomorphic-scanner-zone code,
 .neo-scanner-zone pre,
