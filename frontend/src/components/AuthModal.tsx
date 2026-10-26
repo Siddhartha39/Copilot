@@ -65,8 +65,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       const existing = getStoredUser();
       const isPremium = isPremiumEmail(fbUser.email) || existing?.plan === 'premium';
       const premRec = getPremiumRecord(fbUser.email);
-      const allocatedCredits = isPremium ? Math.max(5000, premRec?.credits || (existing?.credits ?? 10000)) : (existing?.credits ?? 50);
-      const allocatedMax = isPremium ? Math.max(5000, premRec?.credits || (existing?.max_credits ?? 10000)) : (existing?.max_credits ?? 50);
+      const allocatedMax = isPremium ? 5000 : 50;
+      const allocatedCredits = isPremium
+        ? Math.min(5000, premRec?.credits && premRec.credits <= 5000 ? premRec.credits : (existing?.credits && existing.credits <= 5000 ? existing.credits : 5000))
+        : (existing?.credits && existing.credits <= 50 ? existing.credits : 50);
 
       const profile: UserProfile = {
         id: fbUser.id,
@@ -155,8 +157,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         const premRec = getPremiumRecord(profile.email);
         if (isPremium) {
           profile.plan = 'premium';
-          profile.credits = Math.max(5000, premRec?.credits || (profile.credits || 10000));
-          profile.max_credits = Math.max(5000, premRec?.credits || (profile.max_credits || 10000));
+          profile.credits = Math.min(5000, premRec?.credits && premRec.credits <= 5000 ? premRec.credits : (profile.credits && profile.credits <= 5000 ? profile.credits : 5000));
+          profile.max_credits = 5000;
           profile.memory_max_kb = 8192;
         }
         setStoredAuth(token, profile);
@@ -225,8 +227,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         const premRec = getPremiumRecord(profile.email);
         if (isPremium) {
           profile.plan = 'premium';
-          profile.credits = Math.max(5000, premRec?.credits || (profile.credits || 10000));
-          profile.max_credits = Math.max(5000, premRec?.credits || (profile.max_credits || 10000));
+          profile.credits = Math.min(5000, premRec?.credits && premRec.credits <= 5000 ? premRec.credits : (profile.credits && profile.credits <= 5000 ? profile.credits : 5000));
+          profile.max_credits = 5000;
           profile.memory_max_kb = 8192;
         }
         setStoredAuth(token, profile);

@@ -597,14 +597,39 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
     ];
     setMessages(initialAssistantMessages);
 
-    // Split text into lines to ensure natural line-by-line flow
+    // Split text into lines to ensure natural line-by-line flow like ChatGPT
     const lines = fullText.split('\n');
     let accumulated = '';
+    let inCodeBlock = false;
+
+    // Adaptive speed: ensures snappy responsiveness whether answer is 50 words or 1,000 words
+    const isLongText = fullText.length > 600;
+    const isMediumText = fullText.length > 200;
+    const wordDelay = isLongText ? 3 : isMediumText ? 5 : 8;
+    const punctuationDelay = isLongText ? 6 : isMediumText ? 10 : 15;
+    const lineDelay = isLongText ? 12 : isMediumText ? 18 : 28;
 
     for (let lIdx = 0; lIdx < lines.length; lIdx++) {
       if (stopStreamRequestedRef.current) break;
 
       const line = lines[lIdx];
+      if (line.trim().startsWith('```')) {
+        inCodeBlock = !inCodeBlock;
+      }
+
+      // If inside a code block, stream line-by-line for clean syntax rendering
+      if (inCodeBlock && !line.trim().startsWith('```')) {
+        accumulated += (accumulated.length > 0 && accumulated[accumulated.length - 1] !== '\n' ? '\n' : '') + line + '\n';
+        setMessages(prev => {
+          if (prev.length === 0) return prev;
+          const copy = [...prev];
+          copy[copy.length - 1] = { role: 'assistant', content: accumulated };
+          return copy;
+        });
+        await new Promise(r => setTimeout(r, 10));
+        continue;
+      }
+
       // Tokenize line into words and spacing
       const tokens = line.match(/\S+|\s+/g) || [line];
 
@@ -617,31 +642,29 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
         setMessages(prev => {
           if (prev.length === 0) return prev;
           const copy = [...prev];
-          const lastIndex = copy.length - 1;
-          copy[lastIndex] = { role: 'assistant', content: accumulated };
+          copy[copy.length - 1] = { role: 'assistant', content: accumulated };
           return copy;
         });
 
-        // Fast & natural delay per token:
-        // Punctuation gets slight pause (35ms), regular words ~16ms
         const isPunctuation = /[.,!?;:]$/.test(token.trim());
-        const tokenDelay = isPunctuation ? 35 : 16;
-        await new Promise(r => setTimeout(r, tokenDelay));
+        const tokenDelay = isPunctuation ? punctuationDelay : wordDelay;
+        if (tokenDelay > 0) {
+          await new Promise(r => setTimeout(r, tokenDelay));
+        }
       }
 
       if (stopStreamRequestedRef.current) break;
 
-      // When finishing a line, add newline and pause naturally (65ms)
+      // When finishing a line, add newline and pause naturally
       if (lIdx < lines.length - 1) {
         accumulated += '\n';
         setMessages(prev => {
           if (prev.length === 0) return prev;
           const copy = [...prev];
-          const lastIndex = copy.length - 1;
-          copy[lastIndex] = { role: 'assistant', content: accumulated };
+          copy[copy.length - 1] = { role: 'assistant', content: accumulated };
           return copy;
         });
-        await new Promise(r => setTimeout(r, 65));
+        await new Promise(r => setTimeout(r, lineDelay));
       }
     }
 

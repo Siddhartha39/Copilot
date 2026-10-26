@@ -88,8 +88,8 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
         const upgraded: UserProfile = {
           ...currentUser,
           plan: 'premium',
-          credits: Math.max(currentUser.credits || 0, rec?.credits || 10000),
-          max_credits: Math.max(currentUser.max_credits || 0, rec?.credits || 10000),
+          credits: Math.min(5000, rec?.credits && rec.credits <= 5000 ? rec.credits : (currentUser.credits && currentUser.credits <= 5000 ? currentUser.credits : 5000)),
+          max_credits: 5000,
           memory_max_kb: 8192.0
         };
         setStoredAuth(upgraded.id, upgraded);
@@ -100,8 +100,8 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
           const upgraded: UserProfile = {
             ...currentUser,
             plan: 'premium',
-            credits: Math.max(currentUser.credits || 0, res.credits || 10000),
-            max_credits: Math.max(currentUser.max_credits || 0, res.max_credits || 10000),
+            credits: Math.min(5000, res.credits && res.credits <= 5000 ? res.credits : (currentUser.credits && currentUser.credits <= 5000 ? currentUser.credits : 5000)),
+            max_credits: 5000,
             memory_max_kb: 8192.0
           };
           setStoredAuth(upgraded.id, upgraded);
@@ -124,8 +124,8 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
         const upgraded: UserProfile = {
           ...currentUser,
           plan: 'premium',
-          credits: Math.max(currentUser.credits || 0, synced.credits || 10000),
-          max_credits: Math.max(currentUser.max_credits || 0, synced.max_credits || 10000),
+          credits: Math.min(5000, synced.credits && synced.credits <= 5000 ? synced.credits : (currentUser.credits && currentUser.credits <= 5000 ? currentUser.credits : 5000)),
+          max_credits: 5000,
           memory_max_kb: 8192.0
         };
         setStoredAuth(upgraded.id, upgraded);

@@ -135,8 +135,10 @@ export function App() {
             photoURL: basic.photoURL,
             created_at: basic.created_at,
             plan: isPremium ? 'premium' : (existing?.plan || 'free'),
-            credits: isPremium ? Math.max(5000, premRec?.credits || (existing?.credits ?? 10000)) : (existing?.credits ?? 50),
-            max_credits: isPremium ? Math.max(5000, premRec?.credits || (existing?.max_credits ?? 10000)) : (existing?.max_credits ?? 50),
+            credits: isPremium
+              ? Math.min(5000, premRec?.credits && premRec.credits <= 5000 ? premRec.credits : (existing?.credits && existing.credits <= 5000 ? existing.credits : 5000))
+              : (existing?.credits && existing.credits <= 50 ? existing.credits : 50),
+            max_credits: isPremium ? 5000 : 50,
             memory_used_kb: existing?.memory_used_kb ?? 48,
             memory_max_kb: isPremium ? 8192 : 256,
             memory_used_pct: existing?.memory_used_pct ?? 1
@@ -152,8 +154,8 @@ export function App() {
                 setCurrentUser((prev) => prev ? {
                   ...prev,
                   plan: 'premium',
-                  credits: Math.max(prev.credits || 0, synced.credits || 10000),
-                  max_credits: synced.max_credits || 10000,
+                  credits: Math.min(5000, synced.credits && synced.credits <= 5000 ? synced.credits : (prev.credits && prev.credits <= 5000 ? prev.credits : 5000)),
+                  max_credits: 5000,
                   memory_max_kb: 8192
                 } : null);
               }
@@ -168,8 +170,8 @@ export function App() {
         if (user) {
           if (user.email && isPremiumEmail(user.email)) {
             user.plan = 'premium';
-            user.credits = Math.max(5000, user.credits ?? 10000);
-            user.max_credits = Math.max(5000, user.max_credits ?? 10000);
+            user.credits = Math.min(5000, user.credits && user.credits <= 5000 ? user.credits : 5000);
+            user.max_credits = 5000;
             user.memory_max_kb = 8192;
           }
           setCurrentUser(user);

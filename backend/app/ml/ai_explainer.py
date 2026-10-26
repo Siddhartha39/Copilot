@@ -356,10 +356,14 @@ CONTEXT & EVIDENCE:
             "contents": contents,
             "generationConfig": {"temperature": 0.25, "maxOutputTokens": 2048}
         }
-        for model_id in ["gemini-3.8-flash", "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]:
+        for model_id in [
+            "gemini-flash-lite-latest",
+            "gemini-3.5-flash-lite",
+            "gemini-3.1-flash-lite"
+        ]:
             try:
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={effective_api_key}"
-                async with httpx.AsyncClient(timeout=10.0) as client:
+                async with httpx.AsyncClient(timeout=5.0) as client:
                     resp = await client.post(url, json=payload)
                     if resp.status_code == 200:
                         data = resp.json()

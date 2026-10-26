@@ -2156,10 +2156,11 @@ export function getPremiumRegistry(): Record<string, { plan: string; credits: nu
     const data = raw ? JSON.parse(raw) : {};
     VERIFIED_PREMIUM_EMAILS.forEach((em) => {
       const clean = em.toLowerCase();
-      if (!data[clean]) {
+      // Ensure verified premium emails are initialized or sanitized if previously ballooned (> 5000)
+      if (!data[clean] || (data[clean].credits && data[clean].credits > 5000)) {
         data[clean] = {
           plan: 'premium',
-          credits: 10000,
+          credits: 5000,
           memory_max_kb: 8192,
           updated_at: new Date().toISOString()
         };
@@ -2171,15 +2172,33 @@ export function getPremiumRegistry(): Record<string, { plan: string; credits: nu
   }
 }
 
-export function recordPremiumEmail(email?: string | null, plan: string = 'premium', credits: number = 5000) {
+export function recordPremiumEmail(
+  email?: string | null,
+  plan: string = 'premium',
+  credits: number = 5000,
+  isTopUp: boolean = false
+) {
   if (typeof window === 'undefined' || !email) return;
   const cleanEmail = email.trim().toLowerCase();
   try {
     const registry = getPremiumRegistry();
     const existing = registry[cleanEmail];
+    const maxAllowed = plan === 'premium' ? 5000 : 50;
+
+    let finalCredits: number;
+    if (isTopUp) {
+      // Top-up payment: add credits to existing balance, max limit 10,000
+      finalCredits = Math.min(10000, (existing?.credits || 0) + credits);
+    } else {
+      // Normal auth/sync: do NOT additively accumulate on every login!
+      // Sanitize corrupted credits down to maxAllowed
+      const raw = credits ?? existing?.credits ?? maxAllowed;
+      finalCredits = (raw > 5000 || raw <= 0) ? maxAllowed : Math.min(maxAllowed, raw);
+    }
+
     registry[cleanEmail] = {
       plan,
-      credits: (existing?.credits || 0) + credits,
+      credits: finalCredits,
       memory_max_kb: 8192,
       updated_at: new Date().toISOString()
     };
@@ -2223,9 +2242,16 @@ export function getStoredUser(): UserProfile | null {
     if (user.email && isPremiumEmail(user.email)) {
       const rec = getPremiumRecord(user.email);
       user.plan = 'premium';
-      user.credits = Math.max(5000, rec?.credits || (user.credits ?? 5000));
-      user.max_credits = Math.max(5000, rec?.credits || (user.max_credits ?? 5000));
+      const maxPro = 5000;
+      const rawCredits = rec?.credits ?? user.credits ?? maxPro;
+      user.credits = (rawCredits > 5000 || rawCredits <= 0) ? maxPro : Math.min(maxPro, rawCredits);
+      user.max_credits = maxPro;
       user.memory_max_kb = 8192.0;
+    } else {
+      const maxFree = 50;
+      const rawCredits = user.credits ?? maxFree;
+      user.credits = (rawCredits > 50 || rawCredits <= 0) ? maxFree : Math.min(maxFree, rawCredits);
+      user.max_credits = maxFree;
     }
     return user;
   } catch {
@@ -2235,9 +2261,16 @@ export function getStoredUser(): UserProfile | null {
 
 export function setStoredAuth(token: string, user: UserProfile) {
   if (typeof window === 'undefined') return;
-  // If user is premium, ensure recorded in persistent registry
-  if (user.plan === 'premium' && user.email) {
-    recordPremiumEmail(user.email, 'premium', user.credits || 5000);
+  const isPro = user.plan === 'premium' || isPremiumEmail(user.email);
+  const maxLimit = isPro ? 5000 : 50;
+  if (!user.credits || user.credits > maxLimit || user.credits <= 0) {
+    user.credits = maxLimit;
+  }
+  user.max_credits = maxLimit;
+
+  // If user is premium, ensure recorded in persistent registry without accumulating
+  if (isPro && user.email) {
+    recordPremiumEmail(user.email, 'premium', user.credits, false);
   }
   localStorage.setItem(AUTH_TOKEN_KEY, token);
   localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
@@ -2259,14 +2292,14 @@ export async function syncUserSubscription(email: string): Promise<any> {
     if (res.ok) {
       const data = await res.json();
       if (data.is_premium) {
-        recordPremiumEmail(clean, 'premium', data.credits || 5000);
+        recordPremiumEmail(clean, 'premium', data.credits || 5000, false);
         const current = getStoredUser();
         if (current && current.email && current.email.toLowerCase() === clean) {
           const updated: UserProfile = {
             ...current,
             plan: 'premium',
-            credits: Math.max(current.credits || 0, data.credits || 5000),
-            max_credits: data.max_credits || 5000,
+            credits: Math.min(5000, data.credits && data.credits <= 5000 ? data.credits : (current.credits && current.credits <= 5000 ? current.credits : 5000)),
+            max_credits: 5000,
             memory_max_kb: data.memory_max_kb || 8192.0
           };
           setStoredAuth(current.id, updated);
@@ -2283,11 +2316,12 @@ export async function syncUserSubscription(email: string): Promise<any> {
     const current = getStoredUser();
     if (current && current.email && current.email.toLowerCase() === clean) {
       const rec = getPremiumRecord(clean);
+      const safeCredits = Math.min(5000, rec?.credits && rec.credits <= 5000 ? rec.credits : (current.credits && current.credits <= 5000 ? current.credits : 5000));
       const updated: UserProfile = {
         ...current,
         plan: 'premium',
-        credits: Math.max(current.credits || 0, rec?.credits || 10000),
-        max_credits: rec?.credits || 10000,
+        credits: safeCredits,
+        max_credits: 5000,
         memory_max_kb: 8192.0
       };
       setStoredAuth(current.id, updated);
