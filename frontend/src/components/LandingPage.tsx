@@ -332,7 +332,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   return (
     <div style={{ padding: '0 24px 48px 24px', maxWidth: '1360px', margin: '0 auto' }}>
-      {/* 1. Live Threat Intelligence Marquee Ticker -> Neo-Brutalist Marquee */}
+      {/* 1. Live Threat Intelligence Marquee Ticker -> Neo-Brutalism */}
       <div
         style={{
           marginBottom: '24px',
@@ -342,12 +342,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           display: 'flex',
           alignItems: 'center',
           gap: '14px',
-          background: '#38BDF8',
-          border: '4px solid #000000',
-          boxShadow: '6px 6px 0px 0px #000000'
+          background: isLight ? '#38BDF8' : 'rgba(15, 23, 42, 0.85)',
+          backdropFilter: isLight ? 'none' : 'blur(12px)',
+          WebkitBackdropFilter: isLight ? 'none' : 'blur(12px)',
+          border: isLight ? '4px solid #000000' : '3px solid rgba(56, 189, 248, 0.4)',
+          boxShadow: isLight ? '6px 6px 0px 0px #000000' : '6px 6px 0px 0px rgba(0, 0, 0, 0.5)'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, background: '#000000', color: '#38BDF8', padding: '4px 10px', border: '2px solid #000000' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, background: '#000000', color: '#38BDF8', padding: '4px 10px', border: isLight ? '2px solid #000000' : '2px solid #38BDF8' }}>
           <span style={{ width: '8px', height: '8px', borderRadius: '0px', backgroundColor: '#FF6B6B', display: 'inline-block' }}></span>
           <span style={{ fontSize: '0.76rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '0.06em', textTransform: 'uppercase' }}>
             LIVE THREAT TELEMETRY
@@ -359,26 +361,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             {/* Ticker items loop */}
             {[1, 2].map((loopIdx) => (
               <div key={loopIdx} style={{ display: 'flex', alignItems: 'center', gap: '28px', paddingRight: '28px' }}>
-                <span style={{ fontSize: '0.8rem', color: '#000000', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <ShieldAlert size={15} color="#000000" strokeWidth={2.6} />
+                <span style={{ fontSize: '0.8rem', color: isLight ? '#000000' : '#E2E8F0', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <ShieldAlert size={15} color={isLight ? '#000000' : '#FF6B6B'} strokeWidth={2.6} />
                   <span>INTERCEPTED: login-paypal-security-verification.xyz (Risk: 94.8 | Phish)</span>
                 </span>
-                <span style={{ color: '#000000', fontWeight: 900 }}>■</span>
-                <span style={{ fontSize: '0.8rem', color: '#000000', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <ShieldCheck size={15} color="#000000" strokeWidth={2.6} />
+                <span style={{ color: isLight ? '#000000' : '#38BDF8', fontWeight: 900 }}>■</span>
+                <span style={{ fontSize: '0.8rem', color: isLight ? '#000000' : '#E2E8F0', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <ShieldCheck size={15} color={isLight ? '#000000' : '#38BDF8'} strokeWidth={2.6} />
                   <span>VERIFIED HARDENED: github.com (Score: 2.1 | A+ Posture)</span>
                 </span>
-                <span style={{ color: '#000000', fontWeight: 900 }}>■</span>
-                <span style={{ fontSize: '0.8rem', color: '#000000', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Zap size={15} color="#000000" strokeWidth={2.6} />
+                <span style={{ color: isLight ? '#000000' : '#38BDF8', fontWeight: 900 }}>■</span>
+                <span style={{ fontSize: '0.8rem', color: isLight ? '#000000' : '#E2E8F0', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Zap size={15} color={isLight ? '#000000' : '#FCD34D'} strokeWidth={2.6} />
                   <span>ZERO-TRUST SOC: Multi-Signal Deep Forensics &amp; Brand Vision Active (100% Free)</span>
                 </span>
-                <span style={{ color: '#000000', fontWeight: 900 }}>■</span>
-                <span style={{ fontSize: '0.8rem', color: '#000000', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Activity size={15} color="#000000" strokeWidth={2.6} />
+                <span style={{ color: isLight ? '#000000' : '#38BDF8', fontWeight: 900 }}>■</span>
+                <span style={{ fontSize: '0.8rem', color: isLight ? '#000000' : '#E2E8F0', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Activity size={15} color={isLight ? '#000000' : '#38BDF8'} strokeWidth={2.6} />
                   <span>CERTSTREAM INGEST: 4,820 NRD candidates triaged in &lt;10ms</span>
                 </span>
-                <span style={{ color: '#000000', fontWeight: 900 }}>■</span>
+                <span style={{ color: isLight ? '#000000' : '#38BDF8', fontWeight: 900 }}>■</span>
               </div>
             ))}
           </div>
@@ -393,10 +395,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         style={{
           padding: '52px 32px 40px 32px',
           marginBottom: '36px',
-          background: '#FFFFFF',
-          border: '4px solid #000000',
+          background: isLight ? '#FFFFFF' : 'rgba(15, 23, 42, 0.72)',
+          backdropFilter: isLight ? 'none' : 'blur(16px)',
+          WebkitBackdropFilter: isLight ? 'none' : 'blur(16px)',
+          border: isLight ? '4px solid #000000' : '3px solid rgba(56, 189, 248, 0.35)',
           borderRadius: '0px',
-          boxShadow: '12px 12px 0px 0px #000000',
+          boxShadow: isLight ? '12px 12px 0px 0px #000000' : '10px 10px 0px 0px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.12)',
           textAlign: 'center',
           position: 'relative',
           overflow: 'hidden'
@@ -412,7 +416,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             alignItems: 'center',
             gap: '8px',
             background: '#38BDF8',
-            border: '3px solid #000000',
+            border: isLight ? '3px solid #000000' : '2px solid #000000',
             boxShadow: '4px 4px 0px 0px #000000',
             borderRadius: '0px',
             padding: '6px 18px',
@@ -459,7 +463,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               marginBottom: '6px',
               background: '#FF6B6B',
               padding: '2px 16px',
-              border: '4px solid #000000',
+              border: isLight ? '4px solid #000000' : '3px solid #000000',
               boxShadow: '6px 6px 0px 0px #000000',
               transform: 'rotate(0.8deg)'
             }}
@@ -475,7 +479,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               letterSpacing: '-0.03em',
               textTransform: 'uppercase',
               lineHeight: 1.08,
-              color: '#000000',
+              color: isLight ? '#000000' : '#FFFFFF',
               marginTop: '10px'
             }}
           >
@@ -490,7 +494,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           transition={{ duration: 0.4, delay: 0.26 }}
           style={{
             fontSize: 'clamp(1.05rem, 2.2vw, 1.25rem)',
-            color: '#000000',
+            color: isLight ? '#000000' : '#94A3B8',
             maxWidth: '780px',
             margin: '0 auto 32px auto',
             lineHeight: 1.55,
@@ -576,17 +580,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <form
             onSubmit={handleQuickSubmit}
             style={{
-              background: '#FFFFFF',
-              border: '4px solid #000000',
+              background: isLight ? '#FFFFFF' : 'rgba(11, 15, 25, 0.88)',
+              border: isLight ? '4px solid #000000' : '3px solid #38BDF8',
               borderRadius: '0px',
               padding: '8px 8px 8px 18px',
-              boxShadow: '8px 8px 0px 0px #000000',
+              boxShadow: isLight ? '8px 8px 0px 0px #000000' : '6px 6px 0px 0px rgba(56, 189, 248, 0.3)',
               display: 'flex',
               gap: '12px',
               alignItems: 'center'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', color: '#000000' }}>
+            <div style={{ display: 'flex', alignItems: 'center', color: isLight ? '#000000' : '#38BDF8' }}>
               <Search size={22} strokeWidth={2.8} />
             </div>
             <input
@@ -598,7 +602,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 flex: 1,
                 background: 'transparent',
                 border: 'none',
-                color: '#000000',
+                color: isLight ? '#000000' : '#FFFFFF',
                 fontSize: '0.96rem',
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 700,
@@ -613,7 +617,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               style={{
                 background: '#38BDF8',
                 color: '#000000',
-                border: '3px solid #000000',
+                border: isLight ? '3px solid #000000' : '2px solid #000000',
                 borderRadius: '0px',
                 padding: '12px 26px',
                 fontWeight: 900,
@@ -625,7 +629,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                boxShadow: '3px 3px 0px 0px #000000',
+                boxShadow: isLight ? '3px 3px 0px 0px #000000' : '3px 3px 0px 0px rgba(0, 0, 0, 0.6)',
                 flexShrink: 0
               }}
             >
@@ -636,7 +640,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           {/* Quick-test Sample Chips */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px', padding: '0 6px', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <span style={{ fontSize: '0.78rem', color: '#000000', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>QUICK SAMPLES:</span>
+            <span style={{ fontSize: '0.78rem', color: isLight ? '#000000' : '#94A3B8', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>QUICK SAMPLES:</span>
             {sampleTargets.map((s) => (
               <motion.button
                 key={s.url}
@@ -645,8 +649,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 onClick={() => handleSampleClick(s.url)}
                 type="button"
                 style={{
-                  background: '#FFFFFF',
-                  border: '2px solid #000000',
+                  background: isLight ? '#FFFFFF' : 'rgba(30, 41, 59, 0.85)',
+                  border: isLight ? '2px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
                   borderRadius: '0px',
                   padding: '5px 12px',
                   fontSize: '0.76rem',
@@ -655,8 +659,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  color: '#000000',
-                  boxShadow: '2px 2px 0px 0px #000000'
+                  color: isLight ? '#000000' : '#F1F5F9',
+                  boxShadow: isLight ? '2px 2px 0px 0px #000000' : '2px 2px 0px 0px rgba(0, 0, 0, 0.5)'
                 }}
               >
                 <span style={{ fontWeight: 800 }}>{s.url}</span>
@@ -679,26 +683,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           {/* Scan Protocol Notice */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '14px' }}>
-            <Zap size={15} color="#000000" strokeWidth={2.8} />
-            <span style={{ fontSize: '0.78rem', color: '#000000', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.03em' }}>
-              100% Free &amp; Open Access • Full Headless Sandbox, Brand pHash Vision &amp; CyberAI <span style={{ background: '#38BDF8', padding: '1px 6px', border: '1.5px solid #000000' }}>Unlocked (No Paywalls)</span>
+            <Zap size={15} color={isLight ? '#000000' : '#38BDF8'} strokeWidth={2.8} />
+            <span style={{ fontSize: '0.78rem', color: isLight ? '#000000' : '#94A3B8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+              100% Free &amp; Open Access • Full Headless Sandbox, Brand pHash Vision &amp; CyberAI <span style={{ background: '#38BDF8', color: '#000000', padding: '1px 6px', border: '1.5px solid #000000' }}>Unlocked (No Paywalls)</span>
             </span>
           </div>
         </motion.div>
 
         {/* Telemetry Status Bar with Neo-Brutalist Sharp Metrics */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '14px', maxWidth: '980px', margin: '36px auto 0 auto', borderTop: '4px solid #000000', paddingTop: '24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '14px', maxWidth: '980px', margin: '36px auto 0 auto', borderTop: isLight ? '4px solid #000000' : '2px solid rgba(56, 189, 248, 0.25)', paddingTop: '24px' }}>
           <motion.div
             whileHover={{ translateY: -3, boxShadow: '6px 6px 0px 0px #000000' }}
             style={{
-              background: '#FFFDF5',
-              border: '3px solid #000000',
+              background: isLight ? '#FFFDF5' : 'rgba(22, 27, 34, 0.75)',
+              border: isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
               padding: '12px 14px',
               borderRadius: '0px',
-              boxShadow: '4px 4px 0px 0px #000000'
+              boxShadow: isLight ? '4px 4px 0px 0px #000000' : '4px 4px 0px 0px rgba(0, 0, 0, 0.5)'
             }}
           >
-            <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+            <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: isLight ? '#000000' : '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span>0.0 – 100</span>
               <InfoTooltip
                 title="Calibrated Risk Index"
@@ -706,20 +710,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 position="top"
               />
             </div>
-            <div style={{ fontSize: '0.72rem', color: '#000000', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '4px' }}>CALIBRATED RISK INDEX</div>
+            <div style={{ fontSize: '0.72rem', color: isLight ? '#000000' : '#94A3B8', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '4px' }}>CALIBRATED RISK INDEX</div>
           </motion.div>
 
           <motion.div
             whileHover={{ translateY: -3, boxShadow: '6px 6px 0px 0px #000000' }}
             style={{
-              background: '#FFFDF5',
-              border: '3px solid #000000',
+              background: isLight ? '#FFFDF5' : 'rgba(22, 27, 34, 0.75)',
+              border: isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
               padding: '12px 14px',
               borderRadius: '0px',
-              boxShadow: '4px 4px 0px 0px #000000'
+              boxShadow: isLight ? '4px 4px 0px 0px #000000' : '4px 4px 0px 0px rgba(0, 0, 0, 0.5)'
             }}
           >
-            <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+            <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: isLight ? '#000000' : '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span>7-STAGE</span>
               <InfoTooltip
                 title="7-Stage Attack Graph"
@@ -727,20 +731,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 position="top"
               />
             </div>
-            <div style={{ fontSize: '0.72rem', color: '#000000', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '4px' }}>ATTACK-CHAIN GRAPH</div>
+            <div style={{ fontSize: '0.72rem', color: isLight ? '#000000' : '#94A3B8', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '4px' }}>ATTACK-CHAIN GRAPH</div>
           </motion.div>
 
           <motion.div
             whileHover={{ translateY: -3, boxShadow: '6px 6px 0px 0px #000000' }}
             style={{
-              background: '#FFFDF5',
-              border: '3px solid #000000',
+              background: isLight ? '#FFFDF5' : 'rgba(22, 27, 34, 0.75)',
+              border: isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
               padding: '12px 14px',
               borderRadius: '0px',
-              boxShadow: '4px 4px 0px 0px #000000'
+              boxShadow: isLight ? '4px 4px 0px 0px #000000' : '4px 4px 0px 0px rgba(0, 0, 0, 0.5)'
             }}
           >
-            <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+            <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: isLight ? '#000000' : '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span>&lt; 30 DAYS</span>
               <InfoTooltip
                 title="Newly Registered Domains (NRD)"
@@ -748,20 +752,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 position="top"
               />
             </div>
-            <div style={{ fontSize: '0.72rem', color: '#000000', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '4px' }}>NRD EARLY WARNING</div>
+            <div style={{ fontSize: '0.72rem', color: isLight ? '#000000' : '#94A3B8', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '4px' }}>NRD EARLY WARNING</div>
           </motion.div>
 
           <motion.div
             whileHover={{ translateY: -3, boxShadow: '6px 6px 0px 0px #000000' }}
             style={{
-              background: '#FFFDF5',
-              border: '3px solid #000000',
+              background: isLight ? '#FFFDF5' : 'rgba(22, 27, 34, 0.75)',
+              border: isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
               padding: '12px 14px',
               borderRadius: '0px',
-              boxShadow: '4px 4px 0px 0px #000000'
+              boxShadow: isLight ? '4px 4px 0px 0px #000000' : '4px 4px 0px 0px rgba(0, 0, 0, 0.5)'
             }}
           >
-            <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+            <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: isLight ? '#000000' : '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
               <span>ZERO PAYWALL</span>
               <InfoTooltip
                 title="100% Free & Open Access"
@@ -783,16 +787,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         style={{
           padding: '28px',
           marginBottom: '36px',
-          background: '#FFFFFF',
-          border: '4px solid #000000',
+          background: isLight ? '#FFFFFF' : 'rgba(15, 23, 42, 0.72)',
+          backdropFilter: isLight ? 'none' : 'blur(16px)',
+          WebkitBackdropFilter: isLight ? 'none' : 'blur(16px)',
+          border: isLight ? '4px solid #000000' : '3px solid rgba(56, 189, 248, 0.35)',
           borderRadius: '0px',
-          boxShadow: '10px 10px 0px 0px #000000'
+          boxShadow: isLight ? '10px 10px 0px 0px #000000' : '10px 10px 0px 0px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.12)'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Cpu size={24} color="#000000" strokeWidth={2.8} />
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: '#000000', letterSpacing: '-0.01em' }}>
+            <Cpu size={24} color={isLight ? '#000000' : '#38BDF8'} strokeWidth={2.8} />
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: isLight ? '#000000' : '#FFFFFF', letterSpacing: '-0.01em' }}>
               AUTONOMOUS 6-STAGE INSPECTION PIPELINE
             </h2>
             <InfoTooltip
@@ -807,7 +813,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               padding: '4px 12px',
               borderRadius: '0px',
               background: '#38BDF8',
-              border: '2px solid #000000',
+              border: isLight ? '2px solid #000000' : '2px solid #000000',
               boxShadow: '2px 2px 0px 0px #000000',
               fontWeight: 900,
               textTransform: 'uppercase',
@@ -829,20 +835,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '1px 1px 0px 0px #000000' }}
                 onClick={() => setActivePipelineStep(idx)}
                 style={{
-                  background: isSelected ? '#38BDF8' : '#FFFDF5',
-                  border: isSelected ? '4px solid #000000' : '3px solid #000000',
+                  background: isSelected ? '#38BDF8' : (isLight ? '#FFFDF5' : 'rgba(30, 41, 59, 0.7)'),
+                  border: isSelected ? '4px solid #000000' : (isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.25)'),
                   borderRadius: '0px',
                   padding: '14px 14px',
                   cursor: 'pointer',
                   textAlign: 'left',
                   position: 'relative',
                   overflow: 'hidden',
-                  boxShadow: isSelected ? '6px 6px 0px 0px #000000' : '3px 3px 0px 0px #000000',
+                  boxShadow: isSelected ? '6px 6px 0px 0px #000000' : (isLight ? '3px 3px 0px 0px #000000' : '3px 3px 0px 0px rgba(0, 0, 0, 0.5)'),
                   transition: 'background-color 0.1s ease'
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <span style={{ fontSize: '0.78rem', fontWeight: 900, color: '#000000', fontFamily: "'Space Grotesk', sans-serif" }}>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 900, color: isSelected ? '#000000' : (isLight ? '#000000' : '#E2E8F0'), fontFamily: "'Space Grotesk', sans-serif" }}>
                     STAGE 0{stage.step}
                   </span>
                   <span
@@ -860,7 +866,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     {stage.badge}
                   </span>
                 </div>
-                <div style={{ fontSize: '0.88rem', fontWeight: 900, color: '#000000', fontFamily: "'Space Grotesk', sans-serif" }}>
+                <div style={{ fontSize: '0.88rem', fontWeight: 900, color: isSelected ? '#000000' : (isLight ? '#000000' : '#FFFFFF'), fontFamily: "'Space Grotesk', sans-serif" }}>
                   {stage.name}
                 </div>
               </motion.button>
@@ -877,10 +883,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
             style={{
-              background: '#FFFDF5',
-              border: '3px solid #000000',
+              background: isLight ? '#FFFDF5' : 'rgba(15, 23, 42, 0.85)',
+              border: isLight ? '3px solid #000000' : '2px solid #38BDF8',
               borderRadius: '0px',
-              boxShadow: '4px 4px 0px 0px #000000',
+              boxShadow: isLight ? '4px 4px 0px 0px #000000' : '4px 4px 0px 0px rgba(0, 0, 0, 0.5)',
               padding: '20px 24px',
               display: 'flex',
               flexDirection: 'column',
@@ -888,15 +894,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Zap size={20} color="#000000" strokeWidth={2.8} />
-              <span style={{ fontSize: '1.05rem', fontWeight: 900, color: '#000000', fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase' }}>
+              <Zap size={20} color={isLight ? '#000000' : '#38BDF8'} strokeWidth={2.8} />
+              <span style={{ fontSize: '1.05rem', fontWeight: 900, color: isLight ? '#000000' : '#FFFFFF', fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase' }}>
                 Stage 0{pipelineStages[activePipelineStep].step}: {pipelineStages[activePipelineStep].name}
               </span>
             </div>
-            <p style={{ fontSize: '0.92rem', color: '#000000', lineHeight: 1.55, fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>
+            <p style={{ fontSize: '0.92rem', color: isLight ? '#000000' : '#E2E8F0', lineHeight: 1.55, fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>
               {pipelineStages[activePipelineStep].summary}
             </p>
-            <p style={{ fontSize: '0.85rem', color: '#000000', lineHeight: 1.6, fontWeight: 500, fontFamily: "'Space Grotesk', sans-serif" }}>
+            <p style={{ fontSize: '0.85rem', color: isLight ? '#000000' : '#94A3B8', lineHeight: 1.6, fontWeight: 500, fontFamily: "'Space Grotesk', sans-serif" }}>
               {pipelineStages[activePipelineStep].detail}
             </p>
           </motion.div>
@@ -912,15 +918,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         style={{
           padding: '28px',
           marginBottom: '36px',
-          background: '#FFFFFF',
-          border: '4px solid #000000',
+          background: isLight ? '#FFFFFF' : 'rgba(15, 23, 42, 0.72)',
+          backdropFilter: isLight ? 'none' : 'blur(16px)',
+          WebkitBackdropFilter: isLight ? 'none' : 'blur(16px)',
+          border: isLight ? '4px solid #000000' : '3px solid rgba(56, 189, 248, 0.35)',
           borderRadius: '0px',
-          boxShadow: '10px 10px 0px 0px #000000'
+          boxShadow: isLight ? '10px 10px 0px 0px #000000' : '10px 10px 0px 0px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.12)'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
-          <AlertTriangle size={24} color="#000000" strokeWidth={2.8} />
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: '#000000', letterSpacing: '-0.01em' }}>
+          <AlertTriangle size={24} color={isLight ? '#000000' : '#FF6B6B'} strokeWidth={2.8} />
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: isLight ? '#000000' : '#FFFFFF', letterSpacing: '-0.01em' }}>
             WHY TRADITIONAL SECURITY FAILS: BRAND CONTRADICTION
           </h2>
         </div>
@@ -928,45 +936,45 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
           {/* Legitimate Brand Card */}
           <div style={{
-            background: '#FFFDF5',
-            border: '3px solid #000000',
+            background: isLight ? '#FFFDF5' : 'rgba(15, 23, 42, 0.85)',
+            border: isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
             borderRadius: '0px',
             padding: '22px',
-            boxShadow: '6px 6px 0px 0px #000000'
+            boxShadow: isLight ? '6px 6px 0px 0px #000000' : '6px 6px 0px 0px rgba(0, 0, 0, 0.5)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ fontSize: '0.82rem', color: '#000000', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase' }}>AUTHORIZED OFFICIAL SITE</span>
+              <span style={{ fontSize: '0.82rem', color: isLight ? '#000000' : '#E2E8F0', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase' }}>AUTHORIZED OFFICIAL SITE</span>
               <span style={{ fontSize: '0.68rem', padding: '3px 8px', borderRadius: '0px', background: '#C4B5FD', border: '2px solid #000000', fontWeight: 900, color: '#000000', textTransform: 'uppercase' }}>100% MATCH</span>
             </div>
-            <div style={{ fontSize: '0.96rem', color: '#000000', fontWeight: 900, marginBottom: '10px', fontFamily: "'Space Grotesk', sans-serif" }}>
+            <div style={{ fontSize: '0.96rem', color: isLight ? '#000000' : '#38BDF8', fontWeight: 900, marginBottom: '10px', fontFamily: "'Space Grotesk', sans-serif" }}>
               https://www.paypal.com/signin
             </div>
-            <div style={{ fontSize: '0.85rem', color: '#000000', lineHeight: 1.6, fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
-              • Rendered Visual: <strong style={{ color: '#000000', fontWeight: 900 }}>PayPal</strong> logo verified<br />
-              • Domain Match: <strong style={{ color: '#000000', fontWeight: 900 }}>paypal.com</strong> (Officially Authorized)<br />
-              • Verdict: <strong style={{ background: '#C4B5FD', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>SAFE (Risk: 2.4/100)</strong>
+            <div style={{ fontSize: '0.85rem', color: isLight ? '#000000' : '#CBD5E1', lineHeight: 1.6, fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
+              • Rendered Visual: <strong style={{ color: isLight ? '#000000' : '#FFFFFF', fontWeight: 900 }}>PayPal</strong> logo verified<br />
+              • Domain Match: <strong style={{ color: isLight ? '#000000' : '#FFFFFF', fontWeight: 900 }}>paypal.com</strong> (Officially Authorized)<br />
+              • Verdict: <strong style={{ background: '#C4B5FD', color: '#000000', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>SAFE (Risk: 2.4/100)</strong>
             </div>
           </div>
 
           {/* Adversary Impersonator Card */}
           <div style={{
-            background: '#FFFDF5',
-            border: '3px solid #000000',
+            background: isLight ? '#FFFDF5' : 'rgba(15, 23, 42, 0.85)',
+            border: isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
             borderRadius: '0px',
             padding: '22px',
-            boxShadow: '6px 6px 0px 0px #000000'
+            boxShadow: isLight ? '6px 6px 0px 0px #000000' : '6px 6px 0px 0px rgba(0, 0, 0, 0.5)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ fontSize: '0.82rem', color: '#000000', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase' }}>ADVERSARY PHISHING HARVESTER</span>
+              <span style={{ fontSize: '0.82rem', color: isLight ? '#000000' : '#E2E8F0', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase' }}>ADVERSARY PHISHING HARVESTER</span>
               <span style={{ fontSize: '0.68rem', padding: '3px 8px', borderRadius: '0px', background: '#FF6B6B', border: '2px solid #000000', fontWeight: 900, color: '#000000', textTransform: 'uppercase' }}>CRITICAL CONTRADICTION</span>
             </div>
-            <div style={{ fontSize: '0.96rem', color: '#000000', fontWeight: 900, marginBottom: '10px', fontFamily: "'Space Grotesk', sans-serif" }}>
+            <div style={{ fontSize: '0.96rem', color: isLight ? '#000000' : '#FF6B6B', fontWeight: 900, marginBottom: '10px', fontFamily: "'Space Grotesk', sans-serif" }}>
               https://login-paypal-security-verify.xyz
             </div>
-            <div style={{ fontSize: '0.85rem', color: '#000000', lineHeight: 1.6, fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
-              • Rendered Visual: <strong style={{ color: '#000000', fontWeight: 900 }}>PayPal</strong> logo matched via pHash (99.4%)<br />
-              • Domain Match: <strong style={{ color: '#000000', fontWeight: 900 }}>login-paypal-security-verify.xyz</strong> (UNAUTHORIZED)<br />
-              • Verdict: <strong style={{ background: '#FF6B6B', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>BLOCKED (Risk: 96.2/100 | Phish)</strong>
+            <div style={{ fontSize: '0.85rem', color: isLight ? '#000000' : '#CBD5E1', lineHeight: 1.6, fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
+              • Rendered Visual: <strong style={{ color: isLight ? '#000000' : '#FFFFFF', fontWeight: 900 }}>PayPal</strong> logo matched via pHash (99.4%)<br />
+              • Domain Match: <strong style={{ color: isLight ? '#000000' : '#FFFFFF', fontWeight: 900 }}>login-paypal-security-verify.xyz</strong> (UNAUTHORIZED)<br />
+              • Verdict: <strong style={{ background: '#FF6B6B', color: '#000000', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>BLOCKED (Risk: 96.2/100 | Phish)</strong>
             </div>
           </div>
         </div>
@@ -976,8 +984,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '22px', flexWrap: 'wrap', gap: '14px' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Terminal size={24} color="#000000" strokeWidth={2.8} />
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: '#000000', letterSpacing: '-0.01em' }}>
+            <Terminal size={24} color={isLight ? '#000000' : '#38BDF8'} strokeWidth={2.8} />
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: isLight ? '#000000' : '#FFFFFF', letterSpacing: '-0.01em' }}>
               CYBER DEFENSE CAPABILITY STACK
             </h2>
             <InfoTooltip
@@ -986,20 +994,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               position="right"
             />
           </div>
-          <p style={{ fontSize: '0.84rem', color: '#000000', marginTop: '4px', fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>
+          <p style={{ fontSize: '0.84rem', color: isLight ? '#000000' : '#94A3B8', marginTop: '4px', fontWeight: 700, fontFamily: "'Space Grotesk', sans-serif" }}>
             Scroll through the 6 defensive modules or select any layer to inspect technical forensics
           </p>
         </div>
 
         {/* View Mode Toggle Switcher */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#FFFDF5', border: '3px solid #000000', padding: '4px', borderRadius: '0px', boxShadow: '4px 4px 0px 0px #000000' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: isLight ? '#FFFDF5' : 'rgba(15, 23, 42, 0.85)', border: isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)', padding: '4px', borderRadius: '0px', boxShadow: isLight ? '4px 4px 0px 0px #000000' : '4px 4px 0px 0px rgba(0, 0, 0, 0.5)' }}>
           <motion.button
             whileHover={{ translateY: -2 }}
             whileTap={{ transform: 'translate(2px, 2px)' }}
             onClick={() => setCardViewMode('stack')}
             style={{
               background: cardViewMode === 'stack' ? '#38BDF8' : 'transparent',
-              color: '#000000',
+              color: cardViewMode === 'stack' ? '#000000' : (isLight ? '#000000' : '#E2E8F0'),
               border: cardViewMode === 'stack' ? '2px solid #000000' : 'none',
               borderRadius: '0px',
               padding: '8px 16px',
@@ -1014,7 +1022,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               transition: 'background-color 0.1s ease'
             }}
           >
-            <Layers size={16} color="#000000" strokeWidth={2.6} />
+            <Layers size={16} color={cardViewMode === 'stack' ? '#000000' : (isLight ? '#000000' : '#38BDF8')} strokeWidth={2.6} />
             <span>STACKED SCROLL DECK</span>
           </motion.button>
 
@@ -1024,7 +1032,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             onClick={() => setCardViewMode('grid')}
             style={{
               background: cardViewMode === 'grid' ? '#38BDF8' : 'transparent',
-              color: '#000000',
+              color: cardViewMode === 'grid' ? '#000000' : (isLight ? '#000000' : '#E2E8F0'),
               border: cardViewMode === 'grid' ? '2px solid #000000' : 'none',
               borderRadius: '0px',
               padding: '8px 16px',
@@ -1039,7 +1047,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               transition: 'background-color 0.1s ease'
             }}
           >
-            <LayoutGrid size={16} color="#000000" strokeWidth={2.6} />
+            <LayoutGrid size={16} color={cardViewMode === 'grid' ? '#000000' : (isLight ? '#000000' : '#38BDF8')} strokeWidth={2.6} />
             <span>EXPANDED 3D GRID</span>
           </motion.button>
         </div>
@@ -1048,7 +1056,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {/* Quick Jump Navigator Pills */}
       {cardViewMode === 'stack' && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflowX: 'auto', paddingBottom: '14px', marginBottom: '24px', flexWrap: 'nowrap' }}>
-          <span style={{ fontSize: '0.76rem', color: '#000000', fontWeight: 900, textTransform: 'uppercase', flexShrink: 0, letterSpacing: '0.04em' }}>
+          <span style={{ fontSize: '0.76rem', color: isLight ? '#000000' : '#94A3B8', fontWeight: 900, textTransform: 'uppercase', flexShrink: 0, letterSpacing: '0.04em' }}>
             QUICK SCROLL JUMP:
           </span>
           {capabilityCards.map((c, idx) => (
@@ -1061,9 +1069,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }}
               style={{
-                background: '#FFFFFF',
-                border: '2px solid #000000',
-                color: '#000000',
+                background: isLight ? '#FFFFFF' : 'rgba(30, 41, 59, 0.85)',
+                border: isLight ? '2px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
+                color: isLight ? '#000000' : '#FFFFFF',
                 borderRadius: '0px',
                 padding: '6px 14px',
                 fontSize: '0.78rem',
@@ -1073,7 +1081,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
                 flexShrink: 0,
-                boxShadow: '2px 2px 0px 0px #000000',
+                boxShadow: isLight ? '2px 2px 0px 0px #000000' : '2px 2px 0px 0px rgba(0, 0, 0, 0.5)',
                 transition: 'transform 0.1s ease'
               }}
             >
@@ -1087,14 +1095,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {cardViewMode === 'stack' ? (
         <div className="card-stack-container" style={{ position: 'relative', marginTop: '10px' }}>
           {capabilityCards.map((card, index) => {
-            const subtitleColor = '#000000';
+            const subtitleColor = isLight ? '#000000' : '#94A3B8';
             const quoteColor = '#000000';
             const quoteBg = '#38BDF8';
-            const rightBoxBg = '#FFFDF5';
-            const rightBoxBorder = '3px solid #000000';
-            const tagBg = '#FFFDF5';
-            const tagBorder = '2px solid #000000';
-            const labelColor = '#000000';
+            const rightBoxBg = isLight ? '#FFFDF5' : 'rgba(15, 23, 42, 0.85)';
+            const rightBoxBorder = isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)';
+            const tagBg = isLight ? '#FFFDF5' : 'rgba(30, 41, 59, 0.8)';
+            const tagBorder = isLight ? '2px solid #000000' : '1.5px solid rgba(56, 189, 248, 0.3)';
+            const labelColor = isLight ? '#000000' : '#E2E8F0';
 
             return (
               <motion.div
@@ -1108,20 +1116,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 style={{
                   top: `${90 + index * 24}px`,
                   zIndex: 10 + index,
-                  background: '#FFFFFF',
-                  border: '4px solid #000000',
+                  background: isLight ? '#FFFFFF' : 'rgba(18, 24, 38, 0.85)',
+                  backdropFilter: isLight ? 'none' : 'blur(16px)',
+                  WebkitBackdropFilter: isLight ? 'none' : 'blur(16px)',
+                  border: isLight ? '4px solid #000000' : '3px solid rgba(56, 189, 248, 0.35)',
                   borderRadius: '0px',
                   padding: '32px 28px',
                   marginBottom: index === capabilityCards.length - 1 ? '70px' : '45px',
-                  boxShadow: '10px 10px 0px 0px #000000'
+                  boxShadow: isLight ? '10px 10px 0px 0px #000000' : '10px 10px 0px 0px rgba(0, 0, 0, 0.7), 0 0 25px rgba(56, 189, 248, 0.1)'
                 }}
               >
                 {/* Card Header Row */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px solid #000000', paddingBottom: '16px', marginBottom: '22px', flexWrap: 'wrap', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)', paddingBottom: '16px', marginBottom: '22px', flexWrap: 'wrap', gap: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <div style={{
                       background: '#38BDF8',
-                      border: '3px solid #000000',
+                      border: isLight ? '3px solid #000000' : '2px solid #000000',
                       padding: '12px',
                       borderRadius: '0px',
                       display: 'flex',
@@ -1140,7 +1150,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                           {card.badge}
                         </span>
                       </div>
-                      <h3 style={{ fontSize: '1.35rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: '#000000', marginTop: '4px', letterSpacing: '-0.01em' }}>
+                      <h3 style={{ fontSize: '1.35rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: isLight ? '#000000' : '#FFFFFF', marginTop: '4px', letterSpacing: '-0.01em' }}>
                         {card.title}
                       </h3>
                     </div>
@@ -1162,7 +1172,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     <div style={{ fontSize: '0.82rem', color: subtitleColor, fontWeight: 900, marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                       // {card.subtitle.toUpperCase()}
                     </div>
-                    <p style={{ fontSize: '0.94rem', color: '#000000', lineHeight: 1.6, marginBottom: '18px', fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
+                    <p style={{ fontSize: '0.94rem', color: isLight ? '#000000' : '#CBD5E1', lineHeight: 1.6, marginBottom: '18px', fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
                       {card.description}
                     </p>
 
@@ -1175,8 +1185,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                           padding: '4px 10px',
                           fontSize: '0.74rem',
                           fontWeight: 900,
-                          color: '#000000',
-                          boxShadow: '2px 2px 0px 0px #000000'
+                          color: isLight ? '#000000' : '#E2E8F0',
+                          boxShadow: isLight ? '2px 2px 0px 0px #000000' : '2px 2px 0px 0px rgba(0, 0, 0, 0.5)'
                         }}>
                           #{tag}
                         </span>
@@ -1184,12 +1194,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     </div>
 
                     <div style={{ fontSize: '0.76rem', color: labelColor, fontWeight: 800, textTransform: 'uppercase' }}>
-                      • Status: <span style={{ background: '#38BDF8', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>ACTIVE FORENSIC LAYER</span> // Latency: <span style={{ background: '#C4B5FD', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>Sub-second</span>
+                      • Status: <span style={{ background: '#38BDF8', color: '#000000', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>ACTIVE FORENSIC LAYER</span> // Latency: <span style={{ background: '#C4B5FD', color: '#000000', padding: '1px 6px', border: '1.5px solid #000000', fontWeight: 900 }}>Sub-second</span>
                     </div>
                   </div>
 
                   {/* Right Side: Adversary Quote, Impact & Action */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', background: rightBoxBg, padding: '20px', borderRadius: '0px', border: rightBoxBorder, boxShadow: '4px 4px 0px 0px #000000' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', background: rightBoxBg, padding: '20px', borderRadius: '0px', border: rightBoxBorder, boxShadow: isLight ? '4px 4px 0px 0px #000000' : '4px 4px 0px 0px rgba(0, 0, 0, 0.5)' }}>
                     <div>
                       <div style={{ fontSize: '0.74rem', color: labelColor, fontWeight: 900, marginBottom: '6px', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
                         THREAT INTERCEPTION CRITERIA:
@@ -1213,7 +1223,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       <div style={{ fontSize: '0.74rem', color: labelColor, fontWeight: 900, marginBottom: '4px', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
                         SECURITY IMPACT:
                       </div>
-                      <div style={{ fontSize: '0.88rem', color: '#000000', lineHeight: 1.55, fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
+                      <div style={{ fontSize: '0.88rem', color: isLight ? '#000000' : '#CBD5E1', lineHeight: 1.55, fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
                         {card.tooltip.securityImpact}
                       </div>
                     </div>
@@ -1225,7 +1235,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                         onClick={() => card.onAction && card.onAction()}
                         style={{
                           background: '#FF6B6B',
-                          border: '3px solid #000000',
+                          border: isLight ? '3px solid #000000' : '2px solid #000000',
                           color: '#000000',
                           borderRadius: '0px',
                           padding: '12px 20px',
@@ -1262,11 +1272,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{ duration: 0.4, delay: index * 0.08 }}
-                whileHover={{ translateY: -4, boxShadow: '12px 12px 0px 0px #000000' }}
+                whileHover={{ translateY: -4, boxShadow: isLight ? '12px 12px 0px 0px #000000' : '12px 12px 0px 0px rgba(0, 0, 0, 0.8)' }}
                 style={{
-                  background: '#FFFFFF',
-                  border: '4px solid #000000',
-                  boxShadow: '8px 8px 0px 0px #000000',
+                  background: isLight ? '#FFFFFF' : 'rgba(18, 24, 38, 0.85)',
+                  backdropFilter: isLight ? 'none' : 'blur(16px)',
+                  WebkitBackdropFilter: isLight ? 'none' : 'blur(16px)',
+                  border: isLight ? '4px solid #000000' : '3px solid rgba(56, 189, 248, 0.35)',
+                  boxShadow: isLight ? '8px 8px 0px 0px #000000' : '8px 8px 0px 0px rgba(0, 0, 0, 0.7)',
                   padding: '24px',
                   borderRadius: '0px',
                   display: 'flex',
@@ -1281,7 +1293,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <div style={{
                         background: '#38BDF8',
-                        border: '3px solid #000000',
+                        border: isLight ? '3px solid #000000' : '2px solid #000000',
                         padding: '10px',
                         borderRadius: '0px',
                         display: 'flex',
@@ -1293,7 +1305,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       </div>
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                          <h3 style={{ fontSize: '1.1rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: '#000000', lineHeight: 1.25 }}>
+                          <h3 style={{ fontSize: '1.1rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", textTransform: 'uppercase', color: isLight ? '#000000' : '#FFFFFF', lineHeight: 1.25 }}>
                             {card.title}
                           </h3>
                           <InfoTooltip
@@ -1304,7 +1316,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                             position="bottom"
                           />
                         </div>
-                        <div style={{ fontSize: '0.74rem', color: '#000000', fontWeight: 800, marginTop: '2px', textTransform: 'uppercase' }}>
+                        <div style={{ fontSize: '0.74rem', color: isLight ? '#000000' : '#94A3B8', fontWeight: 800, marginTop: '2px', textTransform: 'uppercase' }}>
                           {card.subtitle}
                         </div>
                       </div>
@@ -1326,7 +1338,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   </div>
 
                   {/* Description */}
-                  <p style={{ fontSize: '0.88rem', color: '#000000', lineHeight: 1.6, marginBottom: '16px', fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
+                  <p style={{ fontSize: '0.88rem', color: isLight ? '#000000' : '#CBD5E1', lineHeight: 1.6, marginBottom: '16px', fontWeight: 600, fontFamily: "'Space Grotesk', sans-serif" }}>
                     {card.description}
                   </p>
                 </div>

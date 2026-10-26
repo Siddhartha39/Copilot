@@ -510,19 +510,25 @@ export const Galaxy: React.FC<GalaxyProps> = ({
       if (!raf && visible && !document.hidden) raf = requestAnimationFrame(frame);
     };
 
+    let cachedRect = container.getBoundingClientRect();
+    const updateRect = () => {
+      if (container) cachedRect = container.getBoundingClientRect();
+    };
+
     const resize = () => {
       const s = settingsRef.current;
       const width = Math.max(1, container.clientWidth);
       const height = Math.max(1, container.clientHeight);
-      const ratio = Math.min(s.dpr || window.devicePixelRatio || 1, 2);
+      const ratio = Math.min(s.dpr || 1, 1.25);
       canvas.width = Math.max(1, Math.round(width * ratio));
       canvas.height = Math.max(1, Math.round(height * ratio));
+      updateRect();
       render();
       wake();
     };
 
     const locate = (event: PointerEvent) => {
-      const rect = container.getBoundingClientRect();
+      const rect = cachedRect;
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       pointer.inside = x >= 0 && y >= 0 && x <= rect.width && y <= rect.height;
@@ -572,6 +578,7 @@ export const Galaxy: React.FC<GalaxyProps> = ({
     window.addEventListener('pointercancel', onPointerUp, { passive: true });
     document.documentElement.addEventListener('pointerleave', onPointerLeave);
     document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('scroll', updateRect, { passive: true });
     resize();
 
     const repelling = initial.autoCenterRepulsion > 0 || (initial.mouseInteraction && initial.mouseRepulsion);
@@ -603,6 +610,7 @@ export const Galaxy: React.FC<GalaxyProps> = ({
       window.removeEventListener('pointercancel', onPointerUp);
       document.documentElement.removeEventListener('pointerleave', onPointerLeave);
       document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('scroll', updateRect);
       programs.forEach(found => found.program && gl.deleteProgram(found.program));
       gl.deleteBuffer(buffer);
       gl.deleteVertexArray(vao);

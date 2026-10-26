@@ -513,6 +513,21 @@ body.light-theme .cyber-gradient-text {
   box-shadow: 12px 12px 0px 0px #000000 !important;
 }
 
+[data-theme="dark"]:not(.light-theme) .card-stack-item {
+  background: rgba(18, 24, 38, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 3px solid rgba(56, 189, 248, 0.35) !important;
+  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 0.7), 0 0 20px rgba(56, 189, 248, 0.1) !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="dark"]:not(.light-theme) .card-stack-item:hover {
+  transform: translateY(-4px) !important;
+  border-color: #38BDF8 !important;
+  box-shadow: 12px 12px 0px 0px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.25) !important;
+}
+
 [data-theme="light"] .card-stack-item,
 body.light-theme .card-stack-item {
   background: #ffffff !important;

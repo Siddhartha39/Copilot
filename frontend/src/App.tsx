@@ -463,15 +463,18 @@ export function App() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--neo-bg, #FFFDF5)', position: 'relative' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: theme === 'dark' ? 'transparent' : 'var(--neo-bg, #FFFDF5)', position: 'relative' }}>
       {/* Background: Galaxy for Dark Mode, Neo Matrix/Grid for Light Mode */}
       {theme === 'dark' ? (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', pointerEvents: 'none', zIndex: 0 }}>
           <Galaxy
-            density={1}
-            glowIntensity={0.3}
-            flareIntensity={1}
-            starSpeed={0.5}
+            density={0.75}
+            glowIntensity={0.25}
+            flareIntensity={0.8}
+            starSpeed={0.35}
+            speed={0.6}
+            layers={3}
+            dpr={1}
             mouseRepulsion
             clickWarp
             transparent

@@ -33,11 +33,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
   activeTab,
   setActiveTab,
   caseCount,
+  theme = 'dark',
   hasActiveReport = false,
   onLaunchScanner,
   isMobileOpen = false,
   onCloseMobile
 }) => {
+  const isLight = theme === 'light';
   const navItems = [
     { id: 'overview', label: 'Overview', icon: Home },
     {
@@ -204,10 +206,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 gap: '12px',
                 padding: '10px 14px',
                 borderRadius: '0px',
-                border: '3px solid #000000',
-                background: isActive ? '#38BDF8' : '#FFFFFF',
-                boxShadow: isActive ? '5px 5px 0px 0px #000000' : '3px 3px 0px 0px #000000',
-                color: '#000000',
+                border: isLight ? '3px solid #000000' : (isActive ? '3px solid #38BDF8' : '3px solid rgba(56, 189, 248, 0.3)'),
+                background: isActive ? '#38BDF8' : (isLight ? '#FFFFFF' : 'rgba(22, 27, 34, 0.9)'),
+                boxShadow: isActive ? '5px 5px 0px 0px #000000' : (isLight ? '3px 3px 0px 0px #000000' : '3px 3px 0px 0px rgba(0, 0, 0, 0.6)'),
+                color: isActive ? '#000000' : (isLight ? '#000000' : '#FFFFFF'),
                 cursor: 'pointer',
                 textAlign: 'left',
                 position: 'relative',
@@ -222,8 +224,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   width: '30px',
                   height: '30px',
                   borderRadius: '0px',
-                  background: isActive ? '#000000' : '#FFFDF5',
-                  border: '2px solid #000000',
+                  background: isActive ? '#000000' : (isLight ? '#FFFDF5' : '#0F172A'),
+                  border: isLight ? '2px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -232,7 +234,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               >
                 <Icon
                   size={16}
-                  color={isActive ? '#38BDF8' : '#000000'}
+                  color={isActive ? '#38BDF8' : (isLight ? '#000000' : '#E2E8F0')}
                   strokeWidth={2.6}
                 />
               </div>
@@ -345,9 +347,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
               bottom: 0,
               width: '300px',
               maxWidth: '85vw',
-              background: '#FFFDF5',
-              borderRight: '4px solid #000000',
-              boxShadow: '10px 0px 0px 0px #000000',
+              background: isLight ? '#FFFDF5' : '#0B0F19',
+              borderRight: isLight ? '4px solid #000000' : '4px solid rgba(56, 189, 248, 0.3)',
+              boxShadow: isLight ? '10px 0px 0px 0px #000000' : '10px 0px 0px 0px rgba(0, 0, 0, 0.7)',
               padding: '20px 16px',
               zIndex: 99991,
               display: 'flex',
