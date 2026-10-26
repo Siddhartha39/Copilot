@@ -111,7 +111,7 @@ class ToolRegistry:
             from app.collectors.lexical import extract_lexical_features
             from app.collectors.domain_intel import collect_domain_intelligence
             from app.collectors.security_headers import audit_security_headers_and_dns
-            from app.ml.triage_model import triage_classifier
+            from app.ml.classifier import triage_classifier
 
             lex_res = extract_lexical_features(clean_domain)
             c_url = lex_res["canonical_url"]

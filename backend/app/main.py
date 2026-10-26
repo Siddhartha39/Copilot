@@ -26,8 +26,9 @@ screenshots_dir = settings.SCREENSHOT_DIR
 os.makedirs(screenshots_dir, exist_ok=True)
 app.mount("/api/screenshots", StaticFiles(directory=screenshots_dir), name="screenshots")
 
-# Include API endpoints
+# Include API endpoints (both with /api prefix and root for maximum client compatibility)
 app.include_router(api_router, prefix=settings.API_PREFIX)
+app.include_router(api_router, prefix="")
 
 @app.get("/")
 def health_check():

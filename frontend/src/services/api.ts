@@ -14,14 +14,20 @@ import type {
 export const getApiBase = (): string => {
   if (typeof window === 'undefined') return '/api';
   // 1. Explicit env var (set in Vercel or local .env)
-  if (import.meta.env.VITE_API_URL) {
-    return (import.meta.env.VITE_API_URL as string).replace(/\/$/, '');
-  }
+  let base = (import.meta.env.VITE_API_URL as string)?.trim() || '';
   // 2. Custom local storage override (allows connecting Vercel frontend to remote backend)
-  try {
-    const custom = localStorage.getItem('cyberguard_api_url');
-    if (custom) return custom.replace(/\/$/, '');
-  } catch {}
+  if (!base) {
+    try {
+      base = localStorage.getItem('cyberguard_api_url')?.trim() || '';
+    } catch {}
+  }
+  if (base) {
+    base = base.replace(/\/$/, '');
+    if (!base.endsWith('/api')) {
+      base = `${base}/api`;
+    }
+    return base;
+  }
   // 3. Localhost and remote deployments (served via Vercel serverless /api routes or FastAPI)
   return '/api';
 };
@@ -91,7 +97,8 @@ export async function apiFetch(endpoint: string, init?: RequestInit): Promise<Re
     throw new Error('Static host environment: client resolver active');
   }
 
-  const requestUrl = base.startsWith('http') ? `${base}${cleanPath}` : `${base}${cleanPath}`;
+  let requestUrl = `${base}${cleanPath}`;
+  requestUrl = requestUrl.replace(/\/api\/api\//g, '/api/');
   try {
     const res = await fetch(requestUrl, init);
     const contentType = res.headers.get('content-type') || '';
@@ -1405,6 +1412,18 @@ export async function sendChatMessage(
     effectiveScanHistory = getStoredScanHistory();
   }
 
+  // Detect domain if present in message
+  const rawDomain = report?.canonical_domain || report?.domain;
+  const domainMatch = message.match(/(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9][-a-zA-Z0-9]*\.(?:[a-zA-Z]{2,}|in|co|org|net|com|gov|edu|io|ai|xyz|top|shop|dev|app|cloud|site|tech|online|store)(?:\.[a-zA-Z]{2,})?)/i);
+  const targetDomain = (rawDomain && rawDomain !== 'target website') ? rawDomain : (domainMatch ? domainMatch[1].toLowerCase() : null);
+
+  let activeReport = report;
+  if (!activeReport && targetDomain && ['analyze', 'scan', 'check', 'audit', 'inspect', 'test', 'lookup', 'evaluate', 'review', 'vulnerab', 'safe', 'hack'].some(k => message.toLowerCase().includes(k))) {
+    try {
+      activeReport = await executeFreeScan(targetDomain);
+    } catch {}
+  }
+
   // 1. First try backend /chat endpoint
   try {
     const res = await apiFetch('/chat', {
@@ -1412,8 +1431,8 @@ export async function sendChatMessage(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         message,
-        domain: report?.canonical_domain || report?.domain,
-        report,
+        domain: activeReport?.canonical_domain || activeReport?.domain || targetDomain || undefined,
+        report: activeReport,
         api_key: effectiveApiKey || undefined,
         history: history?.map(h => ({ role: h.role, content: h.content })),
         scan_history: effectiveScanHistory || [],
@@ -1434,13 +1453,9 @@ export async function sendChatMessage(
   // 2. If user provided a Gemini API Key, attempt direct client-side Gemini generation
   if (effectiveApiKey) {
     try {
-      const rawDomain = report?.canonical_domain || report?.domain;
-      const domainMatch = message.match(/(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9][-a-zA-Z0-9]*\.(?:[a-zA-Z]{2,}|in|co|org|net|com|gov|edu|io|ai|xyz|top|shop|dev|app|cloud|site|tech|online|store)(?:\.[a-zA-Z]{2,})?)/i);
-      const targetDomain = (rawDomain && rawDomain !== 'target website') ? rawDomain : (domainMatch ? domainMatch[1].toLowerCase() : null);
-
-      const domainAgeDays = report?.domain_age_days ?? report?.domain_intel?.domain_age_days ?? (targetDomain === 'campuskart.shop' ? 58 : null);
-      const creationDate = report?.creation_date || report?.domain_intel?.creation_date || (targetDomain === 'campuskart.shop' ? '2026-07-24' : null);
-      const registrar = report?.registrar || report?.domain_intel?.registrar || (targetDomain === 'campuskart.shop' ? 'HOSTINGER operations, UAB' : 'ICANN Accredited Registrar');
+      const domainAgeDays = activeReport?.domain_age_days ?? activeReport?.domain_intel?.domain_age_days ?? (targetDomain === 'campuskart.shop' ? 58 : null);
+      const creationDate = activeReport?.creation_date || activeReport?.domain_intel?.creation_date || (targetDomain === 'campuskart.shop' ? '2026-07-24' : null);
+      const registrar = activeReport?.registrar || activeReport?.domain_intel?.registrar || (targetDomain === 'campuskart.shop' ? 'HOSTINGER operations, UAB' : 'ICANN Accredited Registrar');
       const ageStr = domainAgeDays !== null ? `${domainAgeDays} days old` : 'Active / Established domain';
 
       const prompt = `You are CyberGuard AI Copilot — the ultimate all-in-one elite autonomous AI cybersecurity engineer, ethical hacker, Red Team/Blue Team specialist, DevSecOps architect, and full-stack technical intelligence engine.
@@ -1469,21 +1484,25 @@ TONE & OUTPUT FORMAT:
 - Answer directly, smoothly, and authoritatively without robotic fluff or disclaimers.
 - Use clean Markdown headers, bullet points, technical tables, and production-ready code/config blocks.
 
-${targetDomain ? `Current Target Website Telemetry in view: Domain=${targetDomain}, Verdict=${report?.verdict || 'ANALYZED'}, RiskScore=${report?.overall_risk_score ?? 0}/100, SecurityGrade=${report?.security_audit?.security_grade || report?.security_grade || 'B'}, DomainAge=${ageStr}, CreationDate=${creationDate || 'Recorded'}, Registrar=${registrar}` : 'No specific website is loaded.'}
+${targetDomain ? `Current Target Website Telemetry in view: Domain=${targetDomain}, Verdict=${activeReport?.verdict || 'ANALYZED'}, RiskScore=${activeReport?.overall_risk_score ?? 0}/100, SecurityGrade=${activeReport?.security_audit?.security_grade || activeReport?.security_grade || 'B'}, DomainAge=${ageStr}, CreationDate=${creationDate || 'Recorded'}, Registrar=${registrar}` : 'No specific website is loaded.'}
 
 User Question: ${message}`;
 
-      const modelsToTry = ['gemini-3.8-flash', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+      const modelsToTry = ['gemini-flash-lite-latest', 'gemini-3.5-flash-lite', 'gemini-3.1-flash-lite'];
       for (const modelId of modelsToTry) {
         try {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 4500);
           const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${effectiveApiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
             body: JSON.stringify({
               contents: [{ parts: [{ text: prompt }] }],
               generationConfig: { temperature: 0.3, maxOutputTokens: 2048 }
             })
           });
+          clearTimeout(timer);
 
           if (res.ok) {
             const data = await res.json();
@@ -1515,7 +1534,7 @@ User Question: ${message}`;
   }
 
   // Graceful client-side fallback
-  return generateClientChatResponse(message, report);
+  return generateClientChatResponse(message, activeReport);
 }
 
 function generateClientChatResponse(message: string, report?: any): ChatResponse {
@@ -1658,11 +1677,12 @@ function generateClientChatResponse(message: string, report?: any): ChatResponse
     reply = `🌐 **DNS & Hosting Telemetry for \`${domain}\`:**\n\n- **Target Host:** \`${domain}\`\n- **IP Addresses (A Records):** \`${dnsARecords.length ? dnsARecords.join(', ') : 'Active nameservers resolving'}\`\n- **Registrar:** \`${registrarName}\`\n- **SSL / TLS Encryption:** ${tlsValid ? '✅ Valid HTTPS' : '❌ Insecure (No TLS)'} (${tlsIssuer})\n- **Email DMARC:** ${hasDmarc ? '✅ DMARC Enforced' : '❌ Vulnerable to Email Spoofing'}`;
   } else if (
     ['analyze', 'scan', 'check', 'audit', 'inspect', 'test', 'lookup', 'evaluate', 'review'].some(k => msgLower.includes(k)) &&
-    (hasActiveScan && domain)
+    (domain || detectedDomain)
   ) {
+    const targetHost = domain || detectedDomain || 'target website';
     const ageText = domainAgeDays !== null ? `${domainAgeDays} days old` : 'Established';
     const missingStr = missingHeaders.length ? missingHeaders.map(h => `\`${h}\``).join(', ') : 'None — All defensive perimeter headers configured!';
-    reply = `🔍 **CyberGuard AI Forensic Dossier: \`${domain}\`**\n\n### 📊 **Executive Verdict: \`${verdict}\` (Risk Score: ${riskScore}/100)**\n\n| Inspection Metric | Telemetry Value | Assessment |\n| :--- | :--- | :--- |\n| **Target Host** | \`${domain}\` | ${domainAgeDays !== null && domainAgeDays < 30 ? '⚠️ Newly Registered Domain (<30d)' : '✅ Established Domain'} |\n| **Security Grade** | **\`${grade}\`** | ${missingHeaders.length} Unconfigured Perimeter Headers |\n| **SSL / TLS** | ${tlsIssuer} | ${tlsValid ? '✅ Encrypted (HTTPS Active)' : '❌ Insecure (HTTP Plaintext)'} |\n| **Email Spoofing** | ${hasDmarc ? 'DMARC Enforced' : 'No DMARC'} | ${hasDmarc ? '✅ Spoofing Immunized' : '❌ Adversaries Can Spoof Sender'} |\n| **Domain Age** | ${ageText} | Registered via \`${registrarName}\` |\n| **DNS Resolution** | IP: \`${dnsARecords.slice(0, 3).join(', ') || 'Active'}\` | Root nameservers responding |\n\n---\n\n### 🛡️ **Hackability & Attack Surface Assessment:**\n- **Perimeter Headers**: ${missingStr}\n- **Cross-Site Scripting (XSS)**: ${missingHeaders.includes('Content-Security-Policy') ? '⚠️ High exposure due to missing CSP.' : '✅ Mitigated via CSP.'}\n- **Clickjacking**: ${missingHeaders.includes('X-Frame-Options') ? '⚠️ Site can be embedded in malicious iframes.' : '✅ Mitigated via X-Frame-Options.'}\n- **Man-in-the-Middle (MitM)**: ${missingHeaders.includes('Strict-Transport-Security') ? '⚠️ HSTS preloading not configured.' : '✅ Enforced via HSTS.'}\n\n---\n\n### 🛠️ **Hardening Config (\`nginx.conf\`):**\n\`\`\`nginx\nadd_header X-Frame-Options "SAMEORIGIN" always;\nadd_header X-Content-Type-Options "nosniff" always;\nadd_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;\nadd_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:;" always;\n\`\`\`\n\n💡 *Ask: **\"Is ${domain} easily hackable?\"** or **\"Give steps to fix ${domain}\"** for more details!*`;
+    reply = `🔍 **CyberGuard AI Forensic Dossier: \`${targetHost}\`**\n\n### 📊 **Executive Verdict: \`${verdict}\` (Risk Score: ${riskScore}/100)**\n\n| Inspection Metric | Telemetry Value | Assessment |\n| :--- | :--- | :--- |\n| **Target Host** | \`${targetHost}\` | ${domainAgeDays !== null && domainAgeDays < 30 ? '⚠️ Newly Registered Domain (<30d)' : '✅ Established Domain'} |\n| **Security Grade** | **\`${grade}\`** | ${missingHeaders.length} Unconfigured Perimeter Headers |\n| **SSL / TLS** | ${tlsIssuer} | ${tlsValid ? '✅ Encrypted (HTTPS Active)' : '❌ Insecure (HTTP Plaintext)'} |\n| **Email Spoofing** | ${hasDmarc ? 'DMARC Enforced' : 'No DMARC'} | ${hasDmarc ? '✅ Spoofing Immunized' : '❌ Adversaries Can Spoof Sender'} |\n| **Domain Age** | ${ageText} | Registered via \`${registrarName}\` |\n| **DNS Resolution** | IP: \`${dnsARecords.slice(0, 3).join(', ') || 'Active'}\` | Root nameservers responding |\n\n---\n\n### 🛡️ **Hackability & Attack Surface Assessment:**\n- **Perimeter Headers**: ${missingStr}\n- **Cross-Site Scripting (XSS)**: ${missingHeaders.includes('Content-Security-Policy') ? '⚠️ High exposure due to missing CSP.' : '✅ Mitigated via CSP.'}\n- **Clickjacking**: ${missingHeaders.includes('X-Frame-Options') ? '⚠️ Site can be embedded in malicious iframes.' : '✅ Mitigated via X-Frame-Options.'}\n- **Man-in-the-Middle (MitM)**: ${missingHeaders.includes('Strict-Transport-Security') ? '⚠️ HSTS preloading not configured.' : '✅ Enforced via HSTS.'}\n\n---\n\n### 🛠️ **Hardening Config (\`nginx.conf\`):**\n\`\`\`nginx\nadd_header X-Frame-Options "SAMEORIGIN" always;\nadd_header X-Content-Type-Options "nosniff" always;\nadd_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;\nadd_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:;" always;\n\`\`\`\n\n💡 *Ask: **\"Is ${targetHost} easily hackable?\"** or **\"Give steps to fix ${targetHost}\"** for more details!*`;
   } else if (
     [
       'hackable', 'easily hackable', 'can it be hacked', 'can my site be hacked', 'can someone hack',
@@ -1672,14 +1692,15 @@ function generateClientChatResponse(message: string, report?: any): ChatResponse
       'is secure', 'is safe', 'security status', 'security posture'
     ].some(k => msgLower.includes(k))
   ) {
-    if (hasActiveScan && domain) {
+    if (domain || detectedDomain) {
+      const targetHost = domain || detectedDomain || 'target website';
       if (verdict === 'PHISHING' || isContradiction || riskScore >= 70) {
-        reply = `🚨 **SECURITY ASSESSMENT: \`${domain}\` IS NOT SECURE — CRITICAL THREAT DETECTED**\n\n- **Verdict:** \`${verdict}\` (Risk Score: **${riskScore}/100**)\n- **Brand Target:** ${brandName || 'Unauthorized Brand Spoofing'}\n- **Contradiction:** ${isContradiction ? 'Severe Trademark Mismatch Detected' : 'Malicious infrastructure'}\n\n**Adversary Exposure:** This domain is classified as active deceptive adversary infrastructure operating as a credential harvesting portal designed to steal user passwords and sensitive tokens. Do not enter credentials.`;
+        reply = `🚨 **SECURITY ASSESSMENT: \`${targetHost}\` IS NOT SECURE — CRITICAL THREAT DETECTED**\n\n- **Verdict:** \`${verdict}\` (Risk Score: **${riskScore}/100**)\n- **Brand Target:** ${brandName || 'Unauthorized Brand Spoofing'}\n- **Contradiction:** ${isContradiction ? 'Severe Trademark Mismatch Detected' : 'Malicious infrastructure'}\n\n**Adversary Exposure:** This domain is classified as active deceptive adversary infrastructure operating as a credential harvesting portal designed to steal user passwords and sensitive tokens. Do not enter credentials.`;
       } else if (missingHeaders.length > 0 || ['B', 'B-', 'C', 'C+', 'C-', 'D', 'F'].includes(grade) || !dmarcEnforced) {
         const missingStr = missingHeaders.length ? missingHeaders.join(', ') : 'Multiple perimeter headers';
-        reply = `🛡️ **Security Audit Assessment for \`${domain}\`:**\n\n### ⚠️ **Is it secure? PARTIALLY — Core transport is active, but perimeter headers expose attack surfaces.**\n\n- **Current Verdict:** \`${verdict}\` (Risk Score: **${riskScore}/100**)\n- **Security Grade:** **\`${grade}\`**\n- **SSL / TLS:** ${tlsValid ? '✅ Valid HTTPS encryption active' : '❌ Insecure (No valid TLS)'}\n- **Vulnerabilities:** **${missingHeaders.length} unconfigured defensive headers** (\`${missingStr}\`).\n\nHere is how automated botnets and malicious actors can exploit these gaps:\n\n1. 🎯 **Cross-Site Scripting (XSS) & Token Theft** *(Missing \`Content-Security-Policy\`)*:\n   - Without a strict CSP, dynamic user input rendered without sanitization allows attackers to inject scripts.\n   - **Impact:** Attackers can exfiltrate session tokens and JWTs.\n\n2. 🎯 **Clickjacking & UI Redressing** *(Missing \`X-Frame-Options\` / \`frame-ancestors\`)*:\n   - Malicious websites can embed \`${domain}\` inside an invisible \`<iframe>\` overlay.\n\n3. 🎯 **SSL Stripping & MitM** *(Missing \`Strict-Transport-Security\`)*:\n   - Adversaries on public Wi-Fi can downgrade HTTPS requests to unencrypted HTTP.\n\n---\n\n### 🛠️ **Immediate Nginx Hardening to make it 100% secure:**\n\`\`\`nginx\nadd_header X-Frame-Options "SAMEORIGIN" always;\nadd_header X-Content-Type-Options "nosniff" always;\nadd_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;\nadd_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:;" always;\n\`\`\``;
+        reply = `🛡️ **Security Audit Assessment for \`${targetHost}\`:**\n\n### ⚠️ **Is it secure? PARTIALLY — Core transport is active, but perimeter headers expose attack surfaces.**\n\n- **Current Verdict:** \`${verdict}\` (Risk Score: **${riskScore}/100**)\n- **Security Grade:** **\`${grade}\`**\n- **SSL / TLS:** ${tlsValid ? '✅ Valid HTTPS encryption active' : '❌ Insecure (No valid TLS)'}\n- **Vulnerabilities:** **${missingHeaders.length} unconfigured defensive headers** (\`${missingStr}\`).\n\nHere is how automated botnets and malicious actors can exploit these gaps:\n\n1. 🎯 **Cross-Site Scripting (XSS) & Token Theft** *(Missing \`Content-Security-Policy\`)*:\n   - Without a strict CSP, dynamic user input rendered without sanitization allows attackers to inject scripts.\n   - **Impact:** Attackers can exfiltrate session tokens and JWTs.\n\n2. 🎯 **Clickjacking & UI Redressing** *(Missing \`X-Frame-Options\` / \`frame-ancestors\`)*:\n   - Malicious websites can embed \`${targetHost}\` inside an invisible \`<iframe>\` overlay.\n\n3. 🎯 **SSL Stripping & MitM** *(Missing \`Strict-Transport-Security\`)*:\n   - Adversaries on public Wi-Fi can downgrade HTTPS requests to unencrypted HTTP.\n\n---\n\n### 🛠️ **Immediate Nginx Hardening to make it 100% secure:**\n\`\`\`nginx\nadd_header X-Frame-Options "SAMEORIGIN" always;\nadd_header X-Content-Type-Options "nosniff" always;\nadd_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;\nadd_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:;" always;\n\`\`\``;
       } else {
-        reply = `🛡️ **Security Audit Assessment for \`${domain}\`:**\n\n### ✅ **Is it secure? YES — Transport & Perimeter Defenses are Hardened!**\n\n- **Verdict:** \`${verdict}\` (Risk Score: **${riskScore}/100**)\n- **Security Grade:** **\`${grade}\`**\n- **SSL / TLS Encryption:** ✅ Valid & Active (${tlsIssuer})\n- **Perimeter Defense:** Core headers (\`HSTS\`, \`CSP\`, \`X-Frame-Options\`, \`nosniff\`) are fully active.\n- **Email Authentication:** ${hasDmarc ? '✅ Strict DMARC enforcement active.' : '⚠️ Consider enabling DMARC for outbound email anti-spoofing.'}\n\nPerimeter defenses are properly configured against automated exploits and credential sniffing.`;
+        reply = `🛡️ **Security Audit Assessment for \`${targetHost}\`:**\n\n### ✅ **Is it secure? YES — Transport & Perimeter Defenses are Hardened!**\n\n- **Verdict:** \`${verdict}\` (Risk Score: **${riskScore}/100**)\n- **Security Grade:** **\`${grade}\`**\n- **SSL / TLS Encryption:** ✅ Valid & Active (${tlsIssuer})\n- **Perimeter Defense:** Core headers (\`HSTS\`, \`CSP\`, \`X-Frame-Options\`, \`nosniff\`) are fully active.\n- **Email Authentication:** ${hasDmarc ? '✅ Strict DMARC enforcement active.' : '⚠️ Consider enabling DMARC for outbound email anti-spoofing.'}\n\nPerimeter defenses are properly configured against automated exploits and credential sniffing.`;
       }
     } else {
       reply = `🛡️ **Web Hackability & Penetration Audit Guide:**\n\nA website's hackability is evaluated across 4 primary defense tiers:\n1. **Perimeter Headers**: Lack of \`Content-Security-Policy\` and \`X-Frame-Options\` enables XSS and Clickjacking attacks.\n2. **Transport Layer**: Insecure SSL/TLS configurations allow adversary traffic sniffing and MitM downgrades.\n3. **Application Logic (OWASP Top 10)**: SQL Injection (SQLi), Cross-Site Scripting (XSS), and Broken Object-Level Authorization (IDOR).\n4. **Domain & Email Integrity**: Absence of DNS SPF/DMARC permits phishing campaigns spoofing your domain.\n\n👉 *To audit your specific website, type: **\`analyze yourdomain.com\`**!*`;
