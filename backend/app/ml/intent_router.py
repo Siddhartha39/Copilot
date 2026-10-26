@@ -95,6 +95,22 @@ def classify_intent(
     msg_lower = clean_msg.lower()
     entities: Dict[str, Any] = {}
 
+    # Conversational greetings & pleasantries (hi, hello, hey, how are you, who are you, etc.)
+    greeting_words = {"hi", "hello", "hey", "hola", "sup", "yo", "namaste", "greetings", "howdy"}
+    pleasantry_phrases = [
+        "how are you", "how r u", "how is it going", "hows it going", "how are you doing",
+        "what's up", "whats up", "wassup", "who are you", "what can you do", "help me",
+        "thank you", "thanks", "thx", "good morning", "good evening", "good afternoon"
+    ]
+    clean_greeting = clean_msg.lower().rstrip("!.,? ")
+    if (
+        clean_greeting in greeting_words
+        or any(clean_greeting == p for p in pleasantry_phrases)
+        or any(clean_greeting.startswith(p + " ") for p in pleasantry_phrases)
+        or any(clean_greeting.startswith(w + " ") for w in greeting_words)
+    ):
+        return INTENT_GENERAL_SECURITY_QUESTION, {"is_greeting": True}
+
     # Handle short ambiguous queries first
     tokens = [t for t in re.split(r'\s+', clean_msg) if t]
     if len(tokens) == 1:

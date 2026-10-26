@@ -450,6 +450,18 @@ def generate_offline_cyber_response(
     """
     msg_lower = message.lower()
 
+    # 0. Greetings & Pleasantries
+    if entities.get("is_greeting") or msg_lower.rstrip("!.,? ") in ["hi", "hello", "hey", "hola", "yo", "namaste", "greetings", "good morning", "good evening", "how are you", "who are you"]:
+        return (
+            "👋 **Hello! I am CyberGuard AI Copilot**, your autonomous cybersecurity and full-stack technical AI assistant.\n\n"
+            "I can help you with:\n"
+            "- 🛡️ **Instant Live Audits**: Type **`Audit example.com`** or **`check yoursite.com`** to run a complete threat & security header audit.\n"
+            "- ⚔️ **Vulnerabilities & Pentesting**: Ask about SQL Injection, XSS, CSRF, SSRF, IDOR, Buffer Overflows, or Active Directory attacks.\n"
+            "- 🛠️ **Production Hardening**: Request production-ready security blueprints for Nginx, Apache, Express Helmet, and Next.js.\n"
+            "- 🔒 **Authentication & Cryptography**: Guidance on JWT security, OAuth 2.0, Argon2 password hashing, and SSL/TLS.\n\n"
+            "What security topic, architecture, or domain would you like to inspect today?"
+        )
+
     # 1. Domain Audit Result Display
     if intent == INTENT_DOMAIN_AUDIT:
         target = entities.get("target_domain") or active_domain or "target site"
