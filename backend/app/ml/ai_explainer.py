@@ -453,7 +453,7 @@ def generate_offline_cyber_response(
     # 1. Domain Audit Result Display
     if intent == INTENT_DOMAIN_AUDIT:
         target = entities.get("target_domain") or active_domain or "target site"
-        ev = next((e for e in evidence if e.get("domain") == target), active_report)
+        ev = next((e for e in evidence if e.get("domain") == target or e.get("target_host") == target or target.endswith(e.get("domain", ""))), active_report)
         if ev.get("status") == "blocked" or ev.get("blocked"):
             return (
                 f"🛡️ **Security Boundary Enforcement: Audit Blocked**\n\n"
@@ -466,12 +466,24 @@ def generate_offline_cyber_response(
             )
 
         verdict = ev.get("verdict", "BENIGN")
-        risk = ev.get("risk_score", 0)
+        risk = ev.get("risk_score", ev.get("overall_risk_score", 0))
         grade = ev.get("security_grade", "B")
-        badge = "🔴 **PHISHING**" if verdict == "PHISHING" else "🟠 **SUSPICIOUS**" if verdict == "SUSPICIOUS" else "🟢 **BENIGN**"
+        badge = "🔴 **PHISHING (DANGEROUS SITE)**" if verdict == "PHISHING" else "🟠 **SUSPICIOUS (HIGH RISK)**" if verdict == "SUSPICIOUS" else "🟢 **BENIGN (SAFE)**"
         age = ev.get("domain_age_days")
-        age_str = f"{age} days old" if age is not None else "Active / Established"
+        age_str = f"**{age} days old** (⚠️ Newly Registered Domain)" if (age is not None and age < 30) else (f"{age} days old" if age is not None else "Active / Established")
         missing = ev.get("missing_headers") or []
+
+        findings_lines = []
+        if verdict in ["PHISHING", "SUSPICIOUS"]:
+            if age is not None and age < 30:
+                findings_lines.append(f"- 🚨 **Newly Registered Infrastructure:** Domain is only **{age} days old** (registered {ev.get('creation_date', 'recently')}). Attackers heavily deploy short-lived throwaway domains.")
+            if any(kw in target.lower() for kw in ["identity", "login", "signin", "verify", "secure", "auth", "portal", "account", "wallet"]):
+                findings_lines.append("- 🚨 **Target Impersonation / Credential Phishing:** Subdomain structure mimics an identity/authentication portal.")
+        for h in missing[:4]:
+            findings_lines.append(f"- ⚠️ **Missing Defense Header:** `{h}`")
+        if not findings_lines:
+            findings_lines.append("- ✅ Core perimeter defense headers present.")
+        findings_block = "\n".join(findings_lines)
 
         return (
             f"### 🛡️ **Forensic Audit Dossier: `{target}`**\n\n"
@@ -480,8 +492,8 @@ def generate_offline_cyber_response(
             f"- **Web Security Posture Grade:** `Grade {grade}`\n"
             f"- **Domain Age & Provenance:** {age_str} (Registrar: `{ev.get('registrar', 'Verified')}`)\n\n"
             f"#### 🔍 Key Findings:\n"
-            f"{''.join([f'- ⚠️ Missing critical defense header: `{h}`\\n' for h in missing[:4]]) or '- ✅ Core perimeter defense headers present.\\n'}"
-            f"\n💡 **Next Step:** Ask me *\"Give me the Nginx configuration to fix these headers\"* or *\"Is `{target}` easily hackable?\"* for deeper analysis."
+            f"{findings_block}\n\n"
+            f"💡 **Next Step:** Ask me *\"Give me the Nginx configuration to fix these headers\"* or *\"Is `{target}` easily hackable?\"* for deeper analysis."
         )
 
     # 2. Sandbox Request

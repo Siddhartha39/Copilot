@@ -139,17 +139,68 @@ class ToolRegistry:
                 for f in sec_audit_dict["findings"]:
                     findings.append(f"{f.get('name')}: {f.get('status')} ({f.get('description', '')})")
 
+            missing_headers = [f.get("name") for f in sec_audit_dict.get("findings", []) if f.get("status") in ["FAIL", "WARNING"]]
+
+            # Calculate calibrated multi-signal score for copilot domain audit
+            lex_score = float(triage_dict.get("lexical_score", 0.0))
+            domain_age = d_intel_dict.get("domain_age_days")
+            is_new = bool(d_intel_dict.get("is_newly_registered") or (domain_age is not None and domain_age < 30))
+
+            # Sensitive credential harvesting keywords in subdomain or path
+            sensitive_kw = ["identity", "login", "signin", "verify", "verification", "account", "secure", "auth", "portal", "wallet", "update", "support", "bank", "billing", "checkout", "security", "pass", "credential"]
+            has_sensitive_sub = any(kw in (sub or "").lower() for kw in sensitive_kw) or any(kw in clean_domain for kw in sensitive_kw)
+
+            grade = sec_audit_dict.get("security_grade", "B")
+
+            # Base score from lexical
+            score = lex_score * 50.0
+
+            # Newly registered domain weight (<30 days is a critical phishing precursor)
+            if is_new or (domain_age is not None and domain_age < 30):
+                score += 35.0
+            elif domain_age is not None and domain_age < 90:
+                score += 20.0
+
+            # Sensitive credential keyword on young or unhardened domain
+            if has_sensitive_sub and (is_new or (domain_age is not None and domain_age < 90)):
+                score += 35.0
+            elif has_sensitive_sub:
+                score += 15.0
+
+            # Poor security posture (Grade F/D, clickjackable, no CSP, no HSTS)
+            if grade == "F":
+                score += 15.0
+            elif grade == "D":
+                score += 10.0
+
+            # Insecure transport / No DMARC
+            if not sec_audit_dict.get("has_hsts"):
+                score += 5.0
+            if not sec_audit_dict.get("dmarc_enforced"):
+                score += 5.0
+
+            score = min(100.0, max(0.0, round(score, 1)))
+
+            if score >= 70.0:
+                verdict = "PHISHING"
+            elif score >= 35.0:
+                verdict = "SUSPICIOUS"
+            else:
+                verdict = "BENIGN"
+
             return {
                 "status": "completed",
                 "domain": reg_domain,
+                "target_host": clean_domain,
                 "canonical_url": c_url,
-                "verdict": triage_dict.get("verdict", "BENIGN"),
-                "risk_score": float(triage_dict.get("risk_score", 0.0)),
-                "security_grade": sec_audit_dict.get("security_grade", "B"),
-                "domain_age_days": d_intel_dict.get("domain_age_days"),
+                "verdict": verdict,
+                "risk_score": score,
+                "overall_risk_score": score,
+                "security_grade": grade,
+                "domain_age_days": domain_age,
                 "creation_date": d_intel_dict.get("creation_date"),
                 "registrar": d_intel_dict.get("registrar", "Global Registrar"),
-                "missing_headers": sec_audit_dict.get("missing_headers", []),
+                "missing_headers": missing_headers,
                 "findings": findings[:5],
                 "dmarc_enforced": sec_audit_dict.get("dns_records", {}).get("dmarc_policy") in ["reject", "quarantine"]
             }
