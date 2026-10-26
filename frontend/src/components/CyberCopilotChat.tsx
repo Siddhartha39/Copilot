@@ -216,9 +216,7 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
 
   // Sync external report with active report
   useEffect(() => {
-    if (report) {
-      setActiveReport(report);
-    }
+    setActiveReport(report || null);
   }, [report]);
 
   // Reactive Account Switch: When user changes, load THAT specific user's chat history
@@ -290,6 +288,29 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
       setActiveSessionId(initialSession.id);
       setMessages(initialSession.messages);
     } else {
+      if (!hasScannedSite) {
+        // When no website is analyzed, ensure initial session is a clean blank chat
+        const currentActive = sessions.find(s => s.id === activeSessionId);
+        const hasUserMessages = currentActive && currentActive.messages.some(m => m.role === 'user');
+        const isDomainSession = Boolean(currentActive?.domain);
+
+        if (!currentActive || hasUserMessages || isDomainSession) {
+          const existingBlank = sessions.find(
+            s => !s.domain && !s.messages.some(m => m.role === 'user')
+          );
+          if (existingBlank) {
+            setActiveSessionId(existingBlank.id);
+            setMessages(existingBlank.messages);
+          } else {
+            const fresh = createNewSessionObject(null);
+            setSessions([fresh, ...sessions]);
+            setActiveSessionId(fresh.id);
+            setMessages(fresh.messages);
+          }
+          return;
+        }
+      }
+
       const active = sessions.find(s => s.id === activeSessionId) || sessions[0];
       if (active) {
         setActiveSessionId(active.id);
@@ -525,6 +546,47 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
       setTimeout(() => inputRef.current?.focus(), 150);
     }
   }, [isOpen, isMinimized]);
+
+  // When opening Copilot: if no website is analyzed, automatically ensure a fresh new chat is open
+  const wasOpenRef = useRef(isOpen);
+  useEffect(() => {
+    const wasOpen = wasOpenRef.current;
+    wasOpenRef.current = isOpen;
+
+    if (!wasOpen && isOpen) {
+      if (!hasScannedSite) {
+        setSessions(prevSessions => {
+          const currentActive = prevSessions.find(s => s.id === activeSessionId);
+          const hasUserMessages = currentActive && currentActive.messages.some(m => m.role === 'user');
+          const isDomainSession = Boolean(currentActive?.domain);
+
+          // If current session is already an empty new chat (no user messages and no domain), keep it
+          if (currentActive && !hasUserMessages && !isDomainSession) {
+            return prevSessions;
+          }
+
+          // Check if an existing blank new chat session already exists (no user messages, no domain)
+          const existingBlank = prevSessions.find(
+            s => !s.domain && !s.messages.some(m => m.role === 'user')
+          );
+
+          if (existingBlank) {
+            setActiveSessionId(existingBlank.id);
+            setMessages(existingBlank.messages);
+            setStatusNotice(null);
+            return prevSessions;
+          }
+
+          // Otherwise create a fresh new chat session
+          const newSession = createNewSessionObject(null);
+          setActiveSessionId(newSession.id);
+          setMessages(newSession.messages);
+          setStatusNotice(null);
+          return [newSession, ...prevSessions];
+        });
+      }
+    }
+  }, [isOpen, hasScannedSite, activeSessionId]);
 
   const handleSaveApiKey = () => {
     const trimmed = tempApiKey.trim();
