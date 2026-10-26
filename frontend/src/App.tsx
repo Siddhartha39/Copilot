@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MatrixBackground } from './components/MatrixBackground';
+import Galaxy from './components/Galaxy';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { LandingPage } from './components/LandingPage';
@@ -463,8 +464,22 @@ export function App() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--neo-bg, #FFFDF5)', position: 'relative' }}>
-      {/* Subtle Background Matrix Canvas */}
-        <MatrixBackground opacity={theme === 'dark' ? 0.15 : 0.03} themeMode={theme} />
+      {/* Background: Galaxy for Dark Mode, Neo Matrix/Grid for Light Mode */}
+      {theme === 'dark' ? (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', pointerEvents: 'none', zIndex: 0 }}>
+          <Galaxy
+            density={1}
+            glowIntensity={0.3}
+            flareIntensity={1}
+            starSpeed={0.5}
+            mouseRepulsion
+            clickWarp
+            transparent
+          />
+        </div>
+      ) : (
+        <MatrixBackground opacity={0.03} themeMode="light" />
+      )}
 
         {/* Ambient Floating Cyber Orbs */}
         <div className="ambient-orb-cyan" />

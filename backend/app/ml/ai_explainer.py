@@ -73,14 +73,14 @@ Return a valid JSON object with the following three fields ONLY (no markdown for
 
     gemini_key = settings.GEMINI_API_KEY or DEFAULT_GEMINI_API_KEY
     if gemini_key:
-        for model_id in ["gemini-3.6-flash", "gemini-2.5-flash", "gemini-1.5-flash"]:
+        for model_id in ["gemini-flash-lite-latest", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite"]:
             try:
                 url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={gemini_key}"
                 payload = {
                     "contents": [{"parts": [{"text": prompt}]}],
                     "generationConfig": {"temperature": 0.2, "responseMimeType": "application/json"}
                 }
-                async with httpx.AsyncClient(timeout=8.0) as client:
+                async with httpx.AsyncClient(timeout=4.5) as client:
                     resp = await client.post(url, json=payload)
                     if resp.status_code == 200:
                         result = resp.json()
