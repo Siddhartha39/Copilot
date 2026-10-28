@@ -14,6 +14,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Push to Copilot Repository
         env:
@@ -25,5 +26,5 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote add copilot "https://Siddhartha39:${COPILOT_TOKEN}@github.com/Siddhartha39/Copilot.git"
+          git remote add copilot "https://x-access-token:${COPILOT_TOKEN}@github.com/Siddhartha39/Copilot.git"
           git push copilot main --force
