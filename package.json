@@ -1,10 +1,13 @@
 {
-  "name": "cyberguard-ai",
+  "name": "cyber-copilot",
   "version": "2.0.0",
   "private": true,
+  "workspaces": [
+    "frontend"
+  ],
   "scripts": {
     "dev": "npm --prefix frontend run dev",
-    "build": "cd frontend && npm install && npm run build && cp -r dist ../dist 2>/dev/null || true",
+    "build": "npm --prefix frontend install --include=dev && npm --prefix frontend run build",
     "preview": "npm --prefix frontend run preview"
   }
 }

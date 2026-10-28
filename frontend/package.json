@@ -29,6 +29,9 @@
     "react-dom": "^19.2.4",
     "tailwind-merge": "^3.6.0",
     "three": "^0.186.1",
+    "typescript": "~5.9.3",
+    "vite": "^8.0.1",
+    "@vitejs/plugin-react": "^6.0.1",
     "x402-avm": "^0.6.1"
   },
   "devDependencies": {
