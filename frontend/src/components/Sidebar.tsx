@@ -250,7 +250,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
-                  color: '#000000'
+                  color: isActive ? '#000000' : (isLight ? '#000000' : '#FFFFFF')
                 }}
               >
                 {item.label}

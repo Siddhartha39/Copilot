@@ -342,11 +342,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           display: 'flex',
           alignItems: 'center',
           gap: '14px',
-          background: isLight ? '#38BDF8' : 'rgba(15, 23, 42, 0.85)',
-          backdropFilter: isLight ? 'none' : 'blur(12px)',
-          WebkitBackdropFilter: isLight ? 'none' : 'blur(12px)',
-          border: isLight ? '4px solid #000000' : '3px solid rgba(56, 189, 248, 0.4)',
-          boxShadow: isLight ? '6px 6px 0px 0px #000000' : '6px 6px 0px 0px rgba(0, 0, 0, 0.5)'
+          background: isLight ? '#38BDF8' : 'rgba(10, 16, 28, 0.45)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          border: isLight ? '4px solid #000000' : '1.5px solid rgba(255, 255, 255, 0.18)',
+          boxShadow: isLight ? '6px 6px 0px 0px #000000' : '0 10px 25px rgba(0, 0, 0, 0.4), inset 0 1px 0.5px rgba(255, 255, 255, 0.25)'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, background: '#000000', color: '#38BDF8', padding: '4px 10px', border: isLight ? '2px solid #000000' : '2px solid #38BDF8' }}>
@@ -387,25 +387,31 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
       </div>
 
-      {/* 2. Hero Section with Neo-Brutalist Visual Weight */}
+      {/* 2. Hero Section with Liquid Glass Design */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="liquid-glass-hero"
         style={{
           padding: '52px 32px 40px 32px',
           marginBottom: '36px',
-          background: isLight ? '#FFFFFF' : 'rgba(15, 23, 42, 0.72)',
-          backdropFilter: isLight ? 'none' : 'blur(16px)',
-          WebkitBackdropFilter: isLight ? 'none' : 'blur(16px)',
-          border: isLight ? '4px solid #000000' : '3px solid rgba(56, 189, 248, 0.35)',
+          background: isLight
+            ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(240, 249, 255, 0.7) 100%)'
+            : 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(56, 189, 248, 0.08) 25%, rgba(168, 85, 247, 0.06) 60%, rgba(255, 255, 255, 0.03) 100%), rgba(6, 11, 22, 0.22)',
+          backdropFilter: 'blur(12px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+          border: isLight ? '4px solid #000000' : '1.5px solid rgba(255, 255, 255, 0.28)',
           borderRadius: '0px',
-          boxShadow: isLight ? '12px 12px 0px 0px #000000' : '10px 10px 0px 0px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.12)',
+          boxShadow: isLight
+            ? '12px 12px 0px 0px #000000'
+            : '0 30px 70px -15px rgba(0, 0, 0, 0.7), inset 0 2px 2px 0 rgba(255, 255, 255, 0.5), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.6), inset 2px 0 2px 0 rgba(255, 255, 255, 0.15), inset -2px 0 2px 0 rgba(56, 189, 248, 0.2), 0 0 50px rgba(56, 189, 248, 0.16)',
           textAlign: 'center',
           position: 'relative',
           overflow: 'hidden'
         }}
       >
+        <div className="liquid-glass-sheen" />
         {/* Hacker Badge with Rotated Sticker Effect */}
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
@@ -580,11 +586,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <form
             onSubmit={handleQuickSubmit}
             style={{
-              background: isLight ? '#FFFFFF' : 'rgba(11, 15, 25, 0.88)',
-              border: isLight ? '4px solid #000000' : '3px solid #38BDF8',
+              background: isLight ? '#FFFFFF' : 'rgba(15, 23, 42, 0.45)',
+              backdropFilter: isLight ? 'none' : 'blur(16px)',
+              WebkitBackdropFilter: isLight ? 'none' : 'blur(16px)',
+              border: isLight ? '4px solid #000000' : '2px solid rgba(56, 189, 248, 0.65)',
               borderRadius: '0px',
               padding: '8px 8px 8px 18px',
-              boxShadow: isLight ? '8px 8px 0px 0px #000000' : '6px 6px 0px 0px rgba(56, 189, 248, 0.3)',
+              boxShadow: isLight
+                ? '8px 8px 0px 0px #000000'
+                : 'inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(56, 189, 248, 0.15)',
               display: 'flex',
               gap: '12px',
               alignItems: 'center'
@@ -649,8 +659,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 onClick={() => handleSampleClick(s.url)}
                 type="button"
                 style={{
-                  background: isLight ? '#FFFFFF' : 'rgba(30, 41, 59, 0.85)',
-                  border: isLight ? '2px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
+                  background: isLight ? '#FFFFFF' : 'rgba(255, 255, 255, 0.08)',
+                  backdropFilter: isLight ? 'none' : 'blur(12px)',
+                  WebkitBackdropFilter: isLight ? 'none' : 'blur(12px)',
+                  border: isLight ? '2px solid #000000' : '1px solid rgba(255, 255, 255, 0.22)',
                   borderRadius: '0px',
                   padding: '5px 12px',
                   fontSize: '0.76rem',
@@ -660,7 +672,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   alignItems: 'center',
                   gap: '8px',
                   color: isLight ? '#000000' : '#F1F5F9',
-                  boxShadow: isLight ? '2px 2px 0px 0px #000000' : '2px 2px 0px 0px rgba(0, 0, 0, 0.5)'
+                  boxShadow: isLight ? '2px 2px 0px 0px #000000' : 'inset 0 1px 0.5px rgba(255, 255, 255, 0.3), 0 4px 12px rgba(0, 0, 0, 0.3)'
                 }}
               >
                 <span style={{ fontWeight: 800 }}>{s.url}</span>
@@ -690,16 +702,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </motion.div>
 
-        {/* Telemetry Status Bar with Neo-Brutalist Sharp Metrics */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '14px', maxWidth: '980px', margin: '36px auto 0 auto', borderTop: isLight ? '4px solid #000000' : '2px solid rgba(56, 189, 248, 0.25)', paddingTop: '24px' }}>
+        {/* Telemetry Status Bar with Liquid Glass Metric Cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '14px', maxWidth: '980px', margin: '36px auto 0 auto', borderTop: isLight ? '4px solid #000000' : '1px solid rgba(255, 255, 255, 0.15)', paddingTop: '24px' }}>
           <motion.div
             whileHover={{ translateY: -3, boxShadow: '6px 6px 0px 0px #000000' }}
             style={{
-              background: isLight ? '#FFFDF5' : 'rgba(22, 27, 34, 0.75)',
-              border: isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
+              background: isLight ? '#FFFDF5' : 'rgba(255, 255, 255, 0.06)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              border: isLight ? '3px solid #000000' : '1px solid rgba(255, 255, 255, 0.18)',
               padding: '12px 14px',
               borderRadius: '0px',
-              boxShadow: isLight ? '4px 4px 0px 0px #000000' : '4px 4px 0px 0px rgba(0, 0, 0, 0.5)'
+              boxShadow: isLight ? '4px 4px 0px 0px #000000' : 'inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 10px 20px rgba(0, 0, 0, 0.35)'
             }}
           >
             <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: isLight ? '#000000' : '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
@@ -716,11 +730,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <motion.div
             whileHover={{ translateY: -3, boxShadow: '6px 6px 0px 0px #000000' }}
             style={{
-              background: isLight ? '#FFFDF5' : 'rgba(22, 27, 34, 0.75)',
-              border: isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
+              background: isLight ? '#FFFDF5' : 'rgba(255, 255, 255, 0.06)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              border: isLight ? '3px solid #000000' : '1px solid rgba(255, 255, 255, 0.18)',
               padding: '12px 14px',
               borderRadius: '0px',
-              boxShadow: isLight ? '4px 4px 0px 0px #000000' : '4px 4px 0px 0px rgba(0, 0, 0, 0.5)'
+              boxShadow: isLight ? '4px 4px 0px 0px #000000' : 'inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 10px 20px rgba(0, 0, 0, 0.35)'
             }}
           >
             <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: isLight ? '#000000' : '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
@@ -737,11 +753,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <motion.div
             whileHover={{ translateY: -3, boxShadow: '6px 6px 0px 0px #000000' }}
             style={{
-              background: isLight ? '#FFFDF5' : 'rgba(22, 27, 34, 0.75)',
-              border: isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
+              background: isLight ? '#FFFDF5' : 'rgba(255, 255, 255, 0.06)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              border: isLight ? '3px solid #000000' : '1px solid rgba(255, 255, 255, 0.18)',
               padding: '12px 14px',
               borderRadius: '0px',
-              boxShadow: isLight ? '4px 4px 0px 0px #000000' : '4px 4px 0px 0px rgba(0, 0, 0, 0.5)'
+              boxShadow: isLight ? '4px 4px 0px 0px #000000' : 'inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 10px 20px rgba(0, 0, 0, 0.35)'
             }}
           >
             <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: isLight ? '#000000' : '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
@@ -758,11 +776,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <motion.div
             whileHover={{ translateY: -3, boxShadow: '6px 6px 0px 0px #000000' }}
             style={{
-              background: isLight ? '#FFFDF5' : 'rgba(22, 27, 34, 0.75)',
-              border: isLight ? '3px solid #000000' : '2px solid rgba(56, 189, 248, 0.3)',
+              background: isLight ? '#FFFDF5' : 'rgba(255, 255, 255, 0.06)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              border: isLight ? '3px solid #000000' : '1px solid rgba(255, 255, 255, 0.18)',
               padding: '12px 14px',
               borderRadius: '0px',
-              boxShadow: isLight ? '4px 4px 0px 0px #000000' : '4px 4px 0px 0px rgba(0, 0, 0, 0.5)'
+              boxShadow: isLight ? '4px 4px 0px 0px #000000' : 'inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 10px 20px rgba(0, 0, 0, 0.35)'
             }}
           >
             <div style={{ fontSize: '1.4rem', fontWeight: 900, fontFamily: "'Space Grotesk', sans-serif", color: isLight ? '#000000' : '#FFFFFF', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
@@ -784,15 +804,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.4 }}
+        className="liquid-glass-hero"
         style={{
           padding: '28px',
           marginBottom: '36px',
-          background: isLight ? '#FFFFFF' : 'rgba(15, 23, 42, 0.72)',
-          backdropFilter: isLight ? 'none' : 'blur(16px)',
-          WebkitBackdropFilter: isLight ? 'none' : 'blur(16px)',
-          border: isLight ? '4px solid #000000' : '3px solid rgba(56, 189, 248, 0.35)',
+          background: isLight
+            ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(240, 249, 255, 0.7) 100%)'
+            : 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(56, 189, 248, 0.04) 25%, rgba(168, 85, 247, 0.03) 60%, rgba(255, 255, 255, 0.02) 100%), rgba(8, 14, 26, 0.35)',
+          backdropFilter: 'blur(24px) saturate(200%) contrast(105%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(200%) contrast(105%)',
+          border: isLight ? '4px solid #000000' : '1.5px solid rgba(255, 255, 255, 0.22)',
           borderRadius: '0px',
-          boxShadow: isLight ? '10px 10px 0px 0px #000000' : '10px 10px 0px 0px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.12)'
+          boxShadow: isLight
+            ? '10px 10px 0px 0px #000000'
+            : '0 30px 60px -15px rgba(0, 0, 0, 0.65), inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.5), 0 0 35px rgba(56, 189, 248, 0.12)'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
@@ -915,15 +940,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.4 }}
+        className="liquid-glass-hero"
         style={{
           padding: '28px',
           marginBottom: '36px',
-          background: isLight ? '#FFFFFF' : 'rgba(15, 23, 42, 0.72)',
-          backdropFilter: isLight ? 'none' : 'blur(16px)',
-          WebkitBackdropFilter: isLight ? 'none' : 'blur(16px)',
-          border: isLight ? '4px solid #000000' : '3px solid rgba(56, 189, 248, 0.35)',
+          background: isLight
+            ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(240, 249, 255, 0.7) 100%)'
+            : 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(56, 189, 248, 0.04) 25%, rgba(168, 85, 247, 0.03) 60%, rgba(255, 255, 255, 0.02) 100%), rgba(8, 14, 26, 0.35)',
+          backdropFilter: 'blur(24px) saturate(200%) contrast(105%)',
+          WebkitBackdropFilter: 'blur(24px) saturate(200%) contrast(105%)',
+          border: isLight ? '4px solid #000000' : '1.5px solid rgba(255, 255, 255, 0.22)',
           borderRadius: '0px',
-          boxShadow: isLight ? '10px 10px 0px 0px #000000' : '10px 10px 0px 0px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.12)'
+          boxShadow: isLight
+            ? '10px 10px 0px 0px #000000'
+            : '0 30px 60px -15px rgba(0, 0, 0, 0.65), inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.4), inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.5), 0 0 35px rgba(56, 189, 248, 0.12)'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>

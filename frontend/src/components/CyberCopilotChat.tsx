@@ -79,6 +79,7 @@ export interface ChatSession {
 }
 
 interface CyberCopilotChatProps {
+  theme?: 'light' | 'dark';
   report?: RiskScoreReport | FreeScanResult | null;
   isOpen: boolean;
   onToggle: () => void;
@@ -134,6 +135,7 @@ const loadUserSessionsFromStorage = (user?: UserProfile | null): ChatSession[] =
 };
 
 export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
+  theme,
   report,
   isOpen,
   onToggle,
@@ -145,6 +147,7 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
   onOpenAuthModal,
   onOpenProfileModal
 }) => {
+  const isDark = theme ? theme === 'dark' : (typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') !== 'light');
   const [activeReport, setActiveReport] = useState<any>(report);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -1194,9 +1197,9 @@ Plan Tier | Quota Allocation
           key={`${prefixKey}-code-${blockIndex}`}
           style={{
             background: '#1A1A1A',
-            border: '2.5px solid #000000',
+            border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
             borderRadius: '0px',
-            boxShadow: '4px 4px 0px 0px #000000',
+            boxShadow: isDark ? '4px 4px 0px 0px #38BDF8' : '4px 4px 0px 0px #000000',
             margin: '8px 0',
             overflow: 'hidden'
           }}
@@ -1208,7 +1211,7 @@ Plan Tier | Quota Allocation
               alignItems: 'center',
               padding: '6px 12px',
               background: '#38BDF8',
-              borderBottom: '2px solid #000000',
+              borderBottom: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
               fontSize: '0.72rem',
               color: '#000000',
               fontWeight: 800
@@ -1218,12 +1221,12 @@ Plan Tier | Quota Allocation
             <button
               onClick={() => copyCode(codeSnippet, uniqueCodeKey)}
               style={{
-                background: '#FFFFFF',
-                border: '1.5px solid #000000',
+                background: isDark ? '#1E293B' : '#FFFFFF',
+                border: isDark ? '1.5px solid #FFFFFF' : '1.5px solid #000000',
                 borderRadius: '0px',
                 padding: '2px 8px',
-                boxShadow: '1.5px 1.5px 0px 0px #000000',
-                color: '#000000',
+                boxShadow: isDark ? '1.5px 1.5px 0px 0px #38BDF8' : '1.5px 1.5px 0px 0px #000000',
+                color: isDark ? '#FFFFFF' : '#000000',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '4px',
@@ -1343,14 +1346,14 @@ Plan Tier | Quota Allocation
             key={`${inlineKeyPrefix}-cd-${tIdx}`}
             className="mono"
             style={{
-              background: '#38BDF8',
-              border: '1.5px solid #000000',
+              background: isDark ? '#1E293B' : '#38BDF8',
+              border: isDark ? '1.5px solid #38BDF8' : '1.5px solid #000000',
               padding: '1px 6px',
               borderRadius: '0px',
               fontSize: '0.78rem',
-              color: '#000000',
+              color: isDark ? '#38BDF8' : '#000000',
               fontWeight: 700,
-              boxShadow: '1px 1px 0px 0px #000000'
+              boxShadow: isDark ? '1px 1px 0px 0px #38BDF8' : '1px 1px 0px 0px #000000'
             }}
           >
             {match[4]}
@@ -1540,14 +1543,14 @@ Plan Tier | Quota Allocation
                 margin: '8px 0',
                 overflowX: 'auto',
                 borderRadius: '0px',
-                border: '2.5px solid #000000',
-                background: '#FFFFFF',
-                boxShadow: '4px 4px 0px 0px #000000'
+                border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
+                background: isDark ? '#1E293B' : '#FFFFFF',
+                boxShadow: isDark ? '4px 4px 0px 0px #38BDF8' : '4px 4px 0px 0px #000000'
               }}
             >
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.76rem', textAlign: 'left' }}>
                 <thead>
-                  <tr style={{ background: '#38BDF8', borderBottom: '2px solid #000000' }}>
+                  <tr style={{ background: '#38BDF8', borderBottom: isDark ? '2px solid #FFFFFF' : '2px solid #000000' }}>
                     {headerRow.map((h, hIdx) => (
                       <th
                         key={hIdx}
@@ -1556,7 +1559,7 @@ Plan Tier | Quota Allocation
                           fontWeight: 900,
                           color: '#000000',
                           letterSpacing: '0.3px',
-                          borderRight: hIdx < headerRow.length - 1 ? '1px solid #000000' : 'none'
+                          borderRight: hIdx < headerRow.length - 1 ? (isDark ? '1px solid #FFFFFF' : '1px solid #000000') : 'none'
                         }}
                       >
                         {renderInlineTokens(h, `${keyPrefix}-tbl-${startIdx}-th-${hIdx}`)}
@@ -1569,8 +1572,8 @@ Plan Tier | Quota Allocation
                     <tr
                       key={rIdx}
                       style={{
-                        borderBottom: rIdx < bodyRows.length - 1 ? '1px solid #E2E8F0' : 'none',
-                        background: rIdx % 2 === 1 ? '#FFFDF5' : '#FFFFFF'
+                        borderBottom: rIdx < bodyRows.length - 1 ? (isDark ? '1px solid #334155' : '1px solid #E2E8F0') : 'none',
+                        background: rIdx % 2 === 1 ? (isDark ? '#141414' : '#FFFDF5') : (isDark ? '#1E293B' : '#FFFFFF')
                       }}
                     >
                       {row.map((cell, cIdx) => (
@@ -1578,8 +1581,8 @@ Plan Tier | Quota Allocation
                           key={cIdx}
                           style={{
                             padding: '7px 12px',
-                            color: '#000000',
-                            borderRight: cIdx < row.length - 1 ? '1px solid #E2E8F0' : 'none'
+                            color: isDark ? '#FFFFFF' : '#000000',
+                            borderRight: cIdx < row.length - 1 ? (isDark ? '1px solid #334155' : '1px solid #E2E8F0') : 'none'
                           }}
                         >
                           {renderInlineTokens(cell, `${keyPrefix}-tbl-${startIdx}-td-${rIdx}-${cIdx}`)}
@@ -1803,17 +1806,17 @@ Plan Tier | Quota Allocation
         <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div
             style={{
-              background: '#FFFFFF',
-              border: '2.5px solid #000000',
+              background: isDark ? '#1E293B' : '#FFFFFF',
+              border: isDark ? '2px solid #FFFFFF' : '2.5px solid #000000',
               padding: '7px',
               borderRadius: '0px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '2px 2px 0px 0px #000000'
+              boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000'
             }}
           >
-            <Bot size={20} color="#000000" strokeWidth={2.8} />
+            <Bot size={20} color={isDark ? '#38BDF8' : '#000000'} strokeWidth={2.8} />
           </div>
           <span
             style={{
@@ -1824,7 +1827,7 @@ Plan Tier | Quota Allocation
               height: '10px',
               borderRadius: '0px',
               backgroundColor: '#FF6B6B',
-              border: '1.5px solid #000000'
+              border: isDark ? '1.5px solid #FFFFFF' : '1.5px solid #000000'
             }}
           />
         </div>
@@ -1890,8 +1893,9 @@ Plan Tier | Quota Allocation
               height: isMinimized ? '64px' : '650px',
               maxHeight: 'calc(100vh - 40px)',
               borderRadius: '0px',
-              border: '4px solid #000000',
-              boxShadow: '12px 12px 0px 0px #000000',
+              border: isDark ? '4px solid #FFFFFF' : '4px solid #000000',
+              boxShadow: isDark ? '12px 12px 0px 0px #38BDF8' : '12px 12px 0px 0px #000000',
+              background: isDark ? '#121212' : '#FFFFFF',
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
@@ -1908,7 +1912,7 @@ Plan Tier | Quota Allocation
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'rgba(0, 0, 0, 0.7)',
+            background: 'rgba(0, 0, 0, 0.75)',
             zIndex: 100000,
             display: 'flex',
             alignItems: 'center',
@@ -1919,13 +1923,13 @@ Plan Tier | Quota Allocation
         >
           <div
             style={{
-              background: '#FFFFFF',
-              border: '4px solid #000000',
+              background: isDark ? '#1A212D' : '#FFFFFF',
+              border: isDark ? '4px solid #FFFFFF' : '4px solid #000000',
               borderRadius: '0px',
               padding: '24px',
               maxWidth: '460px',
               width: '100%',
-              boxShadow: '10px 10px 0px 0px #000000',
+              boxShadow: isDark ? '10px 10px 0px 0px #38BDF8' : '10px 10px 0px 0px #000000',
               display: 'flex',
               flexDirection: 'column',
               gap: '16px'
@@ -1934,10 +1938,10 @@ Plan Tier | Quota Allocation
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ background: '#38BDF8', border: '2px solid #000000', padding: '4px', display: 'flex' }}>
+                <div style={{ background: '#38BDF8', border: isDark ? '2px solid #FFFFFF' : '2px solid #000000', padding: '4px', display: 'flex' }}>
                   <Sparkles size={18} color="#000000" />
                 </div>
-                <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#000000', textTransform: 'uppercase' }}>
+                <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: isDark ? '#FFFFFF' : '#000000', textTransform: 'uppercase' }}>
                   AI Engine Settings
                 </h3>
               </div>
@@ -1945,9 +1949,9 @@ Plan Tier | Quota Allocation
                 onClick={() => setShowApiKeyModal(false)}
                 style={{
                   background: '#FF6B6B',
-                  border: '2px solid #000000',
+                  border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                   borderRadius: '0px',
-                  boxShadow: '2px 2px 0px 0px #000000',
+                  boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                   color: '#000000',
                   cursor: 'pointer',
                   padding: '4px',
@@ -1960,12 +1964,12 @@ Plan Tier | Quota Allocation
               </button>
             </div>
 
-            <p style={{ margin: 0, fontSize: '0.82rem', color: '#000000', lineHeight: 1.5, fontWeight: 500 }}>
+            <p style={{ margin: 0, fontSize: '0.82rem', color: isDark ? '#CBD5E1' : '#000000', lineHeight: 1.5, fontWeight: 500 }}>
               Connect your <strong>Custom AI Engine API Key</strong> to enable conversational AI reasoning on any programming or cybersecurity question. If left blank, CyberGuard AI's built-in forensic intelligence engine handles queries locally.
             </p>
 
             <div>
-              <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 900, color: '#000000', marginBottom: '6px', textTransform: 'uppercase' }}>
+              <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: 900, color: isDark ? '#FFFFFF' : '#000000', marginBottom: '6px', textTransform: 'uppercase' }}>
                 AI Engine API Key
               </label>
               <input
@@ -1975,12 +1979,12 @@ Plan Tier | Quota Allocation
                 onChange={(e) => setTempApiKey(e.target.value)}
                 style={{
                   width: '100%',
-                  background: '#FFFDF5',
-                  border: '2.5px solid #000000',
+                  background: isDark ? '#12161F' : '#FFFDF5',
+                  border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
                   borderRadius: '0px',
-                  boxShadow: '2px 2px 0px 0px #000000',
+                  boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                   padding: '10px 12px',
-                  color: '#000000',
+                  color: isDark ? '#FFFFFF' : '#000000',
                   fontSize: '0.85rem',
                   fontWeight: 700,
                   boxSizing: 'border-box',
@@ -1992,7 +1996,7 @@ Plan Tier | Quota Allocation
                   href="https://aistudio.google.com/app/apikey"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ color: '#000000', textDecoration: 'underline', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '4px' }}
+                  style={{ color: isDark ? '#38BDF8' : '#000000', textDecoration: 'underline', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '4px' }}
                 >
                   <span>Get a free key from Google AI Studio</span>
                   <ExternalLink size={11} />
@@ -2004,12 +2008,12 @@ Plan Tier | Quota Allocation
               <button
                 onClick={() => setShowApiKeyModal(false)}
                 style={{
-                  background: '#FFFFFF',
-                  border: '2px solid #000000',
+                  background: isDark ? '#1E293B' : '#FFFFFF',
+                  border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                   borderRadius: '0px',
-                  boxShadow: '2px 2px 0px 0px #000000',
+                  boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                   padding: '8px 14px',
-                  color: '#000000',
+                  color: isDark ? '#FFFFFF' : '#000000',
                   fontSize: '0.78rem',
                   fontWeight: 800,
                   cursor: 'pointer'
@@ -2021,9 +2025,9 @@ Plan Tier | Quota Allocation
                 onClick={handleSaveApiKey}
                 style={{
                   background: '#4D96FF',
-                  border: '2.5px solid #000000',
+                  border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
                   borderRadius: '0px',
-                  boxShadow: '3px 3px 0px 0px #000000',
+                  boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
                   padding: '8px 16px',
                   color: '#000000',
                   fontSize: '0.78rem',
@@ -2044,7 +2048,7 @@ Plan Tier | Quota Allocation
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'rgba(0, 0, 0, 0.7)',
+            background: 'rgba(0, 0, 0, 0.75)',
             zIndex: 100000,
             display: 'flex',
             alignItems: 'center',
@@ -2055,15 +2059,15 @@ Plan Tier | Quota Allocation
         >
           <div
             style={{
-              background: '#FFFFFF',
-              border: '4px solid #000000',
+              background: isDark ? '#1A212D' : '#FFFFFF',
+              border: isDark ? '4px solid #FFFFFF' : '4px solid #000000',
               borderRadius: '0px',
               padding: '22px',
               maxWidth: '540px',
               width: '100%',
               maxHeight: '85vh',
               overflowY: 'auto',
-              boxShadow: '10px 10px 0px 0px #000000',
+              boxShadow: isDark ? '10px 10px 0px 0px #38BDF8' : '10px 10px 0px 0px #000000',
               display: 'flex',
               flexDirection: 'column',
               gap: '14px'
@@ -2072,10 +2076,10 @@ Plan Tier | Quota Allocation
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ background: '#38BDF8', border: '2px solid #000000', padding: '4px', display: 'flex' }}>
+                <div style={{ background: '#38BDF8', border: isDark ? '2px solid #FFFFFF' : '2px solid #000000', padding: '4px', display: 'flex' }}>
                   <BookOpen size={18} color="#000000" />
                 </div>
-                <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: '#000000', textTransform: 'uppercase' }}>
+                <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 900, color: isDark ? '#FFFFFF' : '#000000', textTransform: 'uppercase' }}>
                   Cyber Defense Playbooks
                 </h3>
               </div>
@@ -2083,9 +2087,9 @@ Plan Tier | Quota Allocation
                 onClick={() => setShowPlaybooksModal(false)}
                 style={{
                   background: '#FF6B6B',
-                  border: '2px solid #000000',
+                  border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                   borderRadius: '0px',
-                  boxShadow: '2px 2px 0px 0px #000000',
+                  boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                   color: '#000000',
                   cursor: 'pointer',
                   padding: '4px',
@@ -2098,7 +2102,7 @@ Plan Tier | Quota Allocation
               </button>
             </div>
 
-            <p style={{ margin: 0, fontSize: '0.78rem', color: '#000000', lineHeight: 1.45, fontWeight: 500 }}>
+            <p style={{ margin: 0, fontSize: '0.78rem', color: isDark ? '#CBD5E1' : '#000000', lineHeight: 1.45, fontWeight: 500 }}>
               Select a specialized defensive playbook to launch an authoritative investigation, hardening guide, or forensic analysis in your active session.
             </p>
 
@@ -2111,10 +2115,10 @@ Plan Tier | Quota Allocation
                     handleSendMessage(pb.prompt);
                   }}
                   style={{
-                    background: '#FFFDF5',
-                    border: '2.5px solid #000000',
+                    background: isDark ? '#12161F' : '#FFFDF5',
+                    border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
                     borderRadius: '0px',
-                    boxShadow: '3px 3px 0px 0px #000000',
+                    boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
                     padding: '10px 12px',
                     textAlign: 'left',
                     cursor: 'pointer',
@@ -2125,17 +2129,17 @@ Plan Tier | Quota Allocation
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translate(-2px, -2px)';
-                    e.currentTarget.style.boxShadow = '5px 5px 0px 0px #000000';
+                    e.currentTarget.style.boxShadow = isDark ? '5px 5px 0px 0px #38BDF8' : '5px 5px 0px 0px #000000';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'none';
-                    e.currentTarget.style.boxShadow = '3px 3px 0px 0px #000000';
+                    e.currentTarget.style.boxShadow = isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000';
                   }}
                 >
-                  <div style={{ fontSize: '0.82rem', fontWeight: 900, color: '#000000' }}>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 900, color: isDark ? '#FFFFFF' : '#000000' }}>
                     {pb.title}
                   </div>
-                  <div style={{ fontSize: '0.72rem', color: '#000000', lineHeight: 1.35, fontWeight: 500 }}>
+                  <div style={{ fontSize: '0.72rem', color: isDark ? '#94A3B8' : '#000000', lineHeight: 1.35, fontWeight: 500 }}>
                     {pb.desc}
                   </div>
                 </button>
@@ -2150,7 +2154,7 @@ Plan Tier | Quota Allocation
         className="copilot-header-bar"
         style={{
           padding: '10px 14px',
-          borderBottom: '3.5px solid #000000',
+          borderBottom: isDark ? '3.5px solid #FFFFFF' : '3.5px solid #000000',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -2165,16 +2169,16 @@ Plan Tier | Quota Allocation
           <button
             onClick={() => setIsSidebarOpen(prev => !prev)}
             style={{
-              background: '#FFFFFF',
-              border: '2px solid #000000',
+              background: isDark ? '#1E293B' : '#FFFFFF',
+              border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
               borderRadius: '0px',
               padding: '6px',
-              color: '#000000',
+              color: isDark ? '#FFFFFF' : '#000000',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '2px 2px 0px 0px #000000',
+              boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
               transition: 'transform 0.1s ease, box-shadow 0.1s ease'
             }}
             title={isSidebarOpen ? 'Hide Chat History' : 'Show Chat History'}
@@ -2186,17 +2190,17 @@ Plan Tier | Quota Allocation
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div
               style={{
-                background: '#FFFFFF',
+                background: isDark ? '#1E293B' : '#FFFFFF',
                 padding: '6px',
                 borderRadius: '0px',
-                border: '2px solid #000000',
+                border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '2px 2px 0px 0px #000000'
+                boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000'
               }}
             >
-              <Bot size={16} color="#000000" strokeWidth={2.5} />
+              <Bot size={16} color={isDark ? '#38BDF8' : '#000000'} strokeWidth={2.5} />
             </div>
 
             <div>
@@ -2209,11 +2213,11 @@ Plan Tier | Quota Allocation
                     fontSize: '0.62rem',
                     padding: '2px 6px',
                     borderRadius: '0px',
-                    background: '#FFFFFF',
-                    border: '1.5px solid #000000',
-                    color: '#000000',
+                    background: isDark ? '#1E293B' : '#FFFFFF',
+                    border: isDark ? '1.5px solid #FFFFFF' : '1.5px solid #000000',
+                    color: isDark ? '#38BDF8' : '#000000',
                     fontWeight: 900,
-                    boxShadow: '1.5px 1.5px 0px 0px #000000',
+                    boxShadow: isDark ? '1.5px 1.5px 0px 0px #38BDF8' : '1.5px 1.5px 0px 0px #000000',
                     letterSpacing: '0.04em'
                   }}
                 >
@@ -2235,14 +2239,14 @@ Plan Tier | Quota Allocation
             value={securityMode}
             onChange={(e) => setSecurityMode(e.target.value as any)}
             style={{
-              background: '#FFFFFF',
-              border: '2px solid #000000',
+              background: isDark ? '#1E293B' : '#FFFFFF',
+              border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
               borderRadius: '0px',
               padding: '4px 8px',
-              color: '#000000',
+              color: isDark ? '#FFFFFF' : '#000000',
               fontSize: '0.72rem',
               fontWeight: 800,
-              boxShadow: '2px 2px 0px 0px #000000',
+              boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
               outline: 'none',
               cursor: 'pointer',
               display: isFullScreen || isSidebarOpen ? 'inline-block' : 'none'
@@ -2260,13 +2264,13 @@ Plan Tier | Quota Allocation
           <button
             onClick={handleExportChat}
             style={{
-              background: hasExported ? '#6BCB77' : '#FFFFFF',
-              border: '2px solid #000000',
-              color: '#000000',
+              background: hasExported ? '#6BCB77' : (isDark ? '#1E293B' : '#FFFFFF'),
+              border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
+              color: isDark ? '#FFFFFF' : '#000000',
               cursor: 'pointer',
               padding: '4px 8px',
               borderRadius: '0px',
-              boxShadow: '2px 2px 0px 0px #000000',
+              boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
               display: 'flex',
               alignItems: 'center',
               gap: '5px',
@@ -2276,7 +2280,7 @@ Plan Tier | Quota Allocation
             }}
             title="Download Copilot chat history as a Markdown (.md) document"
           >
-            {hasExported ? <Check size={13} color="#000000" /> : <Download size={13} />}
+            {hasExported ? <Check size={13} color="#000000" /> : <Download size={13} color={isDark ? '#FFFFFF' : '#000000'} />}
             <span>{hasExported ? 'Exported (.md)' : 'Export'}</span>
           </button>
 
@@ -2284,11 +2288,11 @@ Plan Tier | Quota Allocation
           <button
             onClick={onOpenProfileModal || onOpenAuthModal}
             style={{
-              background: '#FFFFFF',
-              border: '2px solid #000000',
-              color: '#000000',
+              background: isDark ? '#1E293B' : '#FFFFFF',
+              border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
+              color: isDark ? '#FFFFFF' : '#000000',
               borderRadius: '0px',
-              boxShadow: '2px 2px 0px 0px #000000',
+              boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
               padding: '3px 8px',
               fontSize: '0.68rem',
               fontWeight: 900,
@@ -2299,7 +2303,7 @@ Plan Tier | Quota Allocation
             }}
             title="View Quota, Memory Fill-Up & Razorpay Subscription Plans"
           >
-            {currentUser?.plan === 'premium' ? <Crown size={12} color="#000000" /> : <Zap size={12} color="#000000" />}
+            {currentUser?.plan === 'premium' ? <Crown size={12} color={isDark ? '#FACC15' : '#000000'} /> : <Zap size={12} color={isDark ? '#38BDF8' : '#000000'} />}
             <span>{currentUser?.plan === 'premium' ? 'PRO' : `${currentUser?.credits ?? 50} CR`}</span>
           </button>
 
@@ -2307,11 +2311,11 @@ Plan Tier | Quota Allocation
           <button
             onClick={() => setShowApiKeyModal(true)}
             style={{
-              background: '#FFFFFF',
-              border: '2px solid #000000',
+              background: isDark ? '#1E293B' : '#FFFFFF',
+              border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
               borderRadius: '0px',
-              boxShadow: '2px 2px 0px 0px #000000',
-              color: '#000000',
+              boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
+              color: isDark ? '#FFFFFF' : '#000000',
               cursor: 'pointer',
               padding: '5px',
               display: 'flex',
@@ -2327,11 +2331,11 @@ Plan Tier | Quota Allocation
           <button
             onClick={() => setIsFullScreen(prev => !prev)}
             style={{
-              background: '#FFFFFF',
-              border: '2px solid #000000',
+              background: isDark ? '#1E293B' : '#FFFFFF',
+              border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
               borderRadius: '0px',
-              boxShadow: '2px 2px 0px 0px #000000',
-              color: '#000000',
+              boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
+              color: isDark ? '#FFFFFF' : '#000000',
               cursor: 'pointer',
               padding: '5px',
               display: 'flex',
@@ -2348,9 +2352,9 @@ Plan Tier | Quota Allocation
             onClick={onToggle}
             style={{
               background: '#FF6B6B',
-              border: '2px solid #000000',
+              border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
               borderRadius: '0px',
-              boxShadow: '2px 2px 0px 0px #000000',
+              boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
               color: '#000000',
               cursor: 'pointer',
               padding: '5px',
@@ -2377,8 +2381,8 @@ Plan Tier | Quota Allocation
               exit={{ width: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
               style={{
-                borderRight: '3.5px solid #000000',
-                background: '#FFFDF5',
+                borderRight: isDark ? '3.5px solid #FFFFFF' : '3.5px solid #000000',
+                background: isDark ? '#141414' : '#FFFDF5',
                 display: 'flex',
                 flexDirection: 'column',
                 flexShrink: 0,
@@ -2386,7 +2390,7 @@ Plan Tier | Quota Allocation
               }}
             >
               {/* Sidebar Header: New Chat & Search */}
-              <div style={{ padding: '12px', borderBottom: '2.5px solid #000000', background: '#FFFDF5', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ padding: '12px', borderBottom: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000', background: isDark ? '#141414' : '#FFFDF5', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <button
                   onClick={handleCreateNewChat}
                   style={{
@@ -2394,7 +2398,7 @@ Plan Tier | Quota Allocation
                     padding: '8px 12px',
                     borderRadius: '0px',
                     background: '#4D96FF',
-                    border: '2.5px solid #000000',
+                    border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
                     color: '#000000',
                     fontSize: '0.78rem',
                     fontWeight: 900,
@@ -2403,16 +2407,16 @@ Plan Tier | Quota Allocation
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '6px',
-                    boxShadow: '3px 3px 0px 0px #000000',
+                    boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
                     transition: 'transform 0.1s ease, box-shadow 0.1s ease'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translate(-1px, -1px)';
-                    e.currentTarget.style.boxShadow = '4px 4px 0px 0px #000000';
+                    e.currentTarget.style.boxShadow = isDark ? '4px 4px 0px 0px #38BDF8' : '4px 4px 0px 0px #000000';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'none';
-                    e.currentTarget.style.boxShadow = '3px 3px 0px 0px #000000';
+                    e.currentTarget.style.boxShadow = isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000';
                   }}
                 >
                   <Plus size={15} color="#000000" strokeWidth={3} />
@@ -2425,14 +2429,14 @@ Plan Tier | Quota Allocation
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
-                    background: '#FFFFFF',
-                    border: '2px solid #000000',
+                    background: isDark ? '#1E293B' : '#FFFFFF',
+                    border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                     borderRadius: '0px',
-                    boxShadow: '2px 2px 0px 0px #000000',
+                    boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                     padding: '5px 8px'
                   }}
                 >
-                  <Search size={13} color="#000000" />
+                  <Search size={13} color={isDark ? '#94A3B8' : '#000000'} />
                   <input
                     type="text"
                     placeholder="Search chats..."
@@ -2441,7 +2445,7 @@ Plan Tier | Quota Allocation
                     style={{
                       background: 'transparent',
                       border: 'none',
-                      color: '#000000',
+                      color: isDark ? '#FFFFFF' : '#000000',
                       fontSize: '0.74rem',
                       fontWeight: 600,
                       outline: 'none',
@@ -2449,7 +2453,7 @@ Plan Tier | Quota Allocation
                     }}
                   />
                   {searchQuery && (
-                    <button onClick={() => setSearchQuery('')} style={{ background: 'transparent', border: 'none', color: '#000000', cursor: 'pointer', padding: 0 }}>
+                    <button onClick={() => setSearchQuery('')} style={{ background: 'transparent', border: 'none', color: isDark ? '#94A3B8' : '#000000', cursor: 'pointer', padding: 0 }}>
                       <X size={12} />
                     </button>
                   )}
@@ -2467,12 +2471,12 @@ Plan Tier | Quota Allocation
                   gap: '5px'
                 }}
               >
-                <div style={{ fontSize: '0.62rem', fontWeight: 900, color: '#000000', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '4px 6px' }}>
+                <div style={{ fontSize: '0.62rem', fontWeight: 900, color: isDark ? '#94A3B8' : '#000000', textTransform: 'uppercase', letterSpacing: '0.06em', padding: '4px 6px' }}>
                   Chat History ({sortedSessions.length})
                 </div>
 
                 {sortedSessions.length === 0 ? (
-                  <div style={{ textAlign: 'center', padding: '24px 8px', color: '#000000', fontSize: '0.72rem', fontWeight: 600 }}>
+                  <div style={{ textAlign: 'center', padding: '24px 8px', color: isDark ? '#94A3B8' : '#000000', fontSize: '0.72rem', fontWeight: 600 }}>
                     No conversations found.
                   </div>
                 ) : (
@@ -2491,10 +2495,10 @@ Plan Tier | Quota Allocation
                           justifyContent: 'space-between',
                           padding: '7px 9px',
                           borderRadius: '0px',
-                          border: isActive ? '2px solid #000000' : '2px solid transparent',
+                          border: isActive ? (isDark ? '2px solid #FFFFFF' : '2px solid #000000') : '2px solid transparent',
                           background: isActive ? '#38BDF8' : 'transparent',
-                          boxShadow: isActive ? '3px 3px 0px 0px #000000' : 'none',
-                          color: '#000000',
+                          boxShadow: isActive ? (isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000') : 'none',
+                          color: isActive ? '#000000' : (isDark ? '#E2E8F0' : '#000000'),
                           cursor: isEditing ? 'default' : 'pointer',
                           fontSize: '0.75rem',
                           fontWeight: isActive ? 900 : 600,
@@ -2503,9 +2507,9 @@ Plan Tier | Quota Allocation
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '7px', minWidth: 0, flex: 1 }}>
                           {session.isPinned ? (
-                            <Pin size={12} color="#000000" style={{ flexShrink: 0 }} />
+                            <Pin size={12} color={isActive ? '#000000' : (isDark ? '#94A3B8' : '#000000')} style={{ flexShrink: 0 }} />
                           ) : (
-                            <MessageSquare size={13} color="#000000" style={{ flexShrink: 0 }} />
+                            <MessageSquare size={13} color={isActive ? '#000000' : (isDark ? '#94A3B8' : '#000000')} style={{ flexShrink: 0 }} />
                           )}
 
                           {isEditing ? (
@@ -2523,11 +2527,11 @@ Plan Tier | Quota Allocation
                                   if (e.key === 'Escape') setEditingSessionId(null);
                                 }}
                                 style={{
-                                  background: '#FFFFFF',
-                                  border: '2px solid #000000',
+                                  background: isDark ? '#1E293B' : '#FFFFFF',
+                                  border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                                   borderRadius: '0px',
                                   padding: '2px 6px',
-                                  color: '#000000',
+                                  color: isDark ? '#FFFFFF' : '#000000',
                                   fontSize: '0.72rem',
                                   fontWeight: 700,
                                   width: '100%',
@@ -2572,7 +2576,7 @@ Plan Tier | Quota Allocation
                               style={{
                                 background: 'transparent',
                                 border: 'none',
-                                color: '#000000',
+                                color: isActive ? '#000000' : (isDark ? '#E2E8F0' : '#000000'),
                                 cursor: 'pointer',
                                 padding: '2px',
                                 display: 'flex',
@@ -2590,7 +2594,7 @@ Plan Tier | Quota Allocation
                               style={{
                                 background: 'transparent',
                                 border: 'none',
-                                color: '#000000',
+                                color: isActive ? '#000000' : (isDark ? '#E2E8F0' : '#000000'),
                                 cursor: 'pointer',
                                 padding: '2px',
                                 display: 'flex',
@@ -2608,7 +2612,7 @@ Plan Tier | Quota Allocation
                               style={{
                                 background: 'transparent',
                                 border: 'none',
-                                color: '#000000',
+                                color: isActive ? '#000000' : (isDark ? '#E2E8F0' : '#000000'),
                                 cursor: 'pointer',
                                 padding: '2px',
                                 display: 'flex',
@@ -2631,11 +2635,11 @@ Plan Tier | Quota Allocation
               <div
                 style={{
                   padding: '10px 12px',
-                  borderTop: '3px solid #000000',
+                  borderTop: isDark ? '3px solid #FFFFFF' : '3px solid #000000',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '8px',
-                  background: '#FFFDF5'
+                  background: isDark ? '#141414' : '#FFFDF5'
                 }}
               >
                 {/* User Account Tile */}
@@ -2647,11 +2651,11 @@ Plan Tier | Quota Allocation
                     gap: '9px',
                     padding: '8px 10px',
                     borderRadius: '0px',
-                    background: '#FFFFFF',
-                    border: '2.5px solid #000000',
+                    background: isDark ? '#1E293B' : '#FFFFFF',
+                    border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
                     cursor: 'pointer',
                     transition: 'transform 0.1s ease, box-shadow 0.1s ease',
-                    boxShadow: '3px 3px 0px 0px #000000'
+                    boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000'
                   }}
                   title="Click to view full Account Details, Credits & Subscription"
                 >
@@ -2668,7 +2672,7 @@ Plan Tier | Quota Allocation
                               width: '32px',
                               height: '32px',
                               borderRadius: '0px',
-                              border: '2px solid #000000',
+                              border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                               objectFit: 'cover',
                               flexShrink: 0
                             }}
@@ -2680,7 +2684,7 @@ Plan Tier | Quota Allocation
                               height: '32px',
                               borderRadius: '0px',
                               background: '#38BDF8',
-                              border: '2px solid #000000',
+                              border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
@@ -2701,7 +2705,7 @@ Plan Tier | Quota Allocation
                               style={{
                                 fontSize: '0.76rem',
                                 fontWeight: 800,
-                                color: 'var(--text-primary)',
+                                color: isDark ? '#FFFFFF' : 'var(--text-primary)',
                                 whiteSpace: 'nowrap',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis'
@@ -2723,7 +2727,7 @@ Plan Tier | Quota Allocation
                             </span>
                           </div>
 
-                          <div style={{ fontSize: '0.65rem', color: isRealUser ? 'var(--text-secondary)' : 'var(--accent-cyan)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          <div style={{ fontSize: '0.65rem', color: isRealUser ? (isDark ? '#94A3B8' : 'var(--text-secondary)') : 'var(--accent-cyan)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {isRealUser ? currentUser.email : 'Click to Link Email'}
                           </div>
                         </div>
@@ -2740,13 +2744,13 @@ Plan Tier | Quota Allocation
                     gap: '4px',
                     padding: '6px 8px',
                     borderRadius: '8px',
-                    background: 'rgba(255, 255, 255, 0.02)',
-                    border: '1px solid var(--border-color)',
+                    background: isDark ? '#1E293B' : 'rgba(255, 255, 255, 0.02)',
+                    border: isDark ? '1.5px solid #334155' : '1px solid var(--border-color)',
                     fontSize: '0.66rem'
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: isDark ? '#94A3B8' : 'var(--text-secondary)' }}>
                       <Zap size={11} color="var(--accent-cyan)" />
                       <span>Credits:</span>
                     </span>
@@ -2756,7 +2760,7 @@ Plan Tier | Quota Allocation
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--text-secondary)' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: isDark ? '#94A3B8' : 'var(--text-secondary)' }}>
                       <HardDrive size={11} color="#a855f7" />
                       <span>Memory:</span>
                     </span>
@@ -2813,7 +2817,7 @@ Plan Tier | Quota Allocation
                     style={{
                       background: 'transparent',
                       border: 'none',
-                      color: 'var(--text-secondary)',
+                      color: isDark ? '#94A3B8' : 'var(--text-secondary)',
                       cursor: 'pointer',
                       fontSize: '0.66rem',
                       textDecoration: 'underline'
@@ -2883,21 +2887,21 @@ Plan Tier | Quota Allocation
                     height: '56px',
                     borderRadius: '0px',
                     background: '#38BDF8',
-                    border: '3.5px solid #000000',
+                    border: isDark ? '3.5px solid #FFFFFF' : '3.5px solid #000000',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '5px 5px 0px 0px #000000'
+                    boxShadow: isDark ? '5px 5px 0px 0px #38BDF8' : '5px 5px 0px 0px #000000'
                   }}
                 >
                   <Bot size={30} color="#000000" strokeWidth={2.6} />
                 </div>
 
                 <div>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--text-primary)', margin: '0 0 6px 0', textTransform: 'uppercase' }}>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 900, color: isDark ? '#FFFFFF' : 'var(--text-primary)', margin: '0 0 6px 0', textTransform: 'uppercase' }}>
                     What security challenge can I investigate for you?
                   </h2>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5, fontWeight: 500 }}>
+                  <p style={{ fontSize: '0.8rem', color: isDark ? '#94A3B8' : 'var(--text-secondary)', margin: 0, lineHeight: 1.5, fontWeight: 500 }}>
                     Equipped with live DNS probing, WHOIS domain age forensics, and isolated Chromium sandboxing.
                   </p>
                 </div>
@@ -2915,8 +2919,8 @@ Plan Tier | Quota Allocation
                   <button
                     onClick={() => handleSendMessage('analyze amazon.in')}
                     style={{
-                      background: '#FFFFFF',
-                      border: '2.5px solid #000000',
+                      background: isDark ? '#1E293B' : '#FFFFFF',
+                      border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
                       borderRadius: '0px',
                       padding: '12px',
                       textAlign: 'left',
@@ -2924,23 +2928,23 @@ Plan Tier | Quota Allocation
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '4px',
-                      boxShadow: '3px 3px 0px 0px #000000',
+                      boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
                       transition: 'transform 0.1s ease, box-shadow 0.1s ease'
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translate(-2px, -2px)';
-                      e.currentTarget.style.boxShadow = '5px 5px 0px 0px #000000';
+                      e.currentTarget.style.boxShadow = isDark ? '5px 5px 0px 0px #38BDF8' : '5px 5px 0px 0px #000000';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'none';
-                      e.currentTarget.style.boxShadow = '3px 3px 0px 0px #000000';
+                      e.currentTarget.style.boxShadow = isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000';
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 900, color: '#000000' }}>
-                      <Globe size={14} color="#000000" />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 900, color: isDark ? '#FFFFFF' : '#000000' }}>
+                      <Globe size={14} color={isDark ? '#38BDF8' : '#000000'} />
                       <span>Audit a Target Domain</span>
                     </div>
-                    <div style={{ fontSize: '0.72rem', color: '#000000', lineHeight: 1.35, fontWeight: 500 }}>
+                    <div style={{ fontSize: '0.72rem', color: isDark ? '#94A3B8' : '#000000', lineHeight: 1.35, fontWeight: 500 }}>
                       Analyze DNS, SSL, and security headers for amazon.in
                     </div>
                   </button>
@@ -2948,8 +2952,8 @@ Plan Tier | Quota Allocation
                   <button
                     onClick={() => handleSendMessage('check br-icloud.com.br')}
                     style={{
-                      background: '#FFFFFF',
-                      border: '2.5px solid #000000',
+                      background: isDark ? '#1E293B' : '#FFFFFF',
+                      border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
                       borderRadius: '0px',
                       padding: '12px',
                       textAlign: 'left',
@@ -2957,23 +2961,23 @@ Plan Tier | Quota Allocation
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '4px',
-                      boxShadow: '3px 3px 0px 0px #000000',
+                      boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
                       transition: 'transform 0.1s ease, box-shadow 0.1s ease'
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translate(-2px, -2px)';
-                      e.currentTarget.style.boxShadow = '5px 5px 0px 0px #000000';
+                      e.currentTarget.style.boxShadow = isDark ? '5px 5px 0px 0px #38BDF8' : '5px 5px 0px 0px #000000';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'none';
-                      e.currentTarget.style.boxShadow = '3px 3px 0px 0px #000000';
+                      e.currentTarget.style.boxShadow = isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000';
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 900, color: '#FF6B6B' }}>
                       <AlertTriangle size={14} color="#FF6B6B" />
-                      <span style={{ color: '#000000' }}>Investigate Phishing Trap</span>
+                      <span style={{ color: isDark ? '#FFFFFF' : '#000000' }}>Investigate Phishing Trap</span>
                     </div>
-                    <div style={{ fontSize: '0.72rem', color: '#000000', lineHeight: 1.35, fontWeight: 500 }}>
+                    <div style={{ fontSize: '0.72rem', color: isDark ? '#94A3B8' : '#000000', lineHeight: 1.35, fontWeight: 500 }}>
                       Check if br-icloud.com.br is an authorized Apple domain
                     </div>
                   </button>
@@ -2981,8 +2985,8 @@ Plan Tier | Quota Allocation
                   <button
                     onClick={() => handleSendMessage('Show general Nginx hardening config')}
                     style={{
-                      background: '#FFFFFF',
-                      border: '2.5px solid #000000',
+                      background: isDark ? '#1E293B' : '#FFFFFF',
+                      border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
                       borderRadius: '0px',
                       padding: '12px',
                       textAlign: 'left',
@@ -2990,23 +2994,23 @@ Plan Tier | Quota Allocation
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '4px',
-                      boxShadow: '3px 3px 0px 0px #000000',
+                      boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
                       transition: 'transform 0.1s ease, box-shadow 0.1s ease'
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translate(-2px, -2px)';
-                      e.currentTarget.style.boxShadow = '5px 5px 0px 0px #000000';
+                      e.currentTarget.style.boxShadow = isDark ? '5px 5px 0px 0px #38BDF8' : '5px 5px 0px 0px #000000';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'none';
-                      e.currentTarget.style.boxShadow = '3px 3px 0px 0px #000000';
+                      e.currentTarget.style.boxShadow = isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000';
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 900, color: '#000000' }}>
-                      <Terminal size={14} color="#000000" />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 900, color: isDark ? '#FFFFFF' : '#000000' }}>
+                      <Terminal size={14} color={isDark ? '#38BDF8' : '#000000'} />
                       <span>Hardening Blueprint</span>
                     </div>
-                    <div style={{ fontSize: '0.72rem', color: '#000000', lineHeight: 1.35, fontWeight: 500 }}>
+                    <div style={{ fontSize: '0.72rem', color: isDark ? '#94A3B8' : '#000000', lineHeight: 1.35, fontWeight: 500 }}>
                       Generate Nginx CSP, HSTS, and X-Frame-Options config
                     </div>
                   </button>
@@ -3014,8 +3018,8 @@ Plan Tier | Quota Allocation
                   <button
                     onClick={() => handleSendMessage('open sandbox')}
                     style={{
-                      background: '#FFFFFF',
-                      border: '2.5px solid #000000',
+                      background: isDark ? '#1E293B' : '#FFFFFF',
+                      border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
                       borderRadius: '0px',
                       padding: '12px',
                       textAlign: 'left',
@@ -3023,23 +3027,23 @@ Plan Tier | Quota Allocation
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '4px',
-                      boxShadow: '3px 3px 0px 0px #000000',
+                      boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
                       transition: 'transform 0.1s ease, box-shadow 0.1s ease'
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translate(-2px, -2px)';
-                      e.currentTarget.style.boxShadow = '5px 5px 0px 0px #000000';
+                      e.currentTarget.style.boxShadow = isDark ? '5px 5px 0px 0px #38BDF8' : '5px 5px 0px 0px #000000';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'none';
-                      e.currentTarget.style.boxShadow = '3px 3px 0px 0px #000000';
+                      e.currentTarget.style.boxShadow = isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000';
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 900, color: '#000000' }}>
-                      <Sparkles size={14} color="#000000" />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 900, color: isDark ? '#FFFFFF' : '#000000' }}>
+                      <Sparkles size={14} color={isDark ? '#38BDF8' : '#000000'} />
                       <span>Launch Sandbox Viewport</span>
                     </div>
-                    <div style={{ fontSize: '0.72rem', color: '#000000', lineHeight: 1.35, fontWeight: 500 }}>
+                    <div style={{ fontSize: '0.72rem', color: isDark ? '#94A3B8' : '#000000', lineHeight: 1.35, fontWeight: 500 }}>
                       Safely preview suspicious websites inside live Chromium
                     </div>
                   </button>
@@ -3068,8 +3072,8 @@ Plan Tier | Quota Allocation
                       height: '30px',
                       borderRadius: '0px',
                       background: isUser ? '#4D96FF' : '#38BDF8',
-                      border: '2px solid #000000',
-                      boxShadow: '2px 2px 0px 0px #000000',
+                      border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
+                      boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -3121,11 +3125,11 @@ Plan Tier | Quota Allocation
                         <button
                           onClick={() => copyFullMessage(msg.content, idx)}
                           style={{
-                            background: '#FFFFFF',
-                            border: '1.5px solid #000000',
+                            background: isDark ? '#1E293B' : '#FFFFFF',
+                            border: isDark ? '1.5px solid #FFFFFF' : '1.5px solid #000000',
                             borderRadius: '0px',
-                            boxShadow: '1.5px 1.5px 0px 0px #000000',
-                            color: copiedMessageIndex === idx ? '#10b981' : '#000000',
+                            boxShadow: isDark ? '1.5px 1.5px 0px 0px #38BDF8' : '1.5px 1.5px 0px 0px #000000',
+                            color: copiedMessageIndex === idx ? '#10b981' : (isDark ? '#FFFFFF' : '#000000'),
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
@@ -3142,11 +3146,11 @@ Plan Tier | Quota Allocation
                         <button
                           onClick={() => handleToggleSpeech(msg.content, idx)}
                           style={{
-                            background: '#FFFFFF',
-                            border: '1.5px solid #000000',
+                            background: isDark ? '#1E293B' : '#FFFFFF',
+                            border: isDark ? '1.5px solid #FFFFFF' : '1.5px solid #000000',
                             borderRadius: '0px',
-                            boxShadow: '1.5px 1.5px 0px 0px #000000',
-                            color: '#000000',
+                            boxShadow: isDark ? '1.5px 1.5px 0px 0px #38BDF8' : '1.5px 1.5px 0px 0px #000000',
+                            color: isDark ? '#FFFFFF' : '#000000',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
@@ -3169,7 +3173,7 @@ Plan Tier | Quota Allocation
                           style={{
                             background: 'transparent',
                             border: 'none',
-                            color: 'var(--text-secondary)',
+                            color: isDark ? '#94A3B8' : 'var(--text-secondary)',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
@@ -3197,8 +3201,8 @@ Plan Tier | Quota Allocation
                     height: '30px',
                     borderRadius: '0px',
                     background: '#38BDF8',
-                    border: '2px solid #000000',
-                    boxShadow: '2px 2px 0px 0px #000000',
+                    border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
+                    boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -3211,18 +3215,18 @@ Plan Tier | Quota Allocation
                   style={{
                     padding: '8px 14px',
                     borderRadius: '0px',
-                    background: '#FFFFFF',
-                    border: '2.5px solid #000000',
-                    boxShadow: '3px 3px 0px 0px #000000',
+                    background: isDark ? '#1E293B' : '#FFFFFF',
+                    border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
+                    boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    color: '#000000',
+                    color: isDark ? '#FFFFFF' : '#000000',
                     fontSize: '0.74rem',
                     fontWeight: 800
                   }}
                 >
-                  <RefreshCw size={13} color="#000000" className="spinning" />
+                  <RefreshCw size={13} color={isDark ? '#38BDF8' : '#000000'} className="spinning" />
                   <span className="mono" style={{ fontWeight: 800 }}>Analyzing cyber threat intelligence...</span>
                 </div>
               </div>
@@ -3236,8 +3240,8 @@ Plan Tier | Quota Allocation
             className="copilot-chips-carousel no-scrollbar"
             style={{
               padding: '8px 14px',
-              borderTop: '3px solid #000000',
-              background: '#FFFDF5',
+              borderTop: isDark ? '3px solid #FFFFFF' : '3px solid #000000',
+              background: isDark ? '#181818' : '#FFFDF5',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
@@ -3263,8 +3267,8 @@ Plan Tier | Quota Allocation
                   fontWeight: 900,
                   padding: '5px 12px',
                   borderRadius: '0px',
-                  border: '2.5px solid #000000',
-                  boxShadow: '2.5px 2.5px 0px 0px #000000',
+                  border: isDark ? '2.5px solid #FFFFFF' : '2.5px solid #000000',
+                  boxShadow: isDark ? '2.5px 2.5px 0px 0px #38BDF8' : '2.5px 2.5px 0px 0px #000000',
                   color: '#000000',
                   flexShrink: 0,
                   whiteSpace: 'nowrap'
@@ -3281,8 +3285,8 @@ Plan Tier | Quota Allocation
             className="copilot-input-area"
             style={{
               padding: isFullScreen ? '14px 10%' : '10px 14px',
-              borderTop: '3.5px solid #000000',
-              background: '#FFFDF5',
+              borderTop: isDark ? '3.5px solid #FFFFFF' : '3.5px solid #000000',
+              background: isDark ? '#141414' : '#FFFDF5',
               display: 'flex',
               flexDirection: 'column',
               gap: '6px',
@@ -3296,10 +3300,10 @@ Plan Tier | Quota Allocation
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
                 style={{
-                  background: '#FFFFFF',
-                  border: '3px solid #000000',
+                  background: isDark ? '#1E293B' : '#FFFFFF',
+                  border: isDark ? '3px solid #FFFFFF' : '3px solid #000000',
                   borderRadius: '0px',
-                  boxShadow: '6px 6px 0px 0px #000000',
+                  boxShadow: isDark ? '6px 6px 0px 0px #38BDF8' : '6px 6px 0px 0px #000000',
                   padding: '8px',
                   display: 'grid',
                   gridTemplateColumns: 'repeat(4, 1fr)',
@@ -3314,21 +3318,21 @@ Plan Tier | Quota Allocation
                     inputRef.current?.focus();
                   }}
                   style={{
-                    background: '#FFFDF5',
-                    border: '2px solid #000000',
+                    background: isDark ? '#141414' : '#FFFDF5',
+                    border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                     borderRadius: '0px',
-                    boxShadow: '2px 2px 0px 0px #000000',
+                    boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                     padding: '6px',
                     cursor: 'pointer',
                     fontSize: '0.72rem',
                     fontWeight: 800,
-                    color: '#000000',
+                    color: isDark ? '#FFFFFF' : '#000000',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px'
                   }}
                 >
-                  <Globe size={13} color="#000000" />
+                  <Globe size={13} color={isDark ? '#38BDF8' : '#000000'} />
                   <span>Scan URL</span>
                 </button>
 
@@ -3339,21 +3343,21 @@ Plan Tier | Quota Allocation
                     inputRef.current?.focus();
                   }}
                   style={{
-                    background: '#FFFDF5',
-                    border: '2px solid #000000',
+                    background: isDark ? '#141414' : '#FFFDF5',
+                    border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                     borderRadius: '0px',
-                    boxShadow: '2px 2px 0px 0px #000000',
+                    boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                     padding: '6px',
                     cursor: 'pointer',
                     fontSize: '0.72rem',
                     fontWeight: 800,
-                    color: '#000000',
+                    color: isDark ? '#FFFFFF' : '#000000',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px'
                   }}
                 >
-                  <FileText size={13} color="#000000" />
+                  <FileText size={13} color={isDark ? '#38BDF8' : '#000000'} />
                   <span>WHOIS Age</span>
                 </button>
 
@@ -3363,21 +3367,21 @@ Plan Tier | Quota Allocation
                     handleSendMessage('open sandbox');
                   }}
                   style={{
-                    background: '#FFFDF5',
-                    border: '2px solid #000000',
+                    background: isDark ? '#141414' : '#FFFDF5',
+                    border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                     borderRadius: '0px',
-                    boxShadow: '2px 2px 0px 0px #000000',
+                    boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                     padding: '6px',
                     cursor: 'pointer',
                     fontSize: '0.72rem',
                     fontWeight: 800,
-                    color: '#000000',
+                    color: isDark ? '#FFFFFF' : '#000000',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px'
                   }}
                 >
-                  <Sparkles size={13} color="#000000" />
+                  <Sparkles size={13} color={isDark ? '#38BDF8' : '#000000'} />
                   <span>Live Sandbox</span>
                 </button>
 
@@ -3387,21 +3391,21 @@ Plan Tier | Quota Allocation
                     handleSendMessage('Generate Nginx hardening headers');
                   }}
                   style={{
-                    background: '#FFFDF5',
-                    border: '2px solid #000000',
+                    background: isDark ? '#141414' : '#FFFDF5',
+                    border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                     borderRadius: '0px',
-                    boxShadow: '2px 2px 0px 0px #000000',
+                    boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                     padding: '6px',
                     cursor: 'pointer',
                     fontSize: '0.72rem',
                     fontWeight: 800,
-                    color: '#000000',
+                    color: isDark ? '#FFFFFF' : '#000000',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px'
                   }}
                 >
-                  <Terminal size={13} color="#000000" />
+                  <Terminal size={13} color={isDark ? '#38BDF8' : '#000000'} />
                   <span>Hardening</span>
                 </button>
 
@@ -3411,21 +3415,21 @@ Plan Tier | Quota Allocation
                     setShowPlaybooksModal(true);
                   }}
                   style={{
-                    background: '#FFFDF5',
-                    border: '2px solid #000000',
+                    background: isDark ? '#141414' : '#FFFDF5',
+                    border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                     borderRadius: '0px',
-                    boxShadow: '2px 2px 0px 0px #000000',
+                    boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                     padding: '6px',
                     cursor: 'pointer',
                     fontSize: '0.72rem',
                     fontWeight: 800,
-                    color: '#000000',
+                    color: isDark ? '#FFFFFF' : '#000000',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px'
                   }}
                 >
-                  <BookOpen size={13} color="#000000" />
+                  <BookOpen size={13} color={isDark ? '#38BDF8' : '#000000'} />
                   <span>Playbooks</span>
                 </button>
               </motion.div>
@@ -3437,11 +3441,11 @@ Plan Tier | Quota Allocation
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                background: '#FFFFFF',
-                border: '3px solid #000000',
+                background: isDark ? '#1E293B' : '#FFFFFF',
+                border: isDark ? '3px solid #FFFFFF' : '3px solid #000000',
                 borderRadius: '0px',
                 padding: '6px 10px',
-                boxShadow: '4px 4px 0px 0px #000000'
+                boxShadow: isDark ? '4px 4px 0px 0px #38BDF8' : '4px 4px 0px 0px #000000'
               }}
             >
               {/* Tools Button */}
@@ -3450,9 +3454,9 @@ Plan Tier | Quota Allocation
                 onClick={() => setShowToolsMenu(prev => !prev)}
                 style={{
                   background: showToolsMenu ? '#4D96FF' : '#38BDF8',
-                  border: '2px solid #000000',
+                  border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                   borderRadius: '0px',
-                  boxShadow: '2px 2px 0px 0px #000000',
+                  boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                   color: '#000000',
                   cursor: 'pointer',
                   padding: '5px',
@@ -3488,7 +3492,7 @@ Plan Tier | Quota Allocation
                   flex: 1,
                   background: 'transparent',
                   border: 'none',
-                  color: '#000000',
+                  color: isDark ? '#FFFFFF' : '#000000',
                   fontSize: '0.84rem',
                   fontWeight: 600,
                   outline: 'none',
@@ -3508,7 +3512,7 @@ Plan Tier | Quota Allocation
                   style={{
                     background: '#FF6B6B',
                     color: '#000000',
-                    border: '2px solid #000000',
+                    border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                     borderRadius: '0px',
                     width: '34px',
                     height: '34px',
@@ -3516,7 +3520,7 @@ Plan Tier | Quota Allocation
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: 'pointer',
-                    boxShadow: '2px 2px 0px 0px #000000',
+                    boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
                     flexShrink: 0
                   }}
                   title="Stop Generating (Cancel)"
@@ -3532,9 +3536,9 @@ Plan Tier | Quota Allocation
                   style={{
                     background: inputValue.trim() && !isLoading && !isStreaming
                       ? '#4D96FF'
-                      : '#E2E8F0',
-                    color: '#000000',
-                    border: '2px solid #000000',
+                      : (isDark ? '#334155' : '#E2E8F0'),
+                    color: inputValue.trim() && !isLoading && !isStreaming ? '#000000' : (isDark ? '#94A3B8' : '#000000'),
+                    border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
                     borderRadius: '0px',
                     width: '34px',
                     height: '34px',
@@ -3542,13 +3546,13 @@ Plan Tier | Quota Allocation
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: inputValue.trim() && !isLoading && !isStreaming ? 'pointer' : 'default',
-                    boxShadow: inputValue.trim() && !isLoading && !isStreaming ? '2px 2px 0px 0px #000000' : 'none',
+                    boxShadow: inputValue.trim() && !isLoading && !isStreaming ? (isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000') : 'none',
                     transition: 'transform 0.1s ease, box-shadow 0.1s ease',
                     flexShrink: 0
                   }}
                   title="Send Prompt (Enter)"
                 >
-                  <Send size={15} color="#000000" strokeWidth={2.5} />
+                  <Send size={15} color={inputValue.trim() && !isLoading && !isStreaming ? '#000000' : (isDark ? '#94A3B8' : '#000000')} strokeWidth={2.5} />
                 </button>
               )}
             </div>
@@ -3557,7 +3561,7 @@ Plan Tier | Quota Allocation
             <div
               style={{
                 fontSize: '0.64rem',
-                color: '#000000',
+                color: isDark ? '#94A3B8' : '#475569',
                 fontWeight: 700,
                 textAlign: 'center',
                 letterSpacing: '0.02em',

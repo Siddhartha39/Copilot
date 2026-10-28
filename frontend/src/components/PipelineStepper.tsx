@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Loader2, CircleDot, AlertTriangle, Cpu, Lock } from 'lucide-react';
+import { Cpu, Sparkles } from 'lucide-react';
+import PaperCrumpleCard from './PaperCrumpleCard';
 
 export interface PipelineStep {
   id: string;
@@ -49,139 +50,82 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({ steps, current
               justifyContent: 'center'
             }}
           >
-            <Cpu size={18} color="#000000" />
+            <Cpu size={18} color="#000000" strokeWidth={2.6} />
           </div>
-          <h3
-            style={{
-              fontSize: '0.94rem',
-              fontWeight: 900,
-              color: isDark ? '#FFFFFF' : '#000000',
-              letterSpacing: '0.02em',
-              fontFamily: "'Space Grotesk', sans-serif",
-              margin: 0
-            }}
-          >
-            MULTI-STAGE INTELLIGENCE PIPELINE EXECUTION
-          </h3>
-        </div>
-        <span
-          style={{
-            fontSize: '0.74rem',
-            color: '#000000',
-            fontWeight: 800,
-            background: '#C4B5FD',
-            border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
-            boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
-            padding: '4px 12px',
-            borderRadius: '0px',
-            fontFamily: "'Space Grotesk', sans-serif"
-          }}
-        >
-          {currentStepIndex >= 0 && currentStepIndex < steps.length
-            ? `STAGE 0${currentStepIndex + 1} OF 0${steps.length}`
-            : currentStepIndex >= steps.length
-            ? 'PIPELINE COMPLETE // ALL SIGNALS FUSED'
-            : 'STANDBY // READY'}
-        </span>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px' }}>
-        {steps.map((step, idx) => {
-          const isCompleted = step.status === 'completed';
-          const isRunning = step.status === 'running';
-          const isWarning = step.status === 'warning';
-          const isLocked = step.status === 'locked';
-
-          let StatusIcon = CheckCircle2;
-          let iconColor = '#000000';
-          let iconBg = '#6BCB77';
-
-          if (isRunning) {
-            StatusIcon = Loader2;
-            iconColor = '#38BDF8';
-            iconBg = isDark ? '#111827' : '#000000';
-          } else if (isWarning) {
-            StatusIcon = AlertTriangle;
-            iconColor = '#000000';
-            iconBg = '#38BDF8';
-          } else if (isLocked) {
-            StatusIcon = Lock;
-            iconColor = isDark ? '#94A3B8' : '#000000';
-            iconBg = isDark ? '#334155' : '#E2E8F0';
-          } else if (!isCompleted) {
-            StatusIcon = CircleDot;
-            iconColor = isDark ? '#94A3B8' : '#64748B';
-            iconBg = isDark ? '#1E293B' : '#F8FAFC';
-          }
-
-          const cardBg = isDark
-            ? (isRunning ? '#2A2008' : (isCompleted ? '#14291E' : '#1E1E1E'))
-            : (isRunning ? '#FFFBEB' : (isCompleted ? '#F0FDF4' : '#FFFFFF'));
-
-          return (
-            <motion.div
-              key={step.id}
-              onClick={isLocked && onUnlock ? onUnlock : undefined}
-              animate={{
-                scale: isRunning ? 1.02 : 1
-              }}
-              transition={{ duration: 0.2 }}
+          <div>
+            <h3
               style={{
-                padding: '14px 14px',
-                borderRadius: '0px',
-                border: isDark ? '3px solid #FFFFFF' : '3px solid #000000',
-                background: cardBg,
-                boxShadow: isRunning
-                  ? (isDark ? '5px 5px 0px 0px #38BDF8' : '5px 5px 0px 0px #000000')
-                  : (isDark ? '4px 4px 0px 0px #38BDF8' : '4px 4px 0px 0px #000000'),
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '10px',
-                cursor: isLocked && onUnlock ? 'pointer' : 'default'
+                fontSize: '1.05rem',
+                fontWeight: 900,
+                color: isDark ? '#FFFFFF' : '#000000',
+                letterSpacing: '-0.01em',
+                fontFamily: "'Space Grotesk', sans-serif",
+                margin: 0
               }}
             >
-              <div
-                style={{
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '0px',
-                  background: iconBg,
-                  border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
-                  boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  marginTop: '1px'
-                }}
-              >
-                <StatusIcon size={14} color={iconColor} className={isRunning ? 'animate-spin' : ''} />
-              </div>
+              MULTI-STAGE INTELLIGENCE PIPELINE EXECUTION
+            </h3>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span
+            style={{
+              fontSize: '0.68rem',
+              color: isDark ? '#38BDF8' : '#000000',
+              fontWeight: 900,
+              background: isDark ? 'rgba(56, 189, 248, 0.15)' : 'rgba(0, 0, 0, 0.05)',
+              border: isDark ? '1.5px solid #38BDF8' : '1.5px solid #000000',
+              padding: '3px 8px',
+              borderRadius: '0px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+              fontFamily: "'Space Grotesk', sans-serif"
+            }}
+          >
+            <Sparkles size={11} color={isDark ? '#38BDF8' : '#000000'} />
+            HOLD &amp; DRAG TO CRUMPLE
+          </span>
+          <span
+            style={{
+              fontSize: '0.74rem',
+              color: '#000000',
+              fontWeight: 800,
+              background: '#C4B5FD',
+              border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
+              boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
+              padding: '4px 12px',
+              borderRadius: '0px',
+              fontFamily: "'Space Grotesk', sans-serif"
+            }}
+          >
+            {currentStepIndex >= 0 && currentStepIndex < steps.length
+              ? `STAGE 0${currentStepIndex + 1} OF 0${steps.length}`
+              : currentStepIndex >= steps.length
+              ? 'PIPELINE COMPLETE // ALL SIGNALS FUSED'
+              : 'STANDBY // READY'}
+          </span>
+        </div>
+      </div>
 
-              <div>
-                <div
-                  style={{
-                    fontSize: '0.84rem',
-                    fontWeight: 800,
-                    color: isRunning
-                      ? (isDark ? '#FBBF24' : '#B45309')
-                      : (isDark ? '#FFFFFF' : '#000000'),
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontFamily: "'Space Grotesk', sans-serif"
-                  }}
-                >
-                  <span>0{idx + 1}. {step.name}</span>
-                </div>
-                <div style={{ fontSize: '0.72rem', color: isDark ? '#94A3B8' : '#334155', marginTop: '3px', lineHeight: 1.35, fontWeight: 500 }}>
-                  {step.detail}
-                </div>
-              </div>
-            </motion.div>
-          );
-        })}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+        {steps.map((step, idx) => (
+          <PaperCrumpleCard
+            key={step.id}
+            stepNumber={`0${idx + 1}`}
+            title={step.name}
+            detail={step.detail}
+            status={step.status}
+            isDark={isDark}
+            onClick={step.status === 'locked' && onUnlock ? onUnlock : undefined}
+            width={340}
+            height={150}
+            sceneHeight={175}
+          />
+        ))}
       </div>
     </motion.div>
   );
 };
+
+export default PipelineStepper;

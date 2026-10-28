@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MatrixBackground } from './components/MatrixBackground';
 import Galaxy from './components/Galaxy';
+import GridScan from './components/GridScan';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { LandingPage } from './components/LandingPage';
@@ -464,21 +465,37 @@ export function App() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: theme === 'dark' ? 'transparent' : 'var(--neo-bg, #FFFDF5)', position: 'relative' }}>
-      {/* Background: Galaxy for Dark Mode, Neo Matrix/Grid for Light Mode */}
+      {/* Background: 3D GridScan for Scanner, Galaxy for Overview in Dark Mode, Neo Matrix/Grid for Light Mode */}
       {theme === 'dark' ? (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', pointerEvents: 'none', zIndex: 0 }}>
-          <Galaxy
-            density={0.75}
-            glowIntensity={0.25}
-            flareIntensity={0.8}
-            starSpeed={0.35}
-            speed={0.6}
-            layers={3}
-            dpr={1}
-            mouseRepulsion
-            clickWarp
-            transparent
-          />
+          {activeTab === 'scanner' ? (
+            <GridScan
+              linesColor="#334155"
+              scanColor="#bef264"
+              cells={8}
+              depth={2.2}
+              scanDuration={1.2}
+              scanDelay={0.2}
+              clickEffect="ping"
+              scanDirection="pingpong"
+              trail={0.25}
+              glow={0.8}
+              dpr={1}
+            />
+          ) : (
+            <Galaxy
+              density={0.5}
+              glowIntensity={0.2}
+              flareIntensity={0.6}
+              starSpeed={0.25}
+              speed={0.5}
+              layers={2}
+              dpr={1}
+              mouseRepulsion
+              clickWarp
+              transparent
+            />
+          )}
         </div>
       ) : (
         <MatrixBackground opacity={0.03} themeMode="light" />
@@ -523,10 +540,10 @@ export function App() {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.2 }}
+              initial={{ opacity: 0, scale: 0.96, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 1.04, y: -10 }}
+              transition={{ duration: 0.28, ease: 'easeInOut' }}
             >
         {/* Page 1: Overview & Product Landing */}
         {activeTab === 'overview' && (
@@ -742,7 +759,7 @@ export function App() {
 
         {/* Page 5: Chrome Extension */}
         {activeTab === 'extension' && (
-          <ChromeExtensionPage onLaunchScanner={handleLaunchScanner} />
+          <ChromeExtensionPage theme={theme} onLaunchScanner={handleLaunchScanner} />
         )}
 
         {/* Page 6: Reports / Scan History */}
@@ -812,6 +829,7 @@ export function App() {
 
         {/* Interactive Cyber AI Copilot Chatbot */}
         <CyberCopilotChat
+          theme={theme}
           report={report || freeScanResult}
           isOpen={showCopilotChat}
           onToggle={() => setShowCopilotChat((prev) => !prev)}

@@ -612,9 +612,8 @@ export const Galaxy: React.FC<GalaxyProps> = ({
       document.removeEventListener('visibilitychange', onVisibility);
       window.removeEventListener('scroll', updateRect);
       programs.forEach(found => found.program && gl.deleteProgram(found.program));
-      gl.deleteBuffer(buffer);
-      gl.deleteVertexArray(vao);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      if (buffer) gl.deleteBuffer(buffer);
+      if (vao) gl.deleteVertexArray(vao);
     };
   }, []);
 
