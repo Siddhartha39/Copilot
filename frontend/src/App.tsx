@@ -79,10 +79,35 @@ const DEFAULT_PIPELINE_STEPS: PipelineStep[] = [
 ];
 
 export function App() {
+  const isCopilotOnly =
+    (typeof __COPILOT_BUILD__ !== 'undefined' && Boolean(__COPILOT_BUILD__)) ||
+    import.meta.env.VITE_COPILOT_ONLY === 'true' ||
+    import.meta.env.VITE_APP_MODE === 'copilot' ||
+    (typeof window !== 'undefined' && (
+      window.location.hostname.toLowerCase().includes('copilot') ||
+      window.location.pathname.toLowerCase() === '/copilot' ||
+      window.location.pathname.toLowerCase().startsWith('/copilot/') ||
+      window.location.pathname.toLowerCase() === '/chat' ||
+      window.location.search.toLowerCase().includes('copilot') ||
+      window.location.hash.toLowerCase().includes('copilot')
+    ));
+
+  useEffect(() => {
+    if (isCopilotOnly) {
+      document.title = 'Cyber Copilot | AI Cybersecurity Assistant';
+    }
+  }, [isCopilotOnly]);
+
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     return (localStorage.getItem('cyberguard_theme') as 'dark' | 'light') || 'light';
   });
+
+  useEffect(() => {
+    if (activeTab === 'copilot') {
+      setShowCopilotChat(true);
+    }
+  }, [activeTab]);
 
   const [report, setReport] = useState<RiskScoreReport | null>(null);
   const [freeScanResult, setFreeScanResult] = useState<FreeScanResult | null>(null);
@@ -462,6 +487,71 @@ export function App() {
       alert('Feedback update error: ' + err.message);
     }
   };
+
+  if (isCopilotOnly) {
+    return (
+      <div
+        className={`cyberguard-app copilot-app-root ${theme}`}
+        data-theme={theme}
+        style={{
+          width: '100vw',
+          height: '100vh',
+          overflow: 'hidden',
+          position: 'relative',
+          background: theme === 'dark' ? '#0B0F19' : '#F4F7FB'
+        }}
+      >
+        <CyberCopilotChat
+          theme={theme}
+          report={report || freeScanResult}
+          isOpen={true}
+          isStandalone={true}
+          onToggle={() => {}}
+          pendingPrompt={pendingCopilotPrompt}
+          onClearPendingPrompt={() => setPendingCopilotPrompt(null)}
+          onOpenAboutTopic={handleOpenAboutTopic}
+          onScanReportLoaded={(newReport) => setFreeScanResult(newReport as any)}
+          currentUser={currentUser}
+          onOpenAuthModal={() => setShowAuthModal(true)}
+          onOpenProfileModal={() => setShowProfileModal(true)}
+          onToggleTheme={() => {
+            const next = theme === 'dark' ? 'light' : 'dark';
+            setTheme(next);
+            localStorage.setItem('cyberguard_theme', next);
+            document.documentElement.setAttribute('data-theme', next);
+          }}
+        />
+
+        {/* User Authentication & Cloud Sync Modal */}
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          currentUser={currentUser}
+          onAuthSuccess={(user) => {
+            setCurrentUser(user);
+            if (user) setShowProfileModal(true);
+          }}
+        />
+
+        {/* User Profile, Quota & Razorpay Subscription Modal */}
+        <UserProfileModal
+          isOpen={showProfileModal}
+          onClose={() => setShowProfileModal(false)}
+          currentUser={currentUser}
+        />
+
+        {/* About & Technical Spec Modal */}
+        {showAboutModal && (
+          <AboutModal
+            isOpen={showAboutModal}
+            onClose={() => setShowAboutModal(false)}
+            initialTopicId={aboutInitialTopic}
+            onAskCopilot={handleAskCopilot}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: theme === 'dark' ? 'transparent' : 'var(--neo-bg, #FFFDF5)', position: 'relative' }}>

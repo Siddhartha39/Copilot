@@ -15,7 +15,8 @@ import {
   Globe,
   Bell,
   X,
-  Cpu
+  Cpu,
+  Bot
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -42,6 +43,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const isLight = theme === 'light';
   const navItems = [
     { id: 'overview', label: 'Overview', icon: Home },
+    { id: 'copilot', label: 'Cyber Copilot', icon: Bot, badge: 'AI', badgeBg: '#38BDF8' },
     {
       id: 'scanner',
       label: 'Security Scanner',

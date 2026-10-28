@@ -274,3 +274,7 @@ export interface ChatResponse {
   citations?: string[];
   status?: string;
 }
+
+declare global {
+  const __COPILOT_BUILD__: boolean | undefined;
+}

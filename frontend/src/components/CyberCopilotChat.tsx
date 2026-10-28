@@ -45,7 +45,9 @@ import {
   Cloud,
   Crown,
   HardDrive,
-  User
+  User,
+  Sun,
+  Moon
 } from 'lucide-react';
 import type { RiskScoreReport, FreeScanResult, ChatMessage } from '../types';
 import {
@@ -82,6 +84,7 @@ interface CyberCopilotChatProps {
   theme?: 'light' | 'dark';
   report?: RiskScoreReport | FreeScanResult | null;
   isOpen: boolean;
+  isStandalone?: boolean;
   onToggle: () => void;
   pendingPrompt?: string | null;
   onClearPendingPrompt?: () => void;
@@ -90,6 +93,7 @@ interface CyberCopilotChatProps {
   currentUser?: UserProfile | null;
   onOpenAuthModal?: () => void;
   onOpenProfileModal?: () => void;
+  onToggleTheme?: () => void;
 }
 
 const getScopedSessionsKey = (user?: UserProfile | null): string => {
@@ -138,6 +142,7 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
   theme,
   report,
   isOpen,
+  isStandalone = false,
   onToggle,
   pendingPrompt,
   onClearPendingPrompt,
@@ -145,14 +150,22 @@ export const CyberCopilotChat: React.FC<CyberCopilotChatProps> = ({
   onScanReportLoaded,
   currentUser,
   onOpenAuthModal,
-  onOpenProfileModal
+  onOpenProfileModal,
+  onToggleTheme
 }) => {
   const isDark = theme ? theme === 'dark' : (typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') !== 'light');
   const [activeReport, setActiveReport] = useState<any>(report);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(Boolean(isStandalone));
   const [isMinimized, setIsMinimized] = useState(false);
+
+  useEffect(() => {
+    if (isStandalone) {
+      setIsFullScreen(true);
+      setIsMinimized(false);
+    }
+  }, [isStandalone]);
   const [securityMode, setSecurityMode] = useState<CopilotMode>('security-analyst');
   const [showApiKeyModal, setShowApiKeyModal] = useState(false);
   const [showToolsMenu, setShowToolsMenu] = useState(false);
@@ -1776,7 +1789,7 @@ Plan Tier | Quota Allocation
   };
 
   // Minimized Floating Widget Launcher Button -> Neo-Brutalism
-  if (!isOpen) {
+  if (!isOpen && !isStandalone) {
     return (
       <motion.button
         initial={{ scale: 0.8, opacity: 0 }}
@@ -1857,22 +1870,22 @@ Plan Tier | Quota Allocation
   // Open Chat Window
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
+      initial={{ opacity: 0, y: isStandalone ? 0 : 30, scale: isStandalone ? 1 : 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 30, scale: 0.95 }}
+      exit={{ opacity: 0, y: isStandalone ? 0 : 30, scale: isStandalone ? 1 : 0.95 }}
       transition={{ duration: 0.25, ease: 'easeOut' }}
-      className={isFullScreen ? '' : 'copilot-chat-window'}
+      className={isFullScreen || isStandalone ? '' : 'copilot-chat-window'}
       style={
-        isFullScreen
+        (isFullScreen || isStandalone)
           ? {
-              position: 'fixed',
+              position: isStandalone ? 'relative' : 'fixed',
               top: 0,
               left: 0,
               right: 0,
               bottom: 0,
               width: '100vw',
               height: '100vh',
-              zIndex: 999999,
+              zIndex: isStandalone ? 1 : 999999,
               maxWidth: '100vw',
               maxHeight: '100vh',
               borderRadius: 0,
@@ -2327,9 +2340,43 @@ Plan Tier | Quota Allocation
             <Key size={14} />
           </button>
 
+          {/* Theme Toggle Button */}
+          {onToggleTheme && (
+            <button
+              onClick={onToggleTheme}
+              style={{
+                background: isDark ? '#1E293B' : '#FFFFFF',
+                border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
+                borderRadius: '0px',
+                boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
+                color: isDark ? '#FACC15' : '#000000',
+                cursor: 'pointer',
+                padding: '5px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              title={`Switch to ${isDark ? 'Light' : 'Dark'} Mode`}
+            >
+              {isDark ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
+          )}
+
           {/* Full Screen Toggle */}
           <button
-            onClick={() => setIsFullScreen(prev => !prev)}
+            onClick={() => {
+              if (isStandalone) {
+                if (typeof document !== 'undefined') {
+                  if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                  } else {
+                    document.exitFullscreen().catch(() => {});
+                  }
+                }
+              } else {
+                setIsFullScreen(prev => !prev);
+              }
+            }}
             style={{
               background: isDark ? '#1E293B' : '#FFFFFF',
               border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
@@ -2347,25 +2394,49 @@ Plan Tier | Quota Allocation
             {isFullScreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
           </button>
 
-          {/* Close Window Button */}
-          <button
-            onClick={onToggle}
-            style={{
-              background: '#FF6B6B',
-              border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
-              borderRadius: '0px',
-              boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
-              color: '#000000',
-              cursor: 'pointer',
-              padding: '5px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-            title="Close Copilot"
-          >
-            <X size={15} />
-          </button>
+          {/* Close Window Button (only in embedded floating widget mode) */}
+          {!isStandalone ? (
+            <button
+              onClick={onToggle}
+              style={{
+                background: '#FF6B6B',
+                border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
+                borderRadius: '0px',
+                boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
+                color: '#000000',
+                cursor: 'pointer',
+                padding: '5px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              title="Close Copilot"
+            >
+              <X size={15} />
+            </button>
+          ) : (
+            <button
+              onClick={handleCreateNewSession}
+              style={{
+                background: '#6BCB77',
+                border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
+                borderRadius: '0px',
+                boxShadow: isDark ? '2px 2px 0px 0px #38BDF8' : '2px 2px 0px 0px #000000',
+                color: '#000000',
+                cursor: 'pointer',
+                padding: '4px 8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                fontSize: '0.72rem',
+                fontWeight: 900
+              }}
+              title="Start a new chat session"
+            >
+              <Plus size={13} strokeWidth={3} />
+              <span>New</span>
+            </button>
+          )}
         </div>
       </div>
 
