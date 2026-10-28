@@ -2416,7 +2416,7 @@ Plan Tier | Quota Allocation
             </button>
           ) : (
             <button
-              onClick={handleCreateNewSession}
+              onClick={handleCreateNewChat}
               style={{
                 background: '#6BCB77',
                 border: isDark ? '2px solid #FFFFFF' : '2px solid #000000',
