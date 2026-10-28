@@ -75,34 +75,34 @@ def calculate_multi_signal_fusion(
         ))
     else:
         if domain_intel.is_newly_registered:
-            infra_risk += 0.45
+            infra_risk += 0.40
             evidence_list.append(EvidenceItem(
                 category="Domain Intelligence",
-                name="Newly Registered Domain (NRD)",
+                name="Newly Registered / Young Domain (NRD)",
                 weight=0.25,
                 contribution=+25.0,
-                summary=f"Domain registered recently ({domain_intel.domain_age_days} days ago). Early registration is a key phishing precursor.",
+                summary=f"Domain registered recently ({domain_intel.domain_age_days} days ago). Young domains under 90 days are a primary vehicle for phishing and malware campaigns.",
                 severity="HIGH"
             ))
-        elif domain_intel.domain_age_days is not None:
+        elif domain_intel.domain_age_days is not None and domain_intel.domain_age_days > 180 and domain_intel.tls_valid:
             evidence_list.append(EvidenceItem(
                 category="Domain Intelligence",
                 name="Established Domain Age",
                 weight=0.15,
                 contribution=-15.0,
-                summary=f"Domain has an established registration history ({domain_intel.domain_age_days} days).",
+                summary=f"Domain has an established registration history ({domain_intel.domain_age_days} days) and verified TLS encryption.",
                 severity="SAFE"
             ))
 
-        if domain_intel.tls_is_self_signed:
-            infra_risk += 0.30
+        if domain_intel.tls_is_self_signed or domain_intel.tls_valid is False:
+            infra_risk += 0.60
             evidence_list.append(EvidenceItem(
                 category="Infrastructure",
-                name="Self-Signed / Untrusted Certificate",
-                weight=0.15,
-                contribution=+15.0,
-                summary="TLS certificate is self-signed or issuer is untrusted.",
-                severity="HIGH"
+                name="Untrusted / Invalid TLS Certificate (NET::ERR_CERT_AUTHORITY_INVALID)",
+                weight=0.35,
+                contribution=+45.0,
+                summary=f"TLS certificate for {domain_intel.registrable_domain} failed public CA trust validation (Issuer: {domain_intel.tls_issuer or 'Untrusted'}). Browsers reject this connection as untrusted/insecure.",
+                severity="CRITICAL"
             ))
         elif domain_intel.tls_valid:
             evidence_list.append(EvidenceItem(
@@ -122,6 +122,16 @@ def calculate_multi_signal_fusion(
                 weight=0.10,
                 contribution=+10.0,
                 summary="Domain lacks standard MX/A DNS records.",
+                severity="MEDIUM"
+            ))
+        elif not domain_intel.dns.mx_records and domain_intel.is_newly_registered:
+            infra_risk += 0.15
+            evidence_list.append(EvidenceItem(
+                category="DNS Intelligence",
+                name="Missing Mail Exchange (MX) Infrastructure",
+                weight=0.10,
+                contribution=+10.0,
+                summary="Young domain lacks configured MX mail exchanger records, typical of ephemeral phishing hosts.",
                 severity="MEDIUM"
             ))
 
@@ -201,6 +211,10 @@ def calculate_multi_signal_fusion(
             0.30 * (score_visual * 100.0 if has_contradiction else 0.0)
         )
 
+        # If invalid TLS or self-signed cert on an active registered domain, elevate to high risk
+        if domain_intel.is_registered and (domain_intel.tls_valid is False or domain_intel.tls_is_self_signed):
+            raw_score = max(raw_score, 82.0)
+
         # If severe brand contradiction + password field detected, force critical risk
         if has_contradiction and crawl_artifacts and crawl_artifacts.has_password_field:
             raw_score = max(raw_score, 88.0)
@@ -210,10 +224,16 @@ def calculate_multi_signal_fusion(
             # If it's a verified authentic brand on its official domain (e.g. Google, Apple, Microsoft, PayPal)
             if brand_match.matched_brand:
                 raw_score = 0.0
-            # If all threat vectors are clean and baseline noise is low
-            elif score_lexical < 0.15 and not has_contradiction:
+            # If all threat vectors are clean, TLS is cryptographically valid, and domain is established
+            elif (
+                score_lexical < 0.15 
+                and domain_intel.tls_valid is True 
+                and not domain_intel.tls_is_self_signed 
+                and (domain_intel.domain_age_days or 0) > 180
+                and score_infrastructure == 0.0
+            ):
                 raw_score = 0.0
-            elif raw_score < 4.0 and score_content == 0.0 and score_visual == 0.0:
+            elif raw_score < 4.0 and score_content == 0.0 and score_visual == 0.0 and domain_intel.tls_valid is True:
                 raw_score = 0.0
 
         overall_risk_score = round(max(0.0, min(100.0, raw_score)), 1)

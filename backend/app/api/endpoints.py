@@ -205,7 +205,9 @@ async def _execute_full_deep_audit(
         security_audit = await audit_security_headers_and_dns(
             url=canonical_url,
             txt_records=domain_intel.dns.txt_records,
-            is_established_domain=is_established_domain
+            is_established_domain=is_established_domain,
+            tls_valid=domain_intel.tls_valid,
+            tls_issuer=domain_intel.tls_issuer
         )
         report.security_audit = security_audit
 
@@ -281,12 +283,17 @@ async def free_security_scan(req: AnalysisRequest):
         verdict = "PHISHING"
         confidence = 0.98
         triage_msg = f"Critical Brand Lookalike: Domain '{registrable_domain}' contains protected trademark '{spoofed_brand}' on unauthorized infrastructure ({domain_intel.registrar or 'Unknown Registrar'})."
+    elif domain_intel.tls_valid is False or domain_intel.tls_is_self_signed:
+        basic_score = 88.0 if domain_intel.is_newly_registered else 82.0
+        verdict = "PHISHING" if basic_score >= 70.0 else "SUSPICIOUS"
+        confidence = 0.96
+        triage_msg = f"Critical Transport Security Failure: Domain presents an invalid or untrusted SSL certificate authority ({domain_intel.tls_issuer or 'Untrusted CA'}). Connections trigger browser security warnings (NET::ERR_CERT_AUTHORITY_INVALID)."
     else:
-        # For clean domains with zero risk attributions, score is 0.0 (suppresses statistical floor noise)
-        if len(triage.feature_attributions) == 0 and not domain_intel.is_newly_registered:
+        # For clean domains with zero risk attributions, verified TLS, and established age (>180 days)
+        if len(triage.feature_attributions) == 0 and not domain_intel.is_newly_registered and domain_intel.tls_valid is True and (domain_intel.domain_age_days or 0) > 180:
             basic_score = 0.0
         else:
-            basic_score = round(triage.lexical_score * 70.0 + (25.0 if domain_intel.is_newly_registered else 0.0), 1)
+            basic_score = round(triage.lexical_score * 70.0 + (30.0 if domain_intel.is_newly_registered else 0.0), 1)
         verdict = "PHISHING" if basic_score >= 70.0 else "SUSPICIOUS" if basic_score >= 35.0 else "BENIGN"
         confidence = 0.98 if basic_score == 0.0 else 0.94
         triage_msg = triage.triage_reason
@@ -303,7 +310,9 @@ async def free_security_scan(req: AnalysisRequest):
             security_audit = await audit_security_headers_and_dns(
                 url=canonical_url,
                 txt_records=domain_intel.dns.txt_records,
-                is_established_domain=is_established
+                is_established_domain=is_established,
+                tls_valid=domain_intel.tls_valid,
+                tls_issuer=domain_intel.tls_issuer
             )
         except Exception:
             pass

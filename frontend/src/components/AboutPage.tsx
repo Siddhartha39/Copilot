@@ -1,7 +1,8 @@
 import React from 'react';
-import { Cpu, Shield, Database, Lock, Eye, Terminal, Layers, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Cpu, Shield, Database, Lock, Eye, Terminal, Layers, CheckCircle2, ArrowRight, Network } from 'lucide-react';
 
-export const AboutPage: React.FC<{ onLaunchScanner: () => void }> = ({ onLaunchScanner }) => {
+export const AboutPage: React.FC<{ onLaunchScanner: () => void; theme?: 'dark' | 'light' }> = ({ onLaunchScanner, theme = 'dark' }) => {
+  const isDark = theme === 'dark';
   const stages = [
     {
       num: '01',
@@ -63,6 +64,104 @@ export const AboutPage: React.FC<{ onLaunchScanner: () => void }> = ({ onLaunchS
         <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
           Traditional blocklists take hours or days to propagate. CyberGuard AI uses a <strong>6-stage multi-modal intelligence pipeline</strong> that evaluates unknown URLs on the very first visit in real time.
         </p>
+
+      </div>
+
+      {/* Embedded Live Interactive Architecture Map */}
+      <div
+        style={{
+          marginBottom: '48px',
+          border: isDark ? '3px solid #38BDF8' : '4px solid #000000',
+          boxShadow: isDark ? '6px 6px 0px 0px #38BDF8' : '8px 8px 0px 0px #000000',
+          background: isDark ? '#141A24' : '#FFFFFF',
+          borderRadius: '0px',
+          overflow: 'hidden'
+        }}
+      >
+        {/* Card Header & Controls */}
+        <div
+          style={{
+            padding: '14px 20px',
+            background: isDark ? '#1E293B' : '#38BDF8',
+            borderBottom: isDark ? '3px solid #38BDF8' : '4px solid #000000',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '12px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <Network size={22} color={isDark ? '#38BDF8' : '#000000'} strokeWidth={2.6} />
+            <div>
+              <span
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontSize: '0.96rem',
+                  fontWeight: 900,
+                  color: isDark ? '#FFFFFF' : '#000000',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}
+              >
+                End-to-End System Architecture &amp; Threat Pipeline
+              </span>
+              <span
+                style={{
+                  marginLeft: '12px',
+                  background: isDark ? '#0F172A' : '#000000',
+                  color: '#4ADE80',
+                  fontSize: '0.68rem',
+                  padding: '3px 8px',
+                  fontWeight: 900,
+                  fontFamily: 'monospace',
+                  border: isDark ? '1px solid #4ADE80' : 'none'
+                }}
+              >
+                INTERACTIVE MAP
+              </span>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <button
+              onClick={() => window.open('/architecture.html', '_blank')}
+              style={{
+                padding: '7px 16px',
+                background: isDark ? '#0F172A' : '#FFFFFF',
+                border: isDark ? '2px solid #38BDF8' : '2.5px solid #000000',
+                boxShadow: isDark ? '3px 3px 0px 0px #38BDF8' : '3px 3px 0px 0px #000000',
+                color: isDark ? '#38BDF8' : '#000000',
+                fontWeight: 900,
+                fontSize: '0.78rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontFamily: "'Space Grotesk', sans-serif",
+                textTransform: 'uppercase'
+              }}
+              title="Open full-screen interactive map in a new browser tab"
+            >
+              <span>Open Fullscreen</span>
+              <ArrowRight size={14} strokeWidth={2.6} />
+            </button>
+          </div>
+        </div>
+
+        {/* Embedded Interactive Canvas Frame */}
+        <div style={{ width: '100%', height: '760px', position: 'relative', background: isDark ? '#0B0F19' : '#FAF8F5' }}>
+          <iframe
+            src="/architecture.html"
+            title="CyberGuard AI System Architecture"
+            style={{
+              width: '100%',
+              height: '100%',
+              border: 'none',
+              display: 'block'
+            }}
+          />
+        </div>
       </div>
 
       {/* 6 Stages Grid */}

@@ -7,7 +7,8 @@ import {
   Activity,
   Bot,
   User,
-  Crown
+  Crown,
+  Network
 } from 'lucide-react';
 import type { UserProfile } from '../services/api';
 
@@ -239,6 +240,33 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </motion.button>
         )}
+
+        {/* Architecture Diagram Button */}
+        <motion.button
+          whileHover={{ translateY: -2, boxShadow: theme === 'dark' ? '5px 5px 0px 0px #4ADE80' : '5px 5px 0px 0px #000000' }}
+          whileTap={{ transform: 'translate(2px, 2px)', boxShadow: '1px 1px 0px 0px #000000' }}
+          onClick={() => window.open('/architecture.html', '_blank')}
+          style={{
+            padding: '9px 16px',
+            borderRadius: '0px',
+            border: theme === 'dark' ? '3px solid #FFFFFF' : '3px solid #000000',
+            background: theme === 'dark' ? '#1E1E1E' : '#FFFFFF',
+            boxShadow: theme === 'dark' ? '3px 3px 0px 0px #4ADE80' : '3px 3px 0px 0px #000000',
+            color: theme === 'dark' ? '#FFFFFF' : '#000000',
+            fontSize: '0.82rem',
+            fontWeight: 900,
+            fontFamily: "'Space Grotesk', sans-serif",
+            textTransform: 'uppercase',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+          title="Interactive System Architecture & Pipeline Map"
+        >
+          <Network size={16} color={theme === 'dark' ? '#4ADE80' : '#16A34A'} strokeWidth={2.6} />
+          <span className="hidden sm:inline">Architecture</span>
+        </motion.button>
 
         {/* Discovery Feed Button */}
         <motion.button

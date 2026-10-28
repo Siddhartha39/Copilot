@@ -863,7 +863,7 @@ export function App() {
 
         {/* Page 7: About / How It Works */}
         {activeTab === 'about' && (
-          <AboutPage onLaunchScanner={handleLaunchScanner} />
+          <AboutPage theme={theme} onLaunchScanner={handleLaunchScanner} />
         )}
 
         {/* Discovery Feed (Live CT Stream) */}

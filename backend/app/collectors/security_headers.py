@@ -23,10 +23,36 @@ class SecurityPostureAudit(BaseModel):
     key_vulnerabilities: List[str]
     remediation_steps: List[str]
 
-async def audit_security_headers_and_dns(url: str, txt_records: List[str], is_established_domain: bool = False) -> SecurityPostureAudit:
+async def audit_security_headers_and_dns(
+    url: str, 
+    txt_records: List[str], 
+    is_established_domain: bool = False,
+    tls_valid: Optional[bool] = None,
+    tls_issuer: Optional[str] = None
+) -> SecurityPostureAudit:
     findings: List[HeaderAuditItem] = []
     headers: Dict[str, str] = {}
     
+    # 0. Transport Layer Security (TLS / SSL) Verification
+    if tls_valid is False:
+        findings.append(HeaderAuditItem(
+            name="TLS Transport Security (SSL Certificate)",
+            status="FAIL",
+            value=f"Invalid / Untrusted Authority ({tls_issuer or 'ERR_CERT_AUTHORITY_INVALID'})",
+            severity="CRITICAL",
+            exploit_risk="CRITICAL TRANSPORT COMPROMISE: SSL/TLS certificate failed public CA trust verification. Browsers block user access with 'Your connection is not private' (NET::ERR_CERT_AUTHORITY_INVALID), leaving traffic exposed to MITM tampering.",
+            remediation="Install a valid SSL certificate signed by an ICANN / CA Browser Forum trusted Public Certificate Authority (e.g., Let's Encrypt, Cloudflare, DigiCert)."
+        ))
+    elif tls_valid is True:
+        findings.append(HeaderAuditItem(
+            name="TLS Transport Security (SSL Certificate)",
+            status="PASS",
+            value=f"Trusted Public CA ({tls_issuer or 'Verified Root CA'})",
+            severity="INFO",
+            exploit_risk="Protected: TLS cryptographic handshake is validated by a recognized Public Certificate Authority.",
+            remediation="Maintain automatic renewal before certificate expiry."
+        ))
+
     try:
         async with httpx.AsyncClient(timeout=4.0, follow_redirects=True, verify=False) as client:
             resp = await client.get(url, headers={"User-Agent": "CyberGuardSecurityAuditor/2.0"})
@@ -203,7 +229,12 @@ async def audit_security_headers_and_dns(url: str, txt_records: List[str], is_es
     has_core_perimeter = has_csp and has_hsts and not is_clickjackable
     has_any_fail = any(f.status == "FAIL" for f in findings)
 
-    if score_percentage >= 85 or (has_core_perimeter and not has_any_fail):
+    # If TLS verification failed, the transport perimeter is fundamentally breached
+    if tls_valid is False:
+        grade = "F"
+        score_percentage = min(score_percentage, 25.0)
+        hacker_summary = f"Critical Transport Deficit: Invalid or untrusted SSL/TLS certificate authority ({tls_issuer or 'ERR_CERT_AUTHORITY_INVALID'}). Browsers actively reject connections as dangerous (NET::ERR_CERT_AUTHORITY_INVALID)."
+    elif score_percentage >= 85 or (has_core_perimeter and not has_any_fail):
         grade = "A+"
         hacker_summary = "Hardened Defense Posture: Modern browser isolation headers (CSP, HSTS, Anti-Clickjacking) and core defenses are well-configured."
     elif score_percentage >= 70 or has_core_perimeter:

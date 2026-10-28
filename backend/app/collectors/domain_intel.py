@@ -4,6 +4,7 @@ import ssl
 import re
 from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional, Tuple
+import certifi
 import dns.resolver
 import httpx
 from dateutil import parser as date_parser
@@ -107,15 +108,60 @@ async def query_dns_records(domain: str) -> DNSRecords:
 async def get_tls_certificate_info(hostname: str, port: int = 443) -> Dict[str, Any]:
     """
     Connects to TLS socket and parses raw X.509 DER certificate.
-    Returns 100% genuine cryptographic details with ZERO mock fallbacks.
+    Verifies authenticity against trusted Public CAs. Accurately identifies
+    untrusted certificate authorities, self-signed certs, hostname mismatches, and expiry.
     """
-    context = ssl.create_default_context()
-    context.check_hostname = False
-    context.verify_mode = ssl.CERT_NONE
-    
     def _fetch_cert():
+        strict_valid = False
+        cert_error = None
+        is_self_signed = False
+
+        # 1. Attempt strict verification against trusted Public CAs using certifi
         try:
-            with socket.create_connection((hostname, port), timeout=3.0) as sock:
+            ca_path = certifi.where() if hasattr(certifi, 'where') else None
+            strict_ctx = ssl.create_default_context(cafile=ca_path) if ca_path else ssl.create_default_context()
+            with socket.create_connection((hostname, port), timeout=3.5) as sock:
+                sock.settimeout(3.5)
+                with strict_ctx.wrap_socket(sock, server_hostname=hostname) as ssock:
+                    strict_valid = True
+        except ssl.SSLCertVerificationError as e:
+            strict_valid = False
+            cert_error = str(e)
+            err_lower = cert_error.lower()
+            if "unable to get local issuer certificate" in err_lower or "certificate authority invalid" in err_lower or "self-signed certificate in certificate chain" in err_lower:
+                cert_error = "Untrusted Certificate Authority / Invalid Root CA (NET::ERR_CERT_AUTHORITY_INVALID)"
+                is_self_signed = True
+            elif "self-signed" in err_lower:
+                cert_error = "Self-Signed Certificate Detected"
+                is_self_signed = True
+            elif "hostname mismatch" in err_lower or "doesn't match" in err_lower:
+                cert_error = "Hostname Mismatch / Impersonation (NET::ERR_CERT_COMMON_NAME_INVALID)"
+            elif "certificate has expired" in err_lower:
+                cert_error = "Expired TLS Certificate (NET::ERR_CERT_DATE_INVALID)"
+            else:
+                cert_error = f"TLS Verification Failed: {cert_error}"
+        except (socket.timeout, TimeoutError):
+            cert_error = "TLS Handshake Timed Out"
+        except ConnectionRefusedError:
+            return {
+                "valid": False,
+                "issuer": None,
+                "days_remaining": None,
+                "is_self_signed": False,
+                "error": "Port 443 Connection Refused (No HTTPS Service)"
+            }
+        except Exception as e:
+            strict_valid = False
+            cert_error = str(e)
+
+        # 2. Retrieve raw certificate metadata via unverified context to extract issuer & dates
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+
+        try:
+            with socket.create_connection((hostname, port), timeout=3.5) as sock:
+                sock.settimeout(3.5)
                 with context.wrap_socket(sock, server_hostname=hostname) as ssock:
                     der = ssock.getpeercert(binary_form=True)
                     if not der:
@@ -123,35 +169,36 @@ async def get_tls_certificate_info(hostname: str, port: int = 443) -> Dict[str, 
                             "valid": False,
                             "issuer": None,
                             "days_remaining": None,
-                            "is_self_signed": False,
-                            "error": "No peer certificate returned"
+                            "is_self_signed": is_self_signed,
+                            "error": cert_error or "No peer certificate returned"
                         }
-                    
+
                     cert = x509.load_der_x509_certificate(der, default_backend())
                     issuer_parts = [
                         attr.value for attr in cert.issuer 
                         if attr.oid._name in ('organizationName', 'commonName')
                     ]
                     issuer_name = ' / '.join(str(p) for p in issuer_parts) or "Public CA"
-                    
+
                     now = datetime.now(timezone.utc)
                     days_remaining = (cert.not_valid_after_utc - now).days
-                    is_self_signed = (cert.issuer == cert.subject)
-                    
+                    if cert.issuer == cert.subject:
+                        is_self_signed = True
+
                     return {
-                        "valid": True,
+                        "valid": strict_valid,
                         "issuer": issuer_name,
                         "days_remaining": max(0, days_remaining),
                         "is_self_signed": is_self_signed,
-                        "error": None
+                        "error": None if strict_valid else (cert_error or "Untrusted Certificate Authority")
                     }
         except Exception as e:
             return {
                 "valid": False,
                 "issuer": None,
                 "days_remaining": None,
-                "is_self_signed": False,
-                "error": str(e)
+                "is_self_signed": is_self_signed,
+                "error": cert_error or str(e)
             }
 
     return await asyncio.to_thread(_fetch_cert)
@@ -389,7 +436,8 @@ async def collect_domain_intelligence(
     domain_age_days = age_days
     creation_date_str = creation_date or "Active / Registered"
     registrar_name = registrar or "ICANN Accredited Registrar"
-    is_newly_registered = (domain_age_days is not None and domain_age_days <= 30)
+    # Industry standard (Cisco Talos, Unit 42): Domains <= 90 days are in the high-risk Newly Registered / Young Domain incubation window
+    is_newly_registered = (domain_age_days is not None and domain_age_days <= 90)
 
     primary_ip = dns_records.a_records[0] if dns_records.a_records else None
     geo_info = await get_ip_geolocation(primary_ip)

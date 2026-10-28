@@ -16,7 +16,8 @@ import {
   Bell,
   X,
   Cpu,
-  Bot
+  Bot,
+  Network
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -64,6 +65,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'history', label: `History (${caseCount})`, icon: History },
     ...(hasActiveReport ? [{ id: 'results', label: 'Results', icon: LayoutDashboard }] : []),
     { id: 'extension', label: 'Chrome Ext', icon: Puzzle },
+    {
+      id: 'architecture',
+      label: 'Architecture',
+      icon: Network,
+      badge: 'MAP',
+      badgeBg: '#4ADE80',
+      onClick: () => window.open('/architecture.html', '_blank')
+    },
     { id: 'about', label: 'About & Docs', icon: HelpCircle }
   ];
 
