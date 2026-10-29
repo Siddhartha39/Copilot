@@ -21,14 +21,14 @@ async def query_dns_records(domain: str) -> DNSRecords:
     dns_res = DNSRecords()
     dns_res.dns_status = "NO_RECORDS"
     
-    # 1. High-speed DoH Query (Google Public DNS) with SSL bypass
+    # 1. High-speed DoH Query (Cloudflare primary with Quad9 / Google fallback)
     try:
-        async with httpx.AsyncClient(verify=False, timeout=4.0, headers={"User-Agent": "CyberGuard-SOC/2.0"}) as client:
-            a_task = client.get(f"https://dns.google/resolve?name={domain}&type=A")
-            aaaa_task = client.get(f"https://dns.google/resolve?name={domain}&type=AAAA")
-            mx_task = client.get(f"https://dns.google/resolve?name={domain}&type=MX")
-            ns_task = client.get(f"https://dns.google/resolve?name={domain}&type=NS")
-            txt_task = client.get(f"https://dns.google/resolve?name={domain}&type=TXT")
+        async with httpx.AsyncClient(verify=False, timeout=3.5, headers={"User-Agent": "CyberGuard-SOC/2.0", "Accept": "application/dns-json"}) as client:
+            a_task = client.get(f"https://cloudflare-dns.com/dns-query?name={domain}&type=A")
+            aaaa_task = client.get(f"https://cloudflare-dns.com/dns-query?name={domain}&type=AAAA")
+            mx_task = client.get(f"https://cloudflare-dns.com/dns-query?name={domain}&type=MX")
+            ns_task = client.get(f"https://cloudflare-dns.com/dns-query?name={domain}&type=NS")
+            txt_task = client.get(f"https://cloudflare-dns.com/dns-query?name={domain}&type=TXT")
             
             a_res, aaaa_res, mx_res, ns_res, txt_res = await asyncio.gather(
                 a_task, aaaa_task, mx_task, ns_task, txt_task, return_exceptions=True
@@ -38,10 +38,17 @@ async def query_dns_records(domain: str) -> DNSRecords:
                 res_data = a_res.json()
                 status = res_data.get("Status")
                 if status == 3:
-                    # Status 3 is NXDOMAIN in DNS RFC standard
                     dns_res.dns_status = "NXDOMAIN"
+                elif status == 0 and res_data.get("Answer"):
+                    dns_res.dns_status = "RESOLVED"
                 
-                dns_res.a_records = [x["data"] for x in res_data.get("Answer", []) if "data" in x and x.get("type") == 1]
+                # Capture direct A IPs and CNAME targets
+                for ans in res_data.get("Answer", []):
+                    data_val = ans.get("data")
+                    ans_type = ans.get("type")
+                    if data_val and ans_type in [1, 5]:
+                        dns_res.a_records.append(data_val)
+                
                 if dns_res.a_records and "Answer" in res_data and res_data["Answer"]:
                     dns_res.ttl_average = res_data["Answer"][0].get("TTL", 300)
                     dns_res.dns_status = "RESOLVED"
@@ -396,21 +403,35 @@ async def collect_domain_intelligence(
     subdomain: Optional[str] = None,
     tld: str = ""
 ) -> DomainIntel:
-    # Run DNS queries, TLS check, and real WHOIS/RDAP concurrently
-    dns_task = query_dns_records(registrable_domain)
-    tls_task = get_tls_certificate_info(registrable_domain)
+    target_host = f"{subdomain}.{registrable_domain}" if (subdomain and subdomain != "www") else registrable_domain
+    
+    # Run DNS queries and TLS check on target_host, and WHOIS/RDAP on registrable_domain
+    dns_task = query_dns_records(target_host)
+    tls_task = get_tls_certificate_info(target_host)
     whois_task = fetch_real_domain_age(registrable_domain, tld)
     
     dns_records, tls_info, whois_info = await asyncio.gather(dns_task, tls_task, whois_task)
     
+    # If target host had no DNS records, fallback to checking apex domain DNS
+    if not dns_records.a_records and not dns_records.ns_records and target_host != registrable_domain:
+        apex_dns = await query_dns_records(registrable_domain)
+        if apex_dns.a_records or apex_dns.ns_records:
+            dns_records.ns_records = apex_dns.ns_records
+            if not dns_records.a_records:
+                dns_records.a_records = apex_dns.a_records
+            dns_records.dns_status = "RESOLVED"
+
     age_days, creation_date, registrar, whois_status = whois_info
     
     # Accurate Domain Registration Determination:
-    # A domain is UNREGISTERED if:
-    # 1. RDAP / WHOIS explicitly returned UNREGISTERED
-    # 2. OR DNS returned NXDOMAIN and no A/AAAA/NS records exist and WHOIS is not REGISTERED
-    is_unregistered = (whois_status == "UNREGISTERED") or (
-        dns_records.dns_status == "NXDOMAIN" and whois_status != "REGISTERED" and not dns_records.a_records and not dns_records.ns_records
+    # A domain is UNREGISTERED ONLY if:
+    # 1. WHOIS/RDAP explicitly returned UNREGISTERED
+    # 2. OR DNS returned NXDOMAIN on apex AND no A/AAAA/NS records exist AND WHOIS is not REGISTERED
+    # A domain with active DNS or whose apex domain is registered is NEVER unregistered!
+    has_active_dns = bool(dns_records.a_records or dns_records.aaaa_records or dns_records.ns_records or dns_records.dns_status == "RESOLVED")
+
+    is_unregistered = (whois_status == "UNREGISTERED" and not has_active_dns) or (
+        dns_records.dns_status == "NXDOMAIN" and whois_status != "REGISTERED" and not has_active_dns
     )
 
     if is_unregistered:

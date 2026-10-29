@@ -39,19 +39,88 @@ export const isBackendConfigured = (): boolean => {
 export const API_BASE = getApiBase();
 
 /**
+ * Extracts domain components including apex registrable domain and hosted platforms.
+ */
+export function extractDomainParts(hostname: string): { fullDomain: string; apexDomain: string; subdomain: string; isHostedPlatform: boolean } {
+  const clean = hostname.toLowerCase().replace(/^https?:\/\//i, '').split('/')[0].split(':')[0].replace(/^www\./, '').trim();
+  const parts = clean.split('.');
+  if (parts.length <= 2) {
+    return { fullDomain: clean, apexDomain: clean, subdomain: '', isHostedPlatform: false };
+  }
+
+  const HOSTED_PLATFORMS = [
+    'blogspot.com', 'github.io', 'vercel.app', 'pages.dev', 'wordpress.com',
+    'wixsite.com', 'webflow.io', 'netlify.app', 'herokuapp.com', 'gitlab.io',
+    'firebaseapp.com', 'azurewebsites.net', 'onrender.com', 'myshopify.com',
+    'substack.com', 'medium.com'
+  ];
+
+  for (const plat of HOSTED_PLATFORMS) {
+    if (clean.endsWith('.' + plat)) {
+      return {
+        fullDomain: clean,
+        apexDomain: plat,
+        subdomain: clean.slice(0, -(plat.length + 1)),
+        isHostedPlatform: true
+      };
+    }
+  }
+
+  const TWO_PART_TLDS = [
+    'co.uk', 'org.uk', 'ac.uk', 'gov.uk',
+    'co.in', 'net.in', 'org.in', 'ac.in', 'gov.in', 'res.in',
+    'com.au', 'net.au', 'org.au', 'edu.au',
+    'co.jp', 'ne.jp', 'ac.jp',
+    'co.nz', 'co.za', 'com.br', 'com.sg'
+  ];
+
+  const lastTwo = parts.slice(-2).join('.');
+  if (TWO_PART_TLDS.includes(lastTwo)) {
+    if (parts.length === 3) {
+      return { fullDomain: clean, apexDomain: clean, subdomain: '', isHostedPlatform: false };
+    }
+    const apex = parts.slice(-3).join('.');
+    const sub = parts.slice(0, -3).join('.');
+    return { fullDomain: clean, apexDomain: apex, subdomain: sub, isHostedPlatform: false };
+  }
+
+  const apex = parts.slice(-2).join('.');
+  const sub = parts.slice(0, -2).join('.');
+  return { fullDomain: clean, apexDomain: apex, subdomain: sub, isHostedPlatform: false };
+}
+
+/**
  * Resilient multi-provider DNS-over-HTTPS resolver:
- * 1. Cloudflare DoH (TCP HTTP/2, RFC 8427 JSON - immune to UDP QUIC idle timeouts)
- * 2. Google Public DoH (with strict 2.5s AbortSignal timeout)
+ * 1. Local serverless /api/dns (fast, server-side libc resolver)
+ * 2. Cloudflare DoH (TCP HTTP/2, RFC 8427 JSON)
+ * 3. Cloudflare 1.1.1.1 IP (bypasses domain-level adblockers)
+ * 4. Quad9 DoH (unfiltered alternative)
  * Never throws unhandled network errors.
  */
 export async function queryDns(name: string, type: 'A' | 'TXT' | 'MX' | 'NS'): Promise<any> {
   const cleanName = name.replace(/^https?:\/\//i, '').split('/')[0].split(':')[0].trim();
   if (!cleanName) return null;
 
-  // 1. Cloudflare DNS-over-HTTPS (Primary: fast, uses standard TCP HTTP/2)
+  // 1. Try local serverless /api/dns if available
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 2500);
+    const timer = setTimeout(() => controller.abort(), 2000);
+    const res = await fetch(`/api/dns?name=${encodeURIComponent(cleanName)}&type=${type}`, {
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && typeof data.Status === 'number') {
+        return data;
+      }
+    }
+  } catch {}
+
+  // 2. Cloudflare DNS-over-HTTPS (Primary: fast, uses standard TCP HTTP/2)
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3500);
     const res = await fetch(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(cleanName)}&type=${type}`, {
       headers: { 'Accept': 'application/dns-json' },
       signal: controller.signal
@@ -60,24 +129,35 @@ export async function queryDns(name: string, type: 'A' | 'TXT' | 'MX' | 'NS'): P
     if (res.ok) {
       return await res.json();
     }
-  } catch {
-    // Cloudflare failed or timed out, fallback to Google
-  }
+  } catch {}
 
-  // 2. Google Public DNS-over-HTTPS with strict timeout
+  // 3. Cloudflare Direct IP 1.1.1.1 (bypasses adblockers blocking cloudflare-dns.com)
   try {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 2500);
-    const res = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(cleanName)}&type=${type}`, {
+    const timer = setTimeout(() => controller.abort(), 3500);
+    const res = await fetch(`https://1.1.1.1/dns-query?name=${encodeURIComponent(cleanName)}&type=${type}`, {
+      headers: { 'Accept': 'application/dns-json' },
       signal: controller.signal
     });
     clearTimeout(timer);
     if (res.ok) {
       return await res.json();
     }
-  } catch {
-    // Google DoH failed
-  }
+  } catch {}
+
+  // 4. Quad9 DoH fallback
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3500);
+    const res = await fetch(`https://dns.quad9.net:5053/dns-query?name=${encodeURIComponent(cleanName)}&type=${type}`, {
+      headers: { 'Accept': 'application/dns-json' },
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch {}
 
   return null;
 }
@@ -681,7 +761,8 @@ const GROUND_TRUTH_REGISTRY: Record<string, { date: string; registrar: string }>
 };
 
 async function resolveDomainTelemetry(domain: string) {
-  const tld = domain.split('.').pop() || '';
+  const { fullDomain, apexDomain, subdomain, isHostedPlatform } = extractDomainParts(domain);
+  const tld = apexDomain.split('.').pop() || '';
   
   // 1. Check Ground Truth Registry (Authoritative baseline for known test seeds)
   let isRegistered = false;
@@ -689,16 +770,16 @@ async function resolveDomainTelemetry(domain: string) {
   let registrarName: string | undefined = undefined;
   let domainAgeDays: number | undefined = undefined;
 
-  if (GROUND_TRUTH_REGISTRY[domain]) {
-    const reg = GROUND_TRUTH_REGISTRY[domain];
+  const targetReg = GROUND_TRUTH_REGISTRY[fullDomain] || GROUND_TRUTH_REGISTRY[apexDomain];
+  if (targetReg) {
     isRegistered = true;
-    creationDateStr = reg.date;
-    registrarName = reg.registrar;
-    const dt = new Date(reg.date);
+    creationDateStr = targetReg.date;
+    registrarName = targetReg.registrar;
+    const dt = new Date(targetReg.date);
     domainAgeDays = Math.max(0, Math.floor((Date.now() - dt.getTime()) / 86400000));
   }
 
-  // 2. Query Resilient DoH (Cloudflare over TCP HTTP/2 -> Google with timeout)
+  // 2. Query Resilient DoH
   let aRecords: string[] = [];
   let txtRecords: string[] = [];
   let mxRecords: string[] = [];
@@ -707,10 +788,10 @@ async function resolveDomainTelemetry(domain: string) {
 
   try {
     const [aRes, txtRes, mxRes, nsRes] = await Promise.all([
-      queryDns(domain, 'A'),
-      queryDns(domain, 'TXT'),
-      queryDns(domain, 'MX'),
-      queryDns(domain, 'NS'),
+      queryDns(fullDomain, 'A'),
+      queryDns(fullDomain, 'TXT'),
+      queryDns(fullDomain, 'MX'),
+      queryDns(fullDomain, 'NS'),
     ]);
 
     if (aRes) {
@@ -726,65 +807,104 @@ async function resolveDomainTelemetry(domain: string) {
     if (nsRes) {
       nsRecords = (nsRes.Answer || []).map((ans: any) => ans.data).filter(Boolean);
     }
+
+    // If subdomain had no NS records, query apex domain NS
+    if (nsRecords.length === 0 && fullDomain !== apexDomain) {
+      const apexNsRes = await queryDns(apexDomain, 'NS');
+      if (apexNsRes && apexNsRes.Answer) {
+        nsRecords = (apexNsRes.Answer || []).map((ans: any) => ans.data).filter(Boolean);
+      }
+    }
   } catch (e) {
     console.warn('DoH query encountered an error:', e);
   }
 
-  // 3. Query RDAP if not in ground truth
-  if (!isRegistered) {
-    try {
-      const rdapResp = await fetch(`https://rdap.org/domain/${domain}`, { mode: 'cors' });
-      if (rdapResp.ok) {
-        const rdapData = await rdapResp.json();
-        isRegistered = true;
-        for (const ev of rdapData.events || []) {
-          if (['registration', 'created'].includes(ev.eventAction) && ev.eventDate) {
-            const dt = new Date(ev.eventDate);
-            if (!isNaN(dt.getTime())) {
-              creationDateStr = dt.toISOString().split('T')[0];
-              domainAgeDays = Math.max(0, Math.floor((Date.now() - dt.getTime()) / 86400000));
+  // Helper to parse RDAP response
+  const parseRdap = (rdapData: any) => {
+    isRegistered = true;
+    for (const ev of rdapData.events || []) {
+      if (['registration', 'created'].includes(ev.eventAction) && ev.eventDate) {
+        const dt = new Date(ev.eventDate);
+        if (!isNaN(dt.getTime())) {
+          creationDateStr = dt.toISOString().split('T')[0];
+          domainAgeDays = Math.max(0, Math.floor((Date.now() - dt.getTime()) / 86400000));
+          break;
+        }
+      }
+    }
+    if (rdapData.entities && Array.isArray(rdapData.entities)) {
+      for (const ent of rdapData.entities) {
+        if (ent.roles && ent.roles.includes('registrar')) {
+          if (ent.vcardArray && ent.vcardArray[1]) {
+            const fnProp = ent.vcardArray[1].find((p: any) => p[0] === 'fn');
+            if (fnProp && fnProp[3]) {
+              registrarName = fnProp[3];
               break;
             }
           }
-        }
-        if (rdapData.entities && Array.isArray(rdapData.entities)) {
-          for (const ent of rdapData.entities) {
-            if (ent.roles && ent.roles.includes('registrar')) {
-              if (ent.vcardArray && ent.vcardArray[1]) {
-                const fnProp = ent.vcardArray[1].find((p: any) => p[0] === 'fn');
-                if (fnProp && fnProp[3]) {
-                  registrarName = fnProp[3];
-                  break;
-                }
-              }
-              if (ent.handle) {
-                registrarName = ent.handle;
-                break;
-              }
-            }
+          if (ent.handle) {
+            registrarName = ent.handle;
+            break;
           }
         }
-        if (!registrarName) {
-          registrarName = 'ICANN Accredited Registrar';
+      }
+    }
+    if (!registrarName) {
+      registrarName = 'ICANN Accredited Registrar';
+    }
+  };
+
+  // 3. Query RDAP (with apex domain fallback for subdomains)
+  if (!isRegistered) {
+    try {
+      const rdapResp = await fetch(`https://rdap.org/domain/${fullDomain}`, { mode: 'cors' });
+      if (rdapResp.ok) {
+        const rdapData = await rdapResp.json();
+        parseRdap(rdapData);
+      } else if (fullDomain !== apexDomain) {
+        // Subdomains fail on ICANN RDAP; apex domain has the authoritative WHOIS/RDAP
+        const apexRdapResp = await fetch(`https://rdap.org/domain/${apexDomain}`, { mode: 'cors' });
+        if (apexRdapResp.ok) {
+          const apexRdapData = await apexRdapResp.json();
+          parseRdap(apexRdapData);
         }
       }
     } catch {}
   }
 
-  // 4. Validate registration vs active DNS presence
-  const hasActiveDns = aRecords.length > 0 || nsRecords.length > 0 || mxRecords.length > 0;
+  // 4. Validate registration vs active DNS presence & hosted platforms
+  const hasActiveDns = (dohStatusA === 0) || aRecords.length > 0 || nsRecords.length > 0 || mxRecords.length > 0 || isHostedPlatform;
   
   if (!isRegistered && hasActiveDns) {
     isRegistered = true;
     if (!creationDateStr) {
-      creationDateStr = 'Active Public DNS';
+      creationDateStr = isHostedPlatform ? 'Active Hosted Platform' : 'Active Public DNS';
     }
     if (!registrarName) {
-      registrarName = nsRecords.length > 0 ? `Delegated (${nsRecords[0]})` : 'Authoritative DNS Host';
+      registrarName = isHostedPlatform ? `${apexDomain} Hosted Platform` : (nsRecords.length > 0 ? `Delegated (${nsRecords[0]})` : 'Authoritative DNS Host');
     }
   }
 
-  // If unregistered / non-existent domain:
+  // 5. In-browser reachability probe: If still not registered, probe HTTP connection
+  if (!isRegistered) {
+    try {
+      const probeController = new AbortController();
+      const probeTimer = setTimeout(() => probeController.abort(), 2500);
+      await fetch(`https://${fullDomain}/favicon.ico`, {
+        mode: 'no-cors',
+        signal: probeController.signal
+      });
+      clearTimeout(probeTimer);
+      // If fetch did not throw a network resolution error (e.g. ERR_NAME_NOT_RESOLVED), host is live!
+      isRegistered = true;
+      creationDateStr = 'Active Web Origin';
+      registrarName = 'Active Hosted Host';
+    } catch {
+      // Host did not resolve or connect
+    }
+  }
+
+  // If truly unregistered / non-existent domain:
   if (!isRegistered) {
     return {
       isRegistered: false,
@@ -804,7 +924,7 @@ async function resolveDomainTelemetry(domain: string) {
     };
   }
 
-  const isNrd = domainAgeDays !== undefined ? domainAgeDays <= 30 : false;
+  const isNrd = domainAgeDays !== undefined ? domainAgeDays <= 90 : false;
   const hasSpf = txtRecords.some(txt => txt.toLowerCase().includes('v=spf1'));
   const hasDmarc = txtRecords.some(txt => txt.toLowerCase().includes('v=dmarc1'));
 
