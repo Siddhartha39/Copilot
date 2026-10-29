@@ -23,10 +23,21 @@ TARGET_BRAND_KEYWORDS = [
     "paypal", "apple", "icloud", "microsoft", "google", "amazon", "netflix",
     "chase", "wellsfargo", "bankofamerica", "binance", "coinbase",
     "metamask", "steam", "facebook", "instagram", "whatsapp", "dropbox",
-    "outlook", "office365"
+    "outlook", "office365", "resso", "spotify", "tiktok", "telegram",
+    "discord", "reddit", "twitter", "youtube", "twitch", "adobe", "linkedin",
+    "zoom", "trustwallet", "kraken", "roblox", "openai", "chatgpt"
 ]
 
 BRAND_LOOKALIKES_MAP = {
+    "resso": ["resso.com", "resso.app"],
+    "spotify": ["spotify.com", "scdn.co"],
+    "tiktok": ["tiktok.com", "tiktokcdn.com"],
+    "telegram": ["telegram.org", "t.me"],
+    "discord": ["discord.com", "discord.gg"],
+    "reddit": ["reddit.com", "redd.it"],
+    "twitter": ["twitter.com", "x.com", "t.co"],
+    "youtube": ["youtube.com", "youtu.be", "googlevideo.com"],
+    "twitch": ["twitch.tv", "ttv.com"],
     "icloud": ["icloud.com", "apple.com", ".apple"],
     "apple": ["apple.com", "icloud.com", ".apple"],
     "paypal": ["paypal.com", "paypal.me"],
@@ -45,11 +56,19 @@ BRAND_LOOKALIKES_MAP = {
     "binance": ["binance.com"],
     "coinbase": ["coinbase.com"],
     "metamask": ["metamask.io"],
+    "trustwallet": ["trustwallet.com"],
+    "kraken": ["kraken.com"],
     "steam": ["steampowered.com", "steamcommunity.com"],
+    "roblox": ["roblox.com"],
     "whatsapp": ["whatsapp.com"],
     "instagram": ["instagram.com"],
     "facebook": ["facebook.com", "fb.com"],
-    "dropbox": ["dropbox.com"]
+    "dropbox": ["dropbox.com"],
+    "adobe": ["adobe.com"],
+    "linkedin": ["linkedin.com"],
+    "zoom": ["zoom.us", "zoom.com"],
+    "openai": ["openai.com", "chatgpt.com"],
+    "chatgpt": ["chatgpt.com", "openai.com"]
 }
 
 def calculate_shannon_entropy(text: str) -> float:

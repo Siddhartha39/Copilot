@@ -102,6 +102,27 @@ BRAND_CATALOG: Dict[str, BrandProfile] = {
         keywords=["steam community", "steampowered", "steam guard", "valvesoftware"],
         primary_colors=["#171A21", "#66C0F4"]
     ),
+    "resso": BrandProfile(
+        brand_id="resso",
+        name="Resso Music (ByteDance)",
+        authorized_domains=["resso.com", "resso.app"],
+        keywords=["resso", "resso music", "resso app", "bytedance resso", "resso streaming"],
+        primary_colors=["#FF3366", "#000000", "#FFFFFF"]
+    ),
+    "spotify": BrandProfile(
+        brand_id="spotify",
+        name="Spotify",
+        authorized_domains=["spotify.com", "scdn.co"],
+        keywords=["spotify", "spotify premium", "spotify music"],
+        primary_colors=["#1DB954", "#191414"]
+    ),
+    "tiktok": BrandProfile(
+        brand_id="tiktok",
+        name="TikTok",
+        authorized_domains=["tiktok.com", "tiktokcdn.com"],
+        keywords=["tiktok", "tiktok video", "tiktok login"],
+        primary_colors=["#000000", "#EE1D52", "#69C9D0"]
+    ),
     "meta": BrandProfile(
         brand_id="meta",
         name="Meta (Facebook / Instagram)",
