@@ -574,12 +574,14 @@ export function App() {
             />
           ) : (
             <Galaxy
-              density={0.5}
-              glowIntensity={0.2}
-              flareIntensity={0.6}
-              starSpeed={0.25}
-              speed={0.5}
-              layers={2}
+              density={1.6}
+              glowIntensity={0.8}
+              flareIntensity={1.4}
+              starSize={1.5}
+              twinkleIntensity={0.65}
+              starSpeed={0.3}
+              speed={0.6}
+              layers={4}
               dpr={1}
               mouseRepulsion
               clickWarp
